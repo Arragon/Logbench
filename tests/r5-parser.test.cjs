@@ -1,0 +1,13 @@
+const test=require('node:test'), assert=require('node:assert/strict'), vm=require('node:vm'),fs=require('node:fs'),path=require('node:path');
+const source=fs.readFileSync(path.join(__dirname,'../src/app.js'),'utf8');const ctx={};
+vm.runInNewContext(source.slice(source.indexOf('const norm='),source.indexOf('const short='))+source.slice(source.indexOf('function getFields('),source.indexOf('async function importFilesLegacy('))+';this.parse=parseLocal;',ctx);
+const parse=(s)=>JSON.parse(JSON.stringify(ctx.parse(s,'test'))), engine=require('../src/engine.js');
+const h=(m,t='42')=>`[2026-10-31 10:20:30.123456789] [ERROR] [APP-A] [12] [${t}] [code.py:40] [100] [0:0:0] work() <TAG_A> ${m}`;
+const stack=['Traceback (most recent call last):','  File "x.py", line 40, in work','    raise ValueError("first")','ValueError: first'];
+test('independent stamped tracebacks remain separate cards',()=>{const rs=parse([...stack,...stack].map(x=>h(x)).join('\n'));assert.equal(rs.length,2);assert.equal(rs[0].raw.length,4);});
+test('stamped chain with a blank separator remains one complete card',()=>{const lines=[...stack,'','The above exception was the direct cause of the following exception:','',...stack.slice(0,3),'RuntimeError: wrapper'];const rs=parse(lines.map(x=>h(x)).join('\n'));assert.equal(rs.length,1);assert.equal(rs[0].raw.length,11);assert.equal(engine.parseTraceback(rs[0]).sections[1].relation,'cause');});
+test('headless independent tracebacks do not become an invented chain',()=>{const rs=parse([...stack,...stack].join('\n'));assert.equal(rs.length,2);assert.equal(rs[1].line,5);});
+test('terminal exception without message then ordinary stamped record',()=>{const rs=parse([h(stack[0]),h(stack[1]),h('KeyboardInterrupt'),h('result: recovered')].join('\n'));assert.equal(rs.length,2);assert.equal(rs[0].raw.length,3);assert.equal(engine.parseTraceback(rs[0]).exception.type,'KeyboardInterrupt');});
+test('source lines preserve physical position through a stamped stack',()=>{const lines=stack.map(x=>h(x));const r=parse(lines.join('\n'))[0];assert.deepEqual(r.raw,lines);assert.equal(engine.parseTraceback(r).frames[0].sourceLine,2);});
+test('a different thread interrupts assembly without swallowing it',()=>{const rs=parse([h(stack[0]),h(stack[1],'43'),h(stack[3],'43')].join('\n'));assert.equal(rs.length,3);});
+test('a truncated traceback is flagged, original text retained',()=>{const r=parse(stack.slice(0,3).join('\n'))[0];const t=engine.parseTraceback(r);assert.ok(t.incomplete);assert.deepEqual(r.raw,stack.slice(0,3));});

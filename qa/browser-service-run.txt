@@ -1,0 +1,23 @@
+PASS initial workspace is empty; metadata is real; no sample injection
+PASS connected identity comes from backend
+PASS server file loads over HTTP and retains R5 traceback card
+PASS column configuration and workspace serialization
+PASS administrator creates actual shared rule from UI
+PASS custom extraction becomes draft, not automatic publish
+PASS R5 custom node shape, color and condition editor works
+PASS real Worker trial matches node but does not write server
+PASS publish persists full R5 profile and increments revision
+PASS directory-wide shared rule updates real backend binding
+PASS personal override is separate from shared directory rule
+PASS stale revision fails and preserves the local draft
+PASS discard loads latest server revision without merging stale draft
+PASS global time selection reads selected actual server files
+PASS two-file aligned comparison uses real server log records
+PASS local import remains in browser, never uploaded automatically
+PASS administrator creates directory on disk
+PASS shared delete and restore changes disk and preserves exact text
+PASS administrator creates real IP member
+PASS management audit displays actual writes
+PASS different socket IP has isolated namespace and read-only permissions
+PASS R5 layout remains usable at four widths without page overflow
+PASS no unhandled page errors

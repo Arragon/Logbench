@@ -1,0 +1,9 @@
+{
+  "python": "3.13.5 (main, Jul 15 2026, 20:25:40) [GCC 14.2.0]",
+  "executable": "/opt/pyvenv/bin/python",
+  "platform": "Linux-6.18.57-x86_64-with-glibc2.41",
+  "sqlite": "3.46.1",
+  "target": "3.9.11",
+  "nativeTargetRuntime": false,
+  "targetInterpreterAcquisition": "Official python.org source download attempted; container DNS and file downloader failed."
+}

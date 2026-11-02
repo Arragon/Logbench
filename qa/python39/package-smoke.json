@@ -1,0 +1,340 @@
+{
+  "interpreter": "3.13.5 (main, Jul 15 2026, 20:25:40) [GCC 14.2.0]",
+  "target": "3.9.11",
+  "nativeTargetRuntime": false,
+  "passed": 83,
+  "checks": [
+    {
+      "name": "checksum:.gitignore",
+      "passed": true
+    },
+    {
+      "name": "checksum:README.md",
+      "passed": true
+    },
+    {
+      "name": "checksum:config.example.json",
+      "passed": true
+    },
+    {
+      "name": "checksum:deploy/Dockerfile",
+      "passed": true
+    },
+    {
+      "name": "checksum:deploy/README.md",
+      "passed": true
+    },
+    {
+      "name": "checksum:deploy/logbench.service",
+      "passed": true
+    },
+    {
+      "name": "checksum:deploy/nginx.conf.example",
+      "passed": true
+    },
+    {
+      "name": "checksum:docs/ARCHITECTURE.md",
+      "passed": true
+    },
+    {
+      "name": "checksum:docs/IMPLEMENTATION.md",
+      "passed": true
+    },
+    {
+      "name": "checksum:docs/PROVENANCE.md",
+      "passed": true
+    },
+    {
+      "name": "checksum:docs/PYTHON39.md",
+      "passed": true
+    },
+    {
+      "name": "checksum:docs/QA.md",
+      "passed": true
+    },
+    {
+      "name": "checksum:docs/QA_v3.0.0.md",
+      "passed": true
+    },
+    {
+      "name": "checksum:examples/cpqpsgx_demo_A.log",
+      "passed": true
+    },
+    {
+      "name": "checksum:examples/cpqpsgx_demo_B.log",
+      "passed": true
+    },
+    {
+      "name": "checksum:qa/backend-final.txt",
+      "passed": true
+    },
+    {
+      "name": "checksum:qa/browser-service-results.json",
+      "passed": true
+    },
+    {
+      "name": "checksum:qa/browser-service-run.txt",
+      "passed": true
+    },
+    {
+      "name": "checksum:qa/browser_service_test.py",
+      "passed": true
+    },
+    {
+      "name": "checksum:qa/engine-final.txt",
+      "passed": true
+    },
+    {
+      "name": "checksum:qa/native-persistence-results.json",
+      "passed": true
+    },
+    {
+      "name": "checksum:qa/native-persistence-run.txt",
+      "passed": true
+    },
+    {
+      "name": "checksum:qa/native_persistence_test.py",
+      "passed": true
+    },
+    {
+      "name": "checksum:qa/package-smoke.json",
+      "passed": true
+    },
+    {
+      "name": "checksum:qa/package_smoke.py",
+      "passed": true
+    },
+    {
+      "name": "checksum:qa/previews/service-1024.png",
+      "passed": true
+    },
+    {
+      "name": "checksum:qa/previews/service-1366.png",
+      "passed": true
+    },
+    {
+      "name": "checksum:qa/previews/service-1440.png",
+      "passed": true
+    },
+    {
+      "name": "checksum:qa/previews/service-390.png",
+      "passed": true
+    },
+    {
+      "name": "checksum:qa/python39/backend-final.txt",
+      "passed": true
+    },
+    {
+      "name": "checksum:qa/python39/backup-before.txt",
+      "passed": true
+    },
+    {
+      "name": "checksum:qa/python39/engine-final.txt",
+      "passed": true
+    },
+    {
+      "name": "checksum:qa/python39/environment.json",
+      "passed": true
+    },
+    {
+      "name": "checksum:qa/python39/launcher-help.txt",
+      "passed": true
+    },
+    {
+      "name": "checksum:qa/python39/regression-after.txt",
+      "passed": true
+    },
+    {
+      "name": "checksum:qa/python39/regression-before.txt",
+      "passed": true
+    },
+    {
+      "name": "checksum:qa/python39/unchanged-assets.json",
+      "passed": true
+    },
+    {
+      "name": "checksum:qa/python39/worker-self-test.txt",
+      "passed": true
+    },
+    {
+      "name": "checksum:requirements.txt",
+      "passed": true
+    },
+    {
+      "name": "checksum:rules/cpqpsgx-default.json",
+      "passed": true
+    },
+    {
+      "name": "checksum:run.py",
+      "passed": true
+    },
+    {
+      "name": "checksum:server/__init__.py",
+      "passed": true
+    },
+    {
+      "name": "checksum:server/app.py",
+      "passed": true
+    },
+    {
+      "name": "checksum:server/frontend.py",
+      "passed": true
+    },
+    {
+      "name": "checksum:server/httpd.py",
+      "passed": true
+    },
+    {
+      "name": "checksum:server/r5_schema.py",
+      "passed": true
+    },
+    {
+      "name": "checksum:server/wsgi.py",
+      "passed": true
+    },
+    {
+      "name": "checksum:src/app.js",
+      "passed": true
+    },
+    {
+      "name": "checksum:src/boot.js",
+      "passed": true
+    },
+    {
+      "name": "checksum:src/engine.js",
+      "passed": true
+    },
+    {
+      "name": "checksum:src/index.html",
+      "passed": true
+    },
+    {
+      "name": "checksum:src/r5.js",
+      "passed": true
+    },
+    {
+      "name": "checksum:src/service.css",
+      "passed": true
+    },
+    {
+      "name": "checksum:src/service.js",
+      "passed": true
+    },
+    {
+      "name": "checksum:src/style.css",
+      "passed": true
+    },
+    {
+      "name": "checksum:start-py39.bat",
+      "passed": true
+    },
+    {
+      "name": "checksum:start-py39.sh",
+      "passed": true
+    },
+    {
+      "name": "checksum:start.bat",
+      "passed": true
+    },
+    {
+      "name": "checksum:start.sh",
+      "passed": true
+    },
+    {
+      "name": "checksum:tests/engine.test.cjs",
+      "passed": true
+    },
+    {
+      "name": "checksum:tests/r5-engine.test.cjs",
+      "passed": true
+    },
+    {
+      "name": "checksum:tests/r5-parser.test.cjs",
+      "passed": true
+    },
+    {
+      "name": "checksum:tests/test_backend_v2.py",
+      "passed": true
+    },
+    {
+      "name": "checksum:tests/test_frontend_contract.py",
+      "passed": true
+    },
+    {
+      "name": "checksum:tests/test_hot_update.py",
+      "passed": true
+    },
+    {
+      "name": "checksum:tests/test_operations.py",
+      "passed": true
+    },
+    {
+      "name": "checksum:tests/test_python39.py",
+      "passed": true
+    },
+    {
+      "name": "checksum:tests/test_service.py",
+      "passed": true
+    },
+    {
+      "name": "checksum:tools/apply_update.py",
+      "passed": true
+    },
+    {
+      "name": "checksum:tools/backup.py",
+      "passed": true
+    },
+    {
+      "name": "checksum:worker.py",
+      "passed": true
+    },
+    {
+      "name": "command:worker.py --self-test",
+      "passed": true
+    },
+    {
+      "name": "command:run.py --admin-ip 127.0.0.1 --init-only",
+      "passed": true
+    },
+    {
+      "name": "supervised service started",
+      "passed": true
+    },
+    {
+      "name": "release version",
+      "passed": true
+    },
+    {
+      "name": "supervisor uses child worker",
+      "passed": true
+    },
+    {
+      "name": "R5 entry",
+      "passed": true
+    },
+    {
+      "name": "R5 real assembled bundle",
+      "passed": true
+    },
+    {
+      "name": "explicit administrator retained",
+      "passed": true
+    },
+    {
+      "name": "recursive catalog",
+      "passed": true
+    },
+    {
+      "name": "directory listing",
+      "passed": true
+    },
+    {
+      "name": "UTF-8 log download",
+      "passed": true
+    },
+    {
+      "name": "no bootstrap data shipped",
+      "passed": true
+    }
+  ]
+}

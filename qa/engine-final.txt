@@ -1,0 +1,208 @@
+TAP version 13
+# Subtest: head and body keys extracted together
+ok 1 - head and body keys extracted together
+  ---
+  duration_ms: 2.530582
+  type: 'test'
+  ...
+# Subtest: custom named extraction
+ok 2 - custom named extraction
+  ---
+  duration_ms: 1.8341
+  type: 'test'
+  ...
+# Subtest: duplicate keys retain values
+ok 3 - duplicate keys retain values
+  ---
+  duration_ms: 0.473585
+  type: 'test'
+  ...
+# Subtest: RPC false produces derived error without rewriting EVENT
+ok 4 - RPC false produces derived error without rewriting EVENT
+  ---
+  duration_ms: 0.514337
+  type: 'test'
+  ...
+# Subtest: zero error code does not report error
+ok 5 - zero error code does not report error
+  ---
+  duration_ms: 0.262927
+  type: 'test'
+  ...
+# Subtest: user anomaly supports numeric field threshold
+ok 6 - user anomaly supports numeric field threshold
+  ---
+  duration_ms: 0.263768
+  type: 'test'
+  ...
+# Subtest: disabled anomaly not applied
+ok 7 - disabled anomaly not applied
+  ---
+  duration_ms: 0.253613
+  type: 'test'
+  ...
+# Subtest: invalid expression rejected
+ok 8 - invalid expression rejected
+  ---
+  duration_ms: 0.379032
+  type: 'test'
+  ...
+# Subtest: file binding wins and nearest directory respects separator
+ok 9 - file binding wins and nearest directory respects separator
+  ---
+  duration_ms: 0.457611
+  type: 'test'
+  ...
+# Subtest: time filtering inclusive and full fractional precision
+ok 10 - time filtering inclusive and full fractional precision
+  ---
+  duration_ms: 0.325852
+  type: 'test'
+  ...
+# Subtest: comparison aligns by exact timestamps not percentage
+ok 11 - comparison aligns by exact timestamps not percentage
+  ---
+  duration_ms: 7.043878
+  type: 'test'
+  ...
+# Subtest: same timestamp multiple records never discarded
+ok 12 - same timestamp multiple records never discarded
+  ---
+  duration_ms: 0.161584
+  type: 'test'
+  ...
+# Subtest: Fenwick maps offsets and updates measurements
+ok 13 - Fenwick maps offsets and updates measurements
+  ---
+  duration_ms: 0.295857
+  type: 'test'
+  ...
+# Subtest: formats traceback and gives it precedence over key-value fields
+ok 14 - formats traceback and gives it precedence over key-value fields
+  ---
+  duration_ms: 3.266363
+  type: 'test'
+  ...
+# Subtest: chained traceback retains both exceptions and relation
+ok 15 - chained traceback retains both exceptions and relation
+  ---
+  duration_ms: 1.296378
+  type: 'test'
+  ...
+# Subtest: ExceptionGroup is preserved and marked for raw hierarchy
+ok 16 - ExceptionGroup is preserved and marked for raw hierarchy
+  ---
+  duration_ms: 0.325902
+  type: 'test'
+  ...
+# Subtest: partial traceback is explicitly incomplete
+ok 17 - partial traceback is explicitly incomplete
+  ---
+  duration_ms: 0.153542
+  type: 'test'
+  ...
+# Subtest: normal Error words do not create traceback cards
+ok 18 - normal Error words do not create traceback cards
+  ---
+  duration_ms: 0.103597
+  type: 'test'
+  ...
+# Subtest: anomaly evidence identifies exact rule, predicate, profile and physical line
+ok 19 - anomaly evidence identifies exact rule, predicate, profile and physical line
+  ---
+  duration_ms: 0.87439
+  type: 'test'
+  ...
+# Subtest: timeline uses all conditions and customizable marker
+ok 20 - timeline uses all conditions and customizable marker
+  ---
+  duration_ms: 0.759036
+  type: 'test'
+  ...
+# Subtest: timeline supports any and case sensitive conditions
+ok 21 - timeline supports any and case sensitive conditions
+  ---
+  duration_ms: 0.306583
+  type: 'test'
+  ...
+# Subtest: legacy timeline pattern still works after migration
+ok 22 - legacy timeline pattern still works after migration
+  ---
+  duration_ms: 0.400886
+  type: 'test'
+  ...
+# Subtest: multiple timeline rules retain evidence in priority order
+ok 23 - multiple timeline rules retain evidence in priority order
+  ---
+  duration_ms: 0.572986
+  type: 'test'
+  ...
+# Subtest: nonzero excludes missing and zeros but keeps 19-digit integer
+ok 24 - nonzero excludes missing and zeros but keeps 19-digit integer
+  ---
+  duration_ms: 0.46969
+  type: 'test'
+  ...
+# Subtest: invalid node condition cannot silently match all records
+ok 25 - invalid node condition cannot silently match all records
+  ---
+  duration_ms: 0.259542
+  type: 'test'
+  ...
+# Subtest: unsupported shape or invalid color rejected before apply
+ok 26 - unsupported shape or invalid color rejected before apply
+  ---
+  duration_ms: 0.143216
+  type: 'test'
+  ...
+# Subtest: independent stamped tracebacks remain separate cards
+ok 27 - independent stamped tracebacks remain separate cards
+  ---
+  duration_ms: 2.170748
+  type: 'test'
+  ...
+# Subtest: stamped chain with a blank separator remains one complete card
+ok 28 - stamped chain with a blank separator remains one complete card
+  ---
+  duration_ms: 1.951127
+  type: 'test'
+  ...
+# Subtest: headless independent tracebacks do not become an invented chain
+ok 29 - headless independent tracebacks do not become an invented chain
+  ---
+  duration_ms: 0.32461
+  type: 'test'
+  ...
+# Subtest: terminal exception without message then ordinary stamped record
+ok 30 - terminal exception without message then ordinary stamped record
+  ---
+  duration_ms: 0.44995
+  type: 'test'
+  ...
+# Subtest: source lines preserve physical position through a stamped stack
+ok 31 - source lines preserve physical position through a stamped stack
+  ---
+  duration_ms: 1.121864
+  type: 'test'
+  ...
+# Subtest: a different thread interrupts assembly without swallowing it
+ok 32 - a different thread interrupts assembly without swallowing it
+  ---
+  duration_ms: 0.243938
+  type: 'test'
+  ...
+# Subtest: a truncated traceback is flagged, original text retained
+ok 33 - a truncated traceback is flagged, original text retained
+  ---
+  duration_ms: 0.282106
+  type: 'test'
+  ...
+1..33
+# tests 33
+# suites 0
+# pass 33
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 72.025939

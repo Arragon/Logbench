@@ -1,0 +1,26 @@
+test_backup_closes_real_connections_before_return (test_operations.OperationsTests.test_backup_closes_real_connections_before_return) ... FAIL
+test_backup_uses_sqlite_snapshot_and_preserves_secret (test_operations.OperationsTests.test_backup_uses_sqlite_snapshot_and_preserves_secret) ... ok
+test_invalid_update_does_not_overwrite_running_source (test_operations.OperationsTests.test_invalid_update_does_not_overwrite_running_source) ... /usr/lib/python3.13/pathlib/_local.py:289: ResourceWarning: unclosed database in <sqlite3.Connection object at 0x7f17fc00a4d0>
+  @property
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/usr/lib/python3.13/pathlib/_local.py:289: ResourceWarning: unclosed database in <sqlite3.Connection object at 0x7f17fc00a5c0>
+  @property
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+ok
+test_metadata_only_backup_still_includes_recycle_contents (test_operations.OperationsTests.test_metadata_only_backup_still_includes_recycle_contents) ... ok
+test_traversal_package_is_rejected_before_writes (test_operations.OperationsTests.test_traversal_package_is_rejected_before_writes) ... ok
+test_update_preserves_data_configuration_launcher_and_uses_hold_marker (test_operations.OperationsTests.test_update_preserves_data_configuration_launcher_and_uses_hold_marker) ... ok
+
+======================================================================
+FAIL: test_backup_closes_real_connections_before_return (test_operations.OperationsTests.test_backup_closes_real_connections_before_return)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/data/logbench_py39_work/LogBench/tests/test_operations.py", line 43, in test_backup_closes_real_connections_before_return
+    self.assertTrue(all(c.was_closed for c in connections),'backup must release SQLite handles before returning')
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : backup must release SQLite handles before returning
+
+----------------------------------------------------------------------
+Ran 6 tests in 1.426s
+
+FAILED (failures=1)

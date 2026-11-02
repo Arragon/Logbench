@@ -1,0 +1,47 @@
+[
+  {
+    "path": "rules/cpqpsgx-default.json",
+    "sha256": "46bc4d13650c139ad8d9623acebd23bc9692d710020d5147a0ffe5a3c3cdb6f3",
+    "unchanged": true
+  },
+  {
+    "path": "src/app.js",
+    "sha256": "4dfcc1d08c169ad63aa765d8d37d59bf3d6421fe5a9f327e0450d4a2a1061a89",
+    "unchanged": true
+  },
+  {
+    "path": "src/boot.js",
+    "sha256": "7ad4807e2b27e76416f7896c92fdce4dfd0a36fb97c18c859302dabae033e245",
+    "unchanged": true
+  },
+  {
+    "path": "src/engine.js",
+    "sha256": "5a73dfaa4920bf734642498ba9a4138543906afb72f7a54e532ee1028a034b43",
+    "unchanged": true
+  },
+  {
+    "path": "src/index.html",
+    "sha256": "3db58ceda43edee42fe528e8b5f006ffa02f27b828df18c8704147b869072d36",
+    "unchanged": true
+  },
+  {
+    "path": "src/r5.js",
+    "sha256": "fed33b44759b35e28731b40160b6deb7fa96351ccc07800f6148139d49e4a231",
+    "unchanged": true
+  },
+  {
+    "path": "src/service.css",
+    "sha256": "7ca872622dc684a092aad26476fc219f1da00f8278ca72d0c2074293d8044a5c",
+    "unchanged": true
+  },
+  {
+    "path": "src/service.js",
+    "sha256": "88eb55b190466bbffab947125d1e8fdd8fde9dbd81464e49a4154ef1503de54e",
+    "unchanged": true
+  },
+  {
+    "path": "src/style.css",
+    "sha256": "0d6a0d389c7dd5699f81a9444895c5702fad62f03d98ec70a2b8975cc91356fe",
+    "unchanged": true
+  }
+]

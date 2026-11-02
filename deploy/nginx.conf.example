@@ -1,0 +1,21 @@
+# Example for ONE trusted reverse proxy. Replace domain/certificate paths.
+# Backend config: host=127.0.0.1, trusted_proxies=["127.0.0.1/32"],
+# allowed_hosts=["logs.example.internal","127.0.0.1"],
+# public_origin="https://logs.example.internal".
+# Register the actual browser/client IP, NOT the proxy's IP, as administrator.
+server {
+    listen 443 ssl;
+    server_name logs.example.internal;
+    ssl_certificate /etc/nginx/certs/logs.crt;
+    ssl_certificate_key /etc/nginx/certs/logs.key;
+    client_max_body_size 2m;
+    location / {
+        proxy_pass http://127.0.0.1:50004;
+        proxy_set_header Host $host;
+        # OVERWRITE, do not trust a client-supplied forwarded chain.
+        proxy_set_header X-Forwarded-For $remote_addr;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_read_timeout 65s;
+        proxy_connect_timeout 5s;
+    }
+}

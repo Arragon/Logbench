@@ -1,0 +1,100 @@
+{
+  "mode": "real-Chromium + real-HTTP bridge (no native navigation/persistence)",
+  "passed": 23,
+  "checks": [
+    {
+      "name": "initial workspace is empty; metadata is real; no sample injection",
+      "pass": true
+    },
+    {
+      "name": "connected identity comes from backend",
+      "pass": true
+    },
+    {
+      "name": "server file loads over HTTP and retains R5 traceback card",
+      "pass": true
+    },
+    {
+      "name": "column configuration and workspace serialization",
+      "pass": true
+    },
+    {
+      "name": "administrator creates actual shared rule from UI",
+      "pass": true
+    },
+    {
+      "name": "custom extraction becomes draft, not automatic publish",
+      "pass": true
+    },
+    {
+      "name": "R5 custom node shape, color and condition editor works",
+      "pass": true
+    },
+    {
+      "name": "real Worker trial matches node but does not write server",
+      "pass": true
+    },
+    {
+      "name": "publish persists full R5 profile and increments revision",
+      "pass": true
+    },
+    {
+      "name": "directory-wide shared rule updates real backend binding",
+      "pass": true
+    },
+    {
+      "name": "personal override is separate from shared directory rule",
+      "pass": true
+    },
+    {
+      "name": "stale revision fails and preserves the local draft",
+      "pass": true
+    },
+    {
+      "name": "discard loads latest server revision without merging stale draft",
+      "pass": true
+    },
+    {
+      "name": "global time selection reads selected actual server files",
+      "pass": true
+    },
+    {
+      "name": "two-file aligned comparison uses real server log records",
+      "pass": true
+    },
+    {
+      "name": "local import remains in browser, never uploaded automatically",
+      "pass": true
+    },
+    {
+      "name": "administrator creates directory on disk",
+      "pass": true
+    },
+    {
+      "name": "shared delete and restore changes disk and preserves exact text",
+      "pass": true
+    },
+    {
+      "name": "administrator creates real IP member",
+      "pass": true
+    },
+    {
+      "name": "management audit displays actual writes",
+      "pass": true
+    },
+    {
+      "name": "different socket IP has isolated namespace and read-only permissions",
+      "pass": true
+    },
+    {
+      "name": "R5 layout remains usable at four widths without page overflow",
+      "pass": true
+    },
+    {
+      "name": "no unhandled page errors",
+      "pass": true
+    }
+  ],
+  "browserErrors": [],
+  "trafficCount": 80
+}

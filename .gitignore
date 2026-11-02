@@ -1,0 +1,8 @@
+config.json
+/data/
+/var/
+/.update-backups/
+/.update-in-progress
+__pycache__/
+*.pyc
+*.partial

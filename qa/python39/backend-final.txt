@@ -1,0 +1,52 @@
+test_audit_and_persistence_across_instances (test_backend_v2.BackendTests.test_audit_and_persistence_across_instances) ... ok
+test_binding_precedence_nearest_folder_and_disabled_rule (test_backend_v2.BackendTests.test_binding_precedence_nearest_folder_and_disabled_rule) ... ok
+test_csrf_origin_and_host_guards (test_backend_v2.BackendTests.test_csrf_origin_and_host_guards) ... ok
+test_download_binary_stream_range_etag (test_backend_v2.BackendTests.test_download_binary_stream_range_etag) ... ok
+test_explicit_bootstrap_and_anonymous_read_only (test_backend_v2.BackendTests.test_explicit_bootstrap_and_anonymous_read_only) ... ok
+test_http_transport_request_guards_and_head (test_backend_v2.BackendTests.test_http_transport_request_guards_and_head) ... ok
+test_invalid_payloads_are_bounded (test_backend_v2.BackendTests.test_invalid_payloads_are_bounded) ... ok
+test_library_pagination_recursive_search_hidden_paths (test_backend_v2.BackendTests.test_library_pagination_recursive_search_hidden_paths) ... ok
+test_mc_current_ip_priority_legacy_and_revocation (test_backend_v2.BackendTests.test_mc_current_ip_priority_legacy_and_revocation) ... ok
+test_mc_invalid_source_fail_closed_and_no_local_union (test_backend_v2.BackendTests.test_mc_invalid_source_fail_closed_and_no_local_union) ... ok
+test_mc_switch_prevents_admin_lockout (test_backend_v2.BackendTests.test_mc_switch_prevents_admin_lockout) ... ok
+test_rule_lifecycle_copy_revision_and_restore (test_backend_v2.BackendTests.test_rule_lifecycle_copy_revision_and_restore) ... ok
+test_shared_file_soft_delete_restore_no_overwrite (test_backend_v2.BackendTests.test_shared_file_soft_delete_restore_no_overwrite) ... ok
+test_symlink_and_traversal_are_denied (test_backend_v2.BackendTests.test_symlink_and_traversal_are_denied) ... ok
+test_trusted_proxy_walks_right_to_left_and_missing_fails (test_backend_v2.BackendTests.test_trusted_proxy_walks_right_to_left_and_missing_fails) ... ok
+test_untrusted_xff_cannot_impersonate_admin (test_backend_v2.BackendTests.test_untrusted_xff_cannot_impersonate_admin) ... ok
+test_user_preferences_are_server_scoped_and_revision_guarded (test_backend_v2.BackendTests.test_user_preferences_are_server_scoped_and_revision_guarded) ... ok
+test_users_revocation_next_request_and_self_lockout_guard (test_backend_v2.BackendTests.test_users_revocation_next_request_and_self_lockout_guard) ... ok
+test_wsgi_adapter_streams_and_head_has_no_body (test_backend_v2.BackendTests.test_wsgi_adapter_streams_and_head_has_no_body) ... ok
+test_wsgi_rejects_incomplete_request_body (test_backend_v2.BackendTests.test_wsgi_rejects_incomplete_request_body) ... ok
+test_entry_bootstraps_identity_before_workbench (test_frontend_contract.FrontendContract.test_entry_bootstraps_identity_before_workbench) ... ok
+test_only_allowlisted_static_files (test_frontend_contract.FrontendContract.test_only_allowlisted_static_files) ... ok
+test_workbench_bundle_connected_and_keeps_r5 (test_frontend_contract.FrontendContract.test_workbench_bundle_connected_and_keeps_r5) ... ok
+test_overwrite_validate_and_keep_state (test_hot_update.HotUpdate.test_overwrite_validate_and_keep_state) ... ok
+test_backup_closes_real_connections_before_return (test_operations.OperationsTests.test_backup_closes_real_connections_before_return) ... ok
+test_backup_uses_sqlite_snapshot_and_preserves_secret (test_operations.OperationsTests.test_backup_uses_sqlite_snapshot_and_preserves_secret) ... ok
+test_invalid_update_does_not_overwrite_running_source (test_operations.OperationsTests.test_invalid_update_does_not_overwrite_running_source) ... ok
+test_metadata_only_backup_still_includes_recycle_contents (test_operations.OperationsTests.test_metadata_only_backup_still_includes_recycle_contents) ... ok
+test_traversal_package_is_rejected_before_writes (test_operations.OperationsTests.test_traversal_package_is_rejected_before_writes) ... ok
+test_update_preserves_data_configuration_launcher_and_uses_hold_marker (test_operations.OperationsTests.test_update_preserves_data_configuration_launcher_and_uses_hold_marker) ... ok
+test_all_python_sources_parse_using_python39_grammar (test_python39.Python39Compatibility.test_all_python_sources_parse_using_python39_grammar) ... ok
+test_catalog_with_python39_pathlib_signature (test_python39.Python39Compatibility.test_catalog_with_python39_pathlib_signature) ... ok
+test_directory_listing_with_python39_pathlib_signature (test_python39.Python39Compatibility.test_directory_listing_with_python39_pathlib_signature) ... ok
+test_filesystem_listing_does_not_expose_symlinks (test_python39.Python39Compatibility.test_filesystem_listing_does_not_expose_symlinks) ... ok
+test_no_python310_union_annotations (test_python39.Python39Compatibility.test_no_python310_union_annotations) ... ok
+test_older_interpreter_is_rejected_before_database_initialization (test_python39.Python39Compatibility.test_older_interpreter_is_rejected_before_database_initialization) ... ok
+test_public_dataclass_annotations_can_be_resolved (test_python39.Python39Compatibility.test_public_dataclass_annotations_can_be_resolved) ... ok
+test_target_version_passes_launcher_and_initializes_real_database (test_python39.Python39Compatibility.test_target_version_passes_launcher_and_initializes_real_database) ... 2026-10-31 07:03:20,698 INFO LogBench 初始化完成。
+ok
+test_cannot_delete_bound_rule (test_service.ServiceTests.test_cannot_delete_bound_rule) ... ok
+test_catalog_no_raw_content_and_empty_directories (test_service.ServiceTests.test_catalog_no_raw_content_and_empty_directories) ... ok
+test_compare_and_swap (test_service.ServiceTests.test_compare_and_swap) ... ok
+test_content_route_rechecks_disabled_actor (test_service.ServiceTests.test_content_route_rechecks_disabled_actor) ... ok
+test_health_has_release_id (test_service.ServiceTests.test_health_has_release_id) ... ok
+test_invalid_node_rejected (test_service.ServiceTests.test_invalid_node_rejected) ... ok
+test_r5_schema_roundtrip (test_service.ServiceTests.test_r5_schema_roundtrip) ... ok
+test_server_rule_is_not_changed_by_member (test_service.ServiceTests.test_server_rule_is_not_changed_by_member) ... ok
+
+----------------------------------------------------------------------
+Ran 46 tests in 15.525s
+
+OK

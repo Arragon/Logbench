@@ -1,0 +1,14 @@
+{
+  "status": "passed",
+  "checks": [
+    "archive integrity and every SHA256SUMS entry verified",
+    "extracted application self-test passed",
+    "clean ZIP initializes admin and starts supervised real HTTP service",
+    "HTML, boot chain reference, connected R5 bundle and CSS served with no-store",
+    "empty initial log library; no preloaded demo files",
+    "R5 shared rule seed present",
+    "files placed under data become readable through actual file API"
+  ],
+  "codeRevision": "3.0.0/R5",
+  "archiveTested": "LogBench_R5_Server_v3.0.0.zip"
+}

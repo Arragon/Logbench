@@ -1,0 +1,98 @@
+{
+  "extractors": [
+    {
+      "id": "kv",
+      "name": "通用键值",
+      "enabled": true,
+      "source": "both",
+      "pattern": "(?:^|\\b)(?<key>[A-Za-z_][A-Za-z0-9_.]*)\\s*[:：=]\\s*(?<value>[^,，;\\n]+)",
+      "key": "",
+      "group": "value",
+      "type": "auto",
+      "unit": ""
+    }
+  ],
+  "anomalies": [
+    {
+      "id": "raw-error",
+      "name": "原始错误等级",
+      "enabled": true,
+      "field": "level",
+      "op": "regex",
+      "value": "^(ERROR|FATAL)$",
+      "severity": "error"
+    },
+    {
+      "id": "raw-warn",
+      "name": "原始告警等级",
+      "enabled": true,
+      "field": "level",
+      "op": "regex",
+      "value": "^(WARNING|WARN)$",
+      "severity": "warning"
+    },
+    {
+      "id": "rpc",
+      "name": "RPC 调用失败",
+      "enabled": true,
+      "field": "fields.rpc_success",
+      "op": "equals",
+      "value": "false",
+      "severity": "error"
+    },
+    {
+      "id": "code",
+      "name": "非零错误码",
+      "enabled": true,
+      "field": "fields.err_code",
+      "op": "nonzero",
+      "value": "",
+      "severity": "error"
+    }
+  ],
+  "nodes": [
+    {
+      "name": "模块开始",
+      "type": "start",
+      "enabled": true,
+      "pattern": "started|initialization started",
+      "id": "node-0",
+      "combine": "all",
+      "conditions": [
+        {
+          "field": "raw",
+          "op": "regex",
+          "value": "started|initialization started",
+          "caseSensitive": false
+        }
+      ],
+      "shape": "circle",
+      "color": "#047857"
+    },
+    {
+      "name": "模块结束",
+      "type": "end",
+      "enabled": true,
+      "pattern": "completed|会话结束",
+      "id": "node-1",
+      "combine": "all",
+      "conditions": [
+        {
+          "field": "raw",
+          "op": "regex",
+          "value": "completed|会话结束",
+          "caseSensitive": false
+        }
+      ],
+      "shape": "square",
+      "color": "#475569"
+    }
+  ],
+  "id": "cpqpsgx-default",
+  "name": "CPQPSGX 标准",
+  "desc": "方括号头部、字段提取、异常与时间线",
+  "format": "bracket",
+  "version": "1.0",
+  "status": "共享",
+  "deleted": false
+}

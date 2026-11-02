@@ -1,0 +1,401 @@
+[2020-01-01 11:39:15.12345678] [EVENT] [APP-A] [1001] [1001] [bootstrap.py:46] [100] [0:0:0] initialize() <TAG_A> ModuleA initialized with default paths. config_path: /opt/APP-A/config/path_config.json
+[2020-01-01 11:39:15.12345715] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1241] [100] [0:0:0] get_setpoint() <TAG_A> get current GLOBAL_Delay: 3000ns
+[2020-01-01 11:39:15.12345752] [EVENT] [APP-A] [1001] [1041] [recipe.py:140] [100] [0:0:0] set_recipe() <TAG_A> set recipe：{'axis_01': 100.0, 'axis_02': 200.5, 'mode': 'auto'}
+[2020-01-01 11:39:16.12345789] [EVENT] [APP-A] [1001] [1041] [algorithm.py:947] [100] [0:0:0] optimize() <TAG_A> iteration = 0, energy = 9.430, converged = false
+[2020-01-01 11:39:16.12345826] [EVENT] [APP-A] [1001] [1041] [acquisition.py:188] [100] [0:0:0] get_camera_frame() <TAG_A> frame_id: 12004, exposure_us: 100, status: ready
+[2020-01-01 11:39:16.12345863] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1284] [100] [0:0:0] get_burst_data_info() <TAG_A> burstEuvEnergyMean: 9.414220809936523
+burstEuvEnergy3sigma: 0.21338501572608948
+burstEuvEnergyMin: 9.101
+burstEuvEnergyMax: 9.725
+burstPpEnergyMean: 4.501
+burstPpEnergy3sigma: 0.023
+burstMpEnergyMean: 86.31
+burstMpEnergy3sigma: 0.821
+burstDropletCount: 420
+burstStartTime: 1234567890123456789
+burstEndTime: 1234567890173456789
+burstOffsetX: -1.5
+burstOffsetY: -2.5
+euvConversionEfficiency: 0.050
+euvPulseWidth: 0.00012
+euvPositionX: 0.11
+euvPositionY: -0.13
+isValid: true
+
+[2020-01-01 11:39:17.12345900] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1228] [100] [0:0:0] get_setpoint() <TAG_A> get current PPe: 4.51mJ
+[2020-01-01 11:39:17.12345937] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1241] [100] [0:0:0] get_setpoint() <TAG_A> get current GLOBAL_Delay: 3000ns
+[2020-01-01 11:39:17.12345974] [EVENT] [APP-A] [1001] [1041] [device.py:166] [100] [0:0:0] set_setpoint_now() <TAG_A> PARAM_A call success!! name = PARAM_B,value = 3000
+[2020-01-01 11:39:18.12346011] [EVENT] [APP-A] [1001] [1001] [algorithm.py:947] [100] [0:0:0] optimize() <TAG_A> iteration = 1, energy = 9.410, converged = false
+[2020-01-01 11:39:18.12346048] [EVENT] [APP-A] [1001] [1041] [acquisition.py:188] [100] [0:0:0] get_camera_frame() <TAG_A> frame_id: 12010, exposure_us: 100, status: ready
+[2020-01-01 11:39:18.12346085] [EVENT] [APP-A] [1001] [1041] [algorithm.py:920] [100] [0:0:0] best_index() <TAG_A> **********best index mask = 0     False
+1     False
+2     False
+3     False
+4     False
+5     False
+6      True
+7     False
+[2020-01-01 11:39:19.12346122] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1228] [100] [0:0:0] get_setpoint() <TAG_A> get current PPe: 4.52mJ
+[2020-01-01 11:39:19.12346159] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1241] [100] [0:0:0] get_setpoint() <TAG_A> get current GLOBAL_Delay: 3000ns
+[2020-01-01 11:39:19.12346196] [EVENT] [APP-A] [1001] [1041] [device.py:166] [100] [0:0:0] set_setpoint_now() <TAG_A> PARAM_A call success!! name = PARAM_B,value = 3006
+[2020-01-01 11:39:20.12346233] [EVENT] [APP-A] [1001] [1041] [algorithm.py:947] [100] [0:0:0] optimize() <TAG_A> iteration = 2, energy = 9.430, converged = false
+[2020-01-01 11:39:20.12346270] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1300] [100] [0:0:0] calculate() <TAG_A> StructInfo(energy_mean=9.41, energy_sigma=0.21, axes=['EPD', 'Scam', 'Pcam'])
+[2020-01-01 11:39:20.12346307] [EVENT] [APP-A] [1001] [1041] [report.py:208] [101] [0:0:0] report_event() Finish to report event, rpc_success: True, err_code: 0x0.
+[2020-01-01 11:39:21.12346344] [EVENT] [APP-A] [1001] [1001] [algorithm.py:1228] [100] [0:0:0] get_setpoint() <TAG_A> get current PPe: 4.53mJ
+[2020-01-01 11:39:21.12346381] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1241] [100] [0:0:0] get_setpoint() <TAG_A> get current GLOBAL_Delay: 3000ns
+[2020-01-01 11:39:21.12346418] [EVENT] [APP-A] [1001] [1041] [device.py:166] [100] [0:0:0] set_setpoint_now() <TAG_A> PARAM_A call success!! name = PARAM_B,value = 3004
+[2020-01-01 11:39:22.12346455] [EVENT] [APP-A] [1001] [1041] [algorithm.py:947] [100] [0:0:0] optimize() <TAG_A> iteration = 3, energy = 9.410, converged = false
+[2020-01-01 11:39:22.12346492] [EVENT] [APP-A] [1001] [1041] [acquisition.py:188] [100] [0:0:0] get_camera_frame() <TAG_A> frame_id: 12022, exposure_us: 100, status: ready
+[2020-01-01 11:39:22.12346529] [EVENT] [APP-A] [1001] [1041] [report.py:208] [101] [0:0:0] report_event() Finish to report event, rpc_success: True, err_code: 0x0.
+[2020-01-01 11:39:23.12346566] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1228] [100] [0:0:0] get_setpoint() <TAG_A> get current PPe: 4.54mJ
+[2020-01-01 11:39:23.12346603] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1241] [100] [0:0:0] get_setpoint() <TAG_A> get current GLOBAL_Delay: 3000ns
+[2020-01-01 11:39:23.12346640] [EVENT] [APP-A] [1001] [1041] [device.py:166] [100] [0:0:0] set_setpoint_now() <TAG_A> PARAM_A call success!! name = PARAM_B,value = 3002
+[2020-01-01 11:39:24.12346677] [EVENT] [APP-A] [1001] [1001] [algorithm.py:947] [100] [0:0:0] optimize() <TAG_A> iteration = 4, energy = 9.430, converged = false
+[2020-01-01 11:39:24.12346714] [WARNING] [APP-A] [1001] [1041] [acquisition.py:218] [100] [0:0:0] collect_data() <TAG_A> Sample interval exceeded threshold, interval_ms = 42, threshold_ms = 30
+[2020-01-01 11:39:24.12346751] [EVENT] [APP-A] [1001] [1041] [report.py:208] [101] [0:0:0] report_event() Finish to report event, rpc_success: True, err_code: 0x0.
+[2020-01-01 11:39:25.12346788] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1228] [100] [0:0:0] get_setpoint() <TAG_A> get current PPe: 4.50mJ
+[2020-01-01 11:39:25.12346825] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1241] [100] [0:0:0] get_setpoint() <TAG_A> get current GLOBAL_Delay: 3000ns
+[2020-01-01 11:39:25.12346862] [EVENT] [APP-A] [1001] [1041] [device.py:166] [100] [0:0:0] set_setpoint_now() <TAG_A> PARAM_A call success!! name = PARAM_B,value = 3000
+[2020-01-01 11:39:26.12346899] [EVENT] [APP-A] [1001] [1041] [algorithm.py:947] [100] [0:0:0] optimize() <TAG_A> iteration = 5, energy = 9.410, converged = false
+[2020-01-01 11:39:26.12346936] [EVENT] [APP-A] [1001] [1041] [acquisition.py:188] [100] [0:0:0] get_camera_frame() <TAG_A> frame_id: 12034, exposure_us: 100, status: ready
+[2020-01-01 11:39:26.12346973] [EVENT] [APP-A] [1001] [1041] [report.py:208] [101] [0:0:0] report_event() Finish to report event, rpc_success: True, err_code: 0x0.
+[2020-01-01 11:39:27.12347010] [EVENT] [APP-A] [1001] [1001] [algorithm.py:1228] [100] [0:0:0] get_setpoint() <TAG_A> get current PPe: 4.51mJ
+[2020-01-01 11:39:27.12347047] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1284] [100] [0:0:0] get_burst_data_info() <TAG_A> burstEuvEnergyMean: 9.414220809936523
+burstEuvEnergy3sigma: 0.21338501572608948
+burstEuvEnergyMin: 9.101
+burstEuvEnergyMax: 9.725
+burstPpEnergyMean: 4.501
+burstPpEnergy3sigma: 0.023
+burstMpEnergyMean: 86.31
+burstMpEnergy3sigma: 0.821
+burstDropletCount: 420
+burstStartTime: 1234567890123456789
+burstEndTime: 1234567890173456789
+burstOffsetX: -1.5
+burstOffsetY: -2.5
+euvConversionEfficiency: 0.050
+euvPulseWidth: 0.00012
+euvPositionX: 0.11
+euvPositionY: -0.13
+isValid: true
+
+[2020-01-01 11:39:27.12347084] [EVENT] [APP-A] [1001] [1041] [device.py:166] [100] [0:0:0] set_setpoint_now() <TAG_A> PARAM_A call success!! name = PARAM_B,value = 3006
+[2020-01-01 11:39:28.12347121] [EVENT] [APP-A] [1001] [1041] [algorithm.py:947] [100] [0:0:0] optimize() <TAG_A> iteration = 6, energy = 9.430, converged = false
+[2020-01-01 11:39:28.12347158] [EVENT] [APP-A] [1001] [1041] [acquisition.py:188] [100] [0:0:0] get_camera_frame() <TAG_A> frame_id: 12040, exposure_us: 100, status: ready
+[2020-01-01 11:39:28.12347195] [EVENT] [APP-A] [1001] [1041] [report.py:208] [101] [0:0:0] report_event() Finish to report event, rpc_success: True, err_code: 0x0.
+[2020-01-01 11:39:29.12347232] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1228] [100] [0:0:0] get_setpoint() <TAG_A> get current PPe: 4.52mJ
+[2020-01-01 11:39:29.12347269] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1241] [100] [0:0:0] get_setpoint() <TAG_A> get current GLOBAL_Delay: 3000ns
+[2020-01-01 11:39:29.12347306] [EVENT] [APP-A] [1001] [1041] [device.py:166] [100] [0:0:0] set_setpoint_now() <TAG_A> PARAM_A call success!! name = PARAM_B,value = 3004
+[2020-01-01 11:39:30.12347343] [EVENT] [APP-A] [1001] [1001] [algorithm.py:947] [100] [0:0:0] optimize() <TAG_A> iteration = 7, energy = 9.410, converged = false
+[2020-01-01 11:39:30.12347380] [EVENT] [APP-A] [1001] [1041] [acquisition.py:188] [100] [0:0:0] get_camera_frame() <TAG_A> frame_id: 12046, exposure_us: 100, status: ready
+[2020-01-01 11:39:30.12347417] [EVENT] [APP-A] [1001] [1041] [report.py:208] [101] [0:0:0] report_event() Finish to report event, rpc_success: True, err_code: 0x0.
+[2020-01-01 11:39:31.12347454] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1228] [100] [0:0:0] get_setpoint() <TAG_A> get current PPe: 4.53mJ
+[2020-01-01 11:39:31.12347491] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1241] [100] [0:0:0] get_setpoint() <TAG_A> get current GLOBAL_Delay: 3000ns
+[2020-01-01 11:39:31.12347528] [EVENT] [APP-A] [1001] [1041] [device.py:166] [100] [0:0:0] set_setpoint_now() <TAG_A> PARAM_A call success!! name = PARAM_B,value = 3002
+[2020-01-01 11:39:32.12347565] [EVENT] [APP-A] [1001] [1041] [algorithm.py:947] [100] [0:0:0] optimize() <TAG_A> iteration = 8, energy = 9.430, converged = false
+[2020-01-01 11:39:32.12347602] [EVENT] [APP-A] [1001] [1041] [acquisition.py:188] [100] [0:0:0] get_camera_frame() <TAG_A> frame_id: 12052, exposure_us: 100, status: ready
+[2020-01-01 11:39:32.12347639] [EVENT] [APP-A] [1001] [1041] [report.py:208] [101] [0:0:0] report_event() Finish to report event, rpc_success: True, err_code: 0x0.
+[2020-01-01 11:39:33.12347676] [EVENT] [APP-A] [1001] [1001] [algorithm.py:1228] [100] [0:0:0] get_setpoint() <TAG_A> get current PPe: 4.54mJ
+[2020-01-01 11:39:33.12347713] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1241] [100] [0:0:0] get_setpoint() <TAG_A> get current GLOBAL_Delay: 3000ns
+[2020-01-01 11:39:33.12347750] [EVENT] [APP-A] [1001] [1041] [device.py:166] [100] [0:0:0] set_setpoint_now() <TAG_A> PARAM_A call success!! name = PARAM_B,value = 3000
+[2020-01-01 11:39:34.12347787] [EVENT] [APP-A] [1001] [1041] [algorithm.py:947] [100] [0:0:0] optimize() <TAG_A> iteration = 9, energy = 9.410, converged = false
+[2020-01-01 11:39:34.12347824] [EVENT] [APP-A] [1001] [1041] [acquisition.py:188] [100] [0:0:0] get_camera_frame() <TAG_A> frame_id: 12058, exposure_us: 100, status: ready
+[2020-01-01 11:39:34.12347861] [EVENT] [APP-A] [1001] [1041] [report.py:208] [101] [0:0:0] report_event() Finish to report event, rpc_success: True, err_code: 0x0.
+[2020-01-01 11:39:35.12347898] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1228] [100] [0:0:0] get_setpoint() <TAG_A> get current PPe: 4.50mJ
+[2020-01-01 11:39:35.12347935] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1241] [100] [0:0:0] get_setpoint() <TAG_A> get current GLOBAL_Delay: 3000ns
+[2020-01-01 11:39:35.12347972] [EVENT] [APP-A] [1001] [1041] [device.py:166] [100] [0:0:0] set_setpoint_now() <TAG_A> PARAM_A call success!! name = PARAM_B,value = 3006
+[2020-01-01 11:39:36.12348009] [EVENT] [APP-A] [1001] [1001] [algorithm.py:947] [100] [0:0:0] optimize() <TAG_A> iteration = 10, energy = 9.430, converged = false
+[2020-01-01 11:39:36.12348046] [EVENT] [APP-A] [1001] [1041] [acquisition.py:188] [100] [0:0:0] get_camera_frame() <TAG_A> frame_id: 12064, exposure_us: 100, status: ready
+[2020-01-01 11:39:36.12348083] [EVENT] [APP-A] [1001] [1041] [report.py:208] [101] [0:0:0] report_event() Finish to report event, rpc_success: True, err_code: 0x0.
+[2020-01-01 11:39:37.12348120] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1228] [100] [0:0:0] get_setpoint() <TAG_A> get current PPe: 4.51mJ
+[2020-01-01 11:39:37.12348157] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1241] [100] [0:0:0] get_setpoint() <TAG_A> get current GLOBAL_Delay: 3000ns
+[2020-01-01 11:39:37.12348194] [EVENT] [APP-A] [1001] [1041] [device.py:166] [100] [0:0:0] set_setpoint_now() <TAG_A> PARAM_A call success!! name = PARAM_B,value = 3004
+[2020-01-01 11:39:38.12348231] [EVENT] [APP-A] [1001] [1041] [algorithm.py:947] [100] [0:0:0] optimize() <TAG_A> iteration = 11, energy = 9.410, converged = false
+[2020-01-01 11:39:38.12348268] [EVENT] [APP-A] [1001] [1041] [acquisition.py:188] [100] [0:0:0] get_camera_frame() <TAG_A> frame_id: 12070, exposure_us: 100, status: ready
+[2020-01-01 11:39:38.12348305] [EVENT] [APP-A] [1001] [1041] [report.py:208] [101] [0:0:0] report_event() Finish to report event, rpc_success: True, err_code: 0x0.
+[2020-01-01 11:39:39.12348342] [EVENT] [APP-A] [1001] [1001] [algorithm.py:1228] [100] [0:0:0] get_setpoint() <TAG_A> get current PPe: 4.52mJ
+[2020-01-01 11:39:39.12348379] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1241] [100] [0:0:0] get_setpoint() <TAG_A> get current GLOBAL_Delay: 3000ns
+[2020-01-01 11:39:39.12348416] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1284] [100] [0:0:0] get_burst_data_info() <TAG_A> burstEuvEnergyMean: 9.414220809936523
+burstEuvEnergy3sigma: 0.21338501572608948
+burstEuvEnergyMin: 9.101
+burstEuvEnergyMax: 9.725
+burstPpEnergyMean: 4.501
+burstPpEnergy3sigma: 0.023
+burstMpEnergyMean: 86.31
+burstMpEnergy3sigma: 0.821
+burstDropletCount: 420
+burstStartTime: 1234567890123456789
+burstEndTime: 1234567890173456789
+burstOffsetX: -1.5
+burstOffsetY: -2.5
+euvConversionEfficiency: 0.050
+euvPulseWidth: 0.00012
+euvPositionX: 0.11
+euvPositionY: -0.13
+isValid: true
+
+[2020-01-01 11:39:40.12348453] [EVENT] [APP-A] [1001] [1041] [algorithm.py:947] [100] [0:0:0] optimize() <TAG_A> iteration = 12, energy = 9.430, converged = false
+[2020-01-01 11:39:40.12348490] [EVENT] [APP-A] [1001] [1041] [acquisition.py:188] [100] [0:0:0] get_camera_frame() <TAG_A> frame_id: 12076, exposure_us: 100, status: ready
+[2020-01-01 11:39:40.12348527] [EVENT] [APP-A] [1001] [1041] [report.py:208] [101] [0:0:0] report_event() Finish to report event, rpc_success: True, err_code: 0x0.
+[2020-01-01 11:39:41.12348564] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1228] [100] [0:0:0] get_setpoint() <TAG_A> get current PPe: 4.53mJ
+[2020-01-01 11:39:41.12348601] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1241] [100] [0:0:0] get_setpoint() <TAG_A> get current GLOBAL_Delay: 3000ns
+[2020-01-01 11:39:41.12348638] [EVENT] [APP-A] [1001] [1041] [device.py:166] [100] [0:0:0] set_setpoint_now() <TAG_A> PARAM_A call success!! name = PARAM_B,value = 3000
+[2020-01-01 11:39:42.12348675] [EVENT] [APP-A] [1001] [1001] [algorithm.py:947] [100] [0:0:0] optimize() <TAG_A> iteration = 13, energy = 9.410, converged = false
+[2020-01-01 11:39:42.12348712] [EVENT] [APP-A] [1001] [1041] [acquisition.py:188] [100] [0:0:0] get_camera_frame() <TAG_A> frame_id: 12082, exposure_us: 100, status: ready
+[2020-01-01 11:39:42.12348749] [EVENT] [APP-A] [1001] [1041] [report.py:208] [101] [0:0:0] report_event() Finish to report event, rpc_success: True, err_code: 0x0.
+[2020-01-01 11:39:43.12348786] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1228] [100] [0:0:0] get_setpoint() <TAG_A> get current PPe: 4.54mJ
+[2020-01-01 11:39:43.12348823] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1241] [100] [0:0:0] get_setpoint() <TAG_A> get current GLOBAL_Delay: 3000ns
+[2020-01-01 11:39:43.12348860] [EVENT] [APP-A] [1001] [1041] [device.py:166] [100] [0:0:0] set_setpoint_now() <TAG_A> PARAM_A call success!! name = PARAM_B,value = 3006
+[2020-01-01 11:39:44.12348897] [EVENT] [APP-A] [1001] [1041] [algorithm.py:947] [100] [0:0:0] optimize() <TAG_A> iteration = 14, energy = 9.430, converged = false
+[2020-01-01 11:39:44.12348934] [EVENT] [APP-A] [1001] [1041] [acquisition.py:188] [100] [0:0:0] get_camera_frame() <TAG_A> frame_id: 12088, exposure_us: 100, status: ready
+[2020-01-01 11:39:44.12348971] [EVENT] [APP-A] [1001] [1041] [report.py:208] [101] [0:0:0] report_event() Finish to report event, rpc_success: True, err_code: 0x0.
+[2020-01-01 11:39:45.12349008] [EVENT] [APP-A] [1001] [1001] [algorithm.py:1228] [100] [0:0:0] get_setpoint() <TAG_A> get current PPe: 4.50mJ
+[2020-01-01 11:39:45.12349045] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1241] [100] [0:0:0] get_setpoint() <TAG_A> get current GLOBAL_Delay: 3000ns
+[2020-01-01 11:39:45.12349082] [EVENT] [APP-A] [1001] [1041] [device.py:166] [100] [0:0:0] set_setpoint_now() <TAG_A> PARAM_A call success!! name = PARAM_B,value = 3004
+[2020-01-01 11:39:46.12349119] [EVENT] [APP-A] [1001] [1041] [algorithm.py:947] [100] [0:0:0] optimize() <TAG_A> iteration = 15, energy = 9.410, converged = false
+[2020-01-01 11:39:46.12349156] [EVENT] [APP-A] [1001] [1041] [acquisition.py:188] [100] [0:0:0] get_camera_frame() <TAG_A> frame_id: 12094, exposure_us: 100, status: ready
+[2020-01-01 11:39:46.12349193] [EVENT] [APP-A] [1001] [1041] [report.py:208] [101] [0:0:0] report_event() Finish to report event, rpc_success: True, err_code: 0x0.
+[2020-01-01 11:39:47.12349230] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1228] [100] [0:0:0] get_setpoint() <TAG_A> get current PPe: 4.51mJ
+[2020-01-01 11:39:47.12349267] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1241] [100] [0:0:0] get_setpoint() <TAG_A> get current GLOBAL_Delay: 3000ns
+[2020-01-01 11:39:47.12349304] [EVENT] [APP-A] [1001] [1041] [device.py:166] [100] [0:0:0] set_setpoint_now() <TAG_A> PARAM_A call success!! name = PARAM_B,value = 3002
+[2020-01-01 11:39:48.12349341] [EVENT] [APP-A] [1001] [1001] [algorithm.py:947] [100] [0:0:0] optimize() <TAG_A> iteration = 16, energy = 9.430, converged = false
+[2020-01-01 11:39:48.12349378] [EVENT] [APP-A] [1001] [1041] [report.py:204] [101] [0:0:0] report_event() Finish to report event, rpc_success: False, err_code: 0x12.
+request_id: demo-1001-100
+operation: update_setpoint
+retry_count: 3
+[2020-01-01 11:39:48.12349415] [EVENT] [APP-A] [1001] [1041] [report.py:208] [101] [0:0:0] report_event() Finish to report event, rpc_success: True, err_code: 0x0.
+[2020-01-01 11:39:49.12349452] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1228] [100] [0:0:0] get_setpoint() <TAG_A> get current PPe: 4.52mJ
+[2020-01-01 11:39:49.12349489] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1241] [100] [0:0:0] get_setpoint() <TAG_A> get current GLOBAL_Delay: 3000ns
+[2020-01-01 11:39:49.12349526] [EVENT] [APP-A] [1001] [1041] [device.py:166] [100] [0:0:0] set_setpoint_now() <TAG_A> PARAM_A call success!! name = PARAM_B,value = 3000
+[2020-01-01 11:39:50.12349563] [EVENT] [APP-A] [1001] [1041] [algorithm.py:947] [100] [0:0:0] optimize() <TAG_A> iteration = 17, energy = 9.410, converged = false
+[2020-01-01 11:39:50.12349600] [EVENT] [APP-A] [1001] [1041] [acquisition.py:188] [100] [0:0:0] get_camera_frame() <TAG_A> frame_id: 12106, exposure_us: 100, status: ready
+[2020-01-01 11:39:50.12349637] [EVENT] [APP-A] [1001] [1041] [report.py:208] [101] [0:0:0] report_event() Finish to report event, rpc_success: True, err_code: 0x0.
+[2020-01-01 11:39:51.12349674] [EVENT] [APP-A] [1001] [1001] [algorithm.py:1228] [100] [0:0:0] get_setpoint() <TAG_A> get current PPe: 4.53mJ
+[2020-01-01 11:39:51.12349711] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1241] [100] [0:0:0] get_setpoint() <TAG_A> get current GLOBAL_Delay: 3000ns
+[2020-01-01 11:39:51.12349748] [EVENT] [APP-A] [1001] [1041] [device.py:166] [100] [0:0:0] set_setpoint_now() <TAG_A> PARAM_A call success!! name = PARAM_B,value = 3006
+[2020-01-01 11:39:52.12349785] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1284] [100] [0:0:0] get_burst_data_info() <TAG_A> burstEuvEnergyMean: 9.414220809936523
+burstEuvEnergy3sigma: 0.21338501572608948
+burstEuvEnergyMin: 9.101
+burstEuvEnergyMax: 9.725
+burstPpEnergyMean: 4.501
+burstPpEnergy3sigma: 0.023
+burstMpEnergyMean: 86.31
+burstMpEnergy3sigma: 0.821
+burstDropletCount: 420
+burstStartTime: 1234567890123456789
+burstEndTime: 1234567890173456789
+burstOffsetX: -1.5
+burstOffsetY: -2.5
+euvConversionEfficiency: 0.050
+euvPulseWidth: 0.00012
+euvPositionX: 0.11
+euvPositionY: -0.13
+isValid: true
+
+[2020-01-01 11:39:52.12349822] [EVENT] [APP-A] [1001] [1041] [acquisition.py:188] [100] [0:0:0] get_camera_frame() <TAG_A> frame_id: 12112, exposure_us: 100, status: ready
+[2020-01-01 11:39:52.12349859] [EVENT] [APP-A] [1001] [1041] [report.py:208] [101] [0:0:0] report_event() Finish to report event, rpc_success: True, err_code: 0x0.
+[2020-01-01 11:39:53.12349896] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1228] [100] [0:0:0] get_setpoint() <TAG_A> get current PPe: 4.54mJ
+[2020-01-01 11:39:53.12349933] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1241] [100] [0:0:0] get_setpoint() <TAG_A> get current GLOBAL_Delay: 3000ns
+[2020-01-01 11:39:53.12349970] [EVENT] [APP-A] [1001] [1041] [device.py:166] [100] [0:0:0] set_setpoint_now() <TAG_A> PARAM_A call success!! name = PARAM_B,value = 3004
+[2020-01-01 11:39:54.12350007] [EVENT] [APP-A] [1001] [1001] [algorithm.py:947] [100] [0:0:0] optimize() <TAG_A> iteration = 19, energy = 9.410, converged = false
+[2020-01-01 11:39:54.12350044] [EVENT] [APP-A] [1001] [1041] [acquisition.py:188] [100] [0:0:0] get_camera_frame() <TAG_A> frame_id: 12118, exposure_us: 100, status: ready
+[2020-01-01 11:39:54.12350081] [EVENT] [APP-A] [1001] [1041] [report.py:208] [101] [0:0:0] report_event() Finish to report event, rpc_success: True, err_code: 0x0.
+[2020-01-01 11:39:55.12350118] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1228] [100] [0:0:0] get_setpoint() <TAG_A> get current PPe: 4.50mJ
+[2020-01-01 11:39:55.12350155] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1241] [100] [0:0:0] get_setpoint() <TAG_A> get current GLOBAL_Delay: 3000ns
+[2020-01-01 11:39:55.12350192] [EVENT] [APP-A] [1001] [1041] [device.py:166] [100] [0:0:0] set_setpoint_now() <TAG_A> PARAM_A call success!! name = PARAM_B,value = 3002
+[2020-01-01 11:39:56.12350229] [EVENT] [APP-A] [1001] [1041] [algorithm.py:947] [100] [0:0:0] optimize() <TAG_A> iteration = 20, energy = 9.430, converged = false
+[2020-01-01 11:39:56.12350266] [EVENT] [APP-A] [1001] [1041] [acquisition.py:188] [100] [0:0:0] get_camera_frame() <TAG_A> frame_id: 12124, exposure_us: 100, status: ready
+[2020-01-01 11:39:56.12350303] [EVENT] [APP-A] [1001] [1041] [report.py:208] [101] [0:0:0] report_event() Finish to report event, rpc_success: True, err_code: 0x0.
+[2020-01-01 11:39:57.12350340] [EVENT] [APP-A] [1001] [1001] [algorithm.py:1228] [100] [0:0:0] get_setpoint() <TAG_A> get current PPe: 4.51mJ
+[2020-01-01 11:39:57.12350377] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1241] [100] [0:0:0] get_setpoint() <TAG_A> get current GLOBAL_Delay: 3000ns
+[2020-01-01 11:39:57.12350414] [EVENT] [APP-A] [1001] [1041] [device.py:166] [100] [0:0:0] set_setpoint_now() <TAG_A> PARAM_A call success!! name = PARAM_B,value = 3000
+[2020-01-01 11:39:58.12350451] [EVENT] [APP-A] [1001] [1041] [algorithm.py:947] [100] [0:0:0] optimize() <TAG_A> iteration = 21, energy = 9.410, converged = false
+[2020-01-01 11:39:58.12350488] [EVENT] [APP-A] [1001] [1041] [acquisition.py:188] [100] [0:0:0] get_camera_frame() <TAG_A> frame_id: 12130, exposure_us: 100, status: ready
+[2020-01-01 11:39:58.12350525] [EVENT] [APP-A] [1001] [1041] [report.py:208] [101] [0:0:0] report_event() Finish to report event, rpc_success: True, err_code: 0x0.
+[2020-01-01 11:39:59.12350562] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1228] [100] [0:0:0] get_setpoint() <TAG_A> get current PPe: 4.52mJ
+[2020-01-01 11:39:59.12350599] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1241] [100] [0:0:0] get_setpoint() <TAG_A> get current GLOBAL_Delay: 3000ns
+[2020-01-01 11:39:59.12350636] [EVENT] [APP-A] [1001] [1041] [device.py:166] [100] [0:0:0] set_setpoint_now() <TAG_A> PARAM_A call success!! name = PARAM_B,value = 3006
+[2020-01-01 11:40:00.12350673] [EVENT] [APP-A] [1001] [1001] [algorithm.py:947] [100] [0:0:0] optimize() <TAG_A> iteration = 22, energy = 9.430, converged = false
+[2020-01-01 11:40:00.12350710] [EVENT] [APP-A] [1001] [1041] [acquisition.py:188] [100] [0:0:0] get_camera_frame() <TAG_A> frame_id: 12136, exposure_us: 100, status: ready
+[2020-01-01 11:40:00.12350747] [EVENT] [APP-A] [1001] [1041] [report.py:208] [101] [0:0:0] report_event() Finish to report event, rpc_success: True, err_code: 0x0.
+[2020-01-01 11:40:01.12350784] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1228] [100] [0:0:0] get_setpoint() <TAG_A> get current PPe: 4.53mJ
+[2020-01-01 11:40:01.12350821] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1241] [100] [0:0:0] get_setpoint() <TAG_A> get current GLOBAL_Delay: 3000ns
+[2020-01-01 11:40:01.12350858] [ERROR] [APP-A] [1001] [1041] [device.py:312] [100] [0:0:0] rpc_call() <TAG_A> Device response timed out, device = AXIS_01, timeout_ms = 3000
+Traceback (most recent call last):
+  File "device.py", line 310, in rpc_call
+    response = channel.receive()
+TimeoutError: response deadline exceeded
+[2020-01-01 11:40:02.12350895] [EVENT] [APP-A] [1001] [1041] [algorithm.py:947] [100] [0:0:0] optimize() <TAG_A> iteration = 23, energy = 9.410, converged = false
+[2020-01-01 11:40:02.12350932] [EVENT] [APP-A] [1001] [1041] [acquisition.py:188] [100] [0:0:0] get_camera_frame() <TAG_A> frame_id: 12142, exposure_us: 100, status: ready
+[2020-01-01 11:40:02.12350969] [EVENT] [APP-A] [1001] [1041] [report.py:208] [101] [0:0:0] report_event() Finish to report event, rpc_success: True, err_code: 0x0.
+[2020-01-01 11:40:03.12351006] [EVENT] [APP-A] [1001] [1001] [algorithm.py:1228] [100] [0:0:0] get_setpoint() <TAG_A> get current PPe: 4.54mJ
+[2020-01-01 11:40:03.12351043] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1241] [100] [0:0:0] get_setpoint() <TAG_A> get current GLOBAL_Delay: 3000ns
+[2020-01-01 11:40:03.12351080] [EVENT] [APP-A] [1001] [1041] [device.py:166] [100] [0:0:0] set_setpoint_now() <TAG_A> PARAM_A call success!! name = PARAM_B,value = 3002
+[2020-01-01 11:40:04.12351117] [EVENT] [APP-A] [1001] [1041] [algorithm.py:947] [100] [0:0:0] optimize() <TAG_A> iteration = 24, energy = 9.430, converged = false
+[2020-01-01 11:40:04.12351154] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1284] [100] [0:0:0] get_burst_data_info() <TAG_A> burstEuvEnergyMean: 9.414220809936523
+burstEuvEnergy3sigma: 0.21338501572608948
+burstEuvEnergyMin: 9.101
+burstEuvEnergyMax: 9.725
+burstPpEnergyMean: 4.501
+burstPpEnergy3sigma: 0.023
+burstMpEnergyMean: 86.31
+burstMpEnergy3sigma: 0.821
+burstDropletCount: 420
+burstStartTime: 1234567890123456789
+burstEndTime: 1234567890173456789
+burstOffsetX: -1.5
+burstOffsetY: -2.5
+euvConversionEfficiency: 0.050
+euvPulseWidth: 0.00012
+euvPositionX: 0.11
+euvPositionY: -0.13
+isValid: true
+
+[2020-01-01 11:40:04.12351191] [EVENT] [APP-A] [1001] [1041] [report.py:208] [101] [0:0:0] report_event() Finish to report event, rpc_success: True, err_code: 0x0.
+[2020-01-01 11:40:05.12351228] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1228] [100] [0:0:0] get_setpoint() <TAG_A> get current PPe: 4.50mJ
+[2020-01-01 11:40:05.12351265] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1241] [100] [0:0:0] get_setpoint() <TAG_A> get current GLOBAL_Delay: 3000ns
+[2020-01-01 11:40:05.12351302] [EVENT] [APP-A] [1001] [1041] [device.py:166] [100] [0:0:0] set_setpoint_now() <TAG_A> PARAM_A call success!! name = PARAM_B,value = 3000
+[2020-01-01 11:40:06.12351339] [EVENT] [APP-A] [1001] [1001] [algorithm.py:947] [100] [0:0:0] optimize() <TAG_A> iteration = 25, energy = 9.410, converged = false
+[2020-01-01 11:40:06.12351376] [EVENT] [APP-A] [1001] [1041] [acquisition.py:188] [100] [0:0:0] get_camera_frame() <TAG_A> frame_id: 12154, exposure_us: 100, status: ready
+[2020-01-01 11:40:06.12351413] [EVENT] [APP-A] [1001] [1041] [report.py:208] [101] [0:0:0] report_event() Finish to report event, rpc_success: True, err_code: 0x0.
+[2020-01-01 11:40:07.12351450] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1228] [100] [0:0:0] get_setpoint() <TAG_A> get current PPe: 4.51mJ
+[2020-01-01 11:40:07.12351487] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1241] [100] [0:0:0] get_setpoint() <TAG_A> get current GLOBAL_Delay: 3000ns
+[2020-01-01 11:40:07.12351524] [EVENT] [APP-A] [1001] [1041] [device.py:166] [100] [0:0:0] set_setpoint_now() <TAG_A> PARAM_A call success!! name = PARAM_B,value = 3006
+[2020-01-01 11:40:08.12351561] [EVENT] [APP-A] [1001] [1041] [algorithm.py:947] [100] [0:0:0] optimize() <TAG_A> iteration = 26, energy = 9.430, converged = false
+[2020-01-01 11:40:08.12351598] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1284] [100] [0:0:0] get_burst_data_info() <TAG_A> burstEuvEnergyMean: 9.414220809936523
+burstEuvEnergy3sigma: 0.21338501572608948
+burstEuvEnergyMin: 9.101
+burstEuvEnergyMax: 9.725
+burstPpEnergyMean: 4.501
+burstPpEnergy3sigma: 0.023
+burstMpEnergyMean: 86.31
+burstMpEnergy3sigma: 0.821
+burstDropletCount: 420
+burstStartTime: 1234567890123456789
+burstEndTime: 1234567890173456789
+burstOffsetX: -1.5
+burstOffsetY: -2.5
+euvConversionEfficiency: 0.050
+euvPulseWidth: 0.00012
+euvPositionX: 0.11
+euvPositionY: -0.13
+isValid: false
+
+[2020-01-01 11:40:08.12351635] [EVENT] [APP-A] [1001] [1041] [report.py:208] [101] [0:0:0] report_event() Finish to report event, rpc_success: True, err_code: 0x0.
+[2020-01-01 11:40:09.12351672] [EVENT] [APP-A] [1001] [1001] [algorithm.py:1228] [100] [0:0:0] get_setpoint() <TAG_A> get current PPe: 4.52mJ
+[2020-01-01 11:40:09.12351709] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1241] [100] [0:0:0] get_setpoint() <TAG_A> get current GLOBAL_Delay: 3000ns
+[2020-01-01 11:40:09.12351746] [EVENT] [APP-A] [1001] [1041] [device.py:166] [100] [0:0:0] set_setpoint_now() <TAG_A> PARAM_A call success!! name = PARAM_B,value = 3004
+[2020-01-01 11:40:10.12351783] [EVENT] [APP-A] [1001] [1041] [algorithm.py:947] [100] [0:0:0] optimize() <TAG_A> iteration = 27, energy = 9.410, converged = false
+[2020-01-01 11:40:10.12351820] [EVENT] [APP-A] [1001] [1041] [acquisition.py:188] [100] [0:0:0] get_camera_frame() <TAG_A> frame_id: 12166, exposure_us: 100, status: ready
+[2020-01-01 11:40:10.12351857] [EVENT] [APP-A] [1001] [1041] [report.py:208] [101] [0:0:0] report_event() Finish to report event, rpc_success: True, err_code: 0x0.
+[2020-01-01 11:40:11.12351894] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1228] [100] [0:0:0] get_setpoint() <TAG_A> get current PPe: 4.53mJ
+[2020-01-01 11:40:11.12351931] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1241] [100] [0:0:0] get_setpoint() <TAG_A> get current GLOBAL_Delay: 3000ns
+[2020-01-01 11:40:11.12351968] [EVENT] [APP-A] [1001] [1041] [device.py:166] [100] [0:0:0] set_setpoint_now() <TAG_A> PARAM_A call success!! name = PARAM_B,value = 3002
+[2020-01-01 11:40:12.12352005] [EVENT] [APP-A] [1001] [1001] [algorithm.py:947] [100] [0:0:0] optimize() <TAG_A> iteration = 28, energy = 9.430, converged = false
+[2020-01-01 11:40:12.12352042] [EVENT] [APP-A] [1001] [1041] [acquisition.py:188] [100] [0:0:0] get_camera_frame() <TAG_A> frame_id: 12172, exposure_us: 100, status: ready
+[2020-01-01 11:40:12.12352079] [EVENT] [APP-A] [1001] [1041] [report.py:208] [101] [0:0:0] report_event() Finish to report event, rpc_success: True, err_code: 0x0.
+[2020-01-01 11:40:13.12352116] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1228] [100] [0:0:0] get_setpoint() <TAG_A> get current PPe: 4.54mJ
+[2020-01-01 11:40:13.12352153] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1241] [100] [0:0:0] get_setpoint() <TAG_A> get current GLOBAL_Delay: 3000ns
+[2020-01-01 11:40:13.12352190] [EVENT] [APP-A] [1001] [1041] [device.py:166] [100] [0:0:0] set_setpoint_now() <TAG_A> PARAM_A call success!! name = PARAM_B,value = 3000
+[2020-01-01 11:40:14.12352227] [EVENT] [APP-A] [1001] [1041] [algorithm.py:947] [100] [0:0:0] optimize() <TAG_A> iteration = 29, energy = 9.410, converged = false
+[2020-01-01 11:40:14.12352264] [EVENT] [APP-A] [1001] [1041] [acquisition.py:188] [100] [0:0:0] get_camera_frame() <TAG_A> frame_id: 12178, exposure_us: 100, status: ready
+[2020-01-01 11:40:14.12352301] [EVENT] [APP-A] [1001] [1041] [report.py:208] [101] [0:0:0] report_event() Finish to report event, rpc_success: True, err_code: 0x0.
+[2020-01-01 11:40:15.12352338] [EVENT] [APP-A] [1001] [1001] [report.py:208] [101] [0:0:0] report_event() rpc_success: True, err_code: 0x0.
+[2020-01-01 11:40:15.12352375] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1241] [100] [0:0:0] get_setpoint() <TAG_A> get current GLOBAL_Delay: 3000ns
+[2020-01-01 11:40:15.12352412] [EVENT] [APP-A] [1001] [1041] [device.py:166] [100] [0:0:0] set_setpoint_now() <TAG_A> PARAM_A call success!! name = PARAM_B,value = 3006
+[2020-01-01 11:40:16.12352449] [EVENT] [APP-A] [1001] [1041] [algorithm.py:947] [100] [0:0:0] optimize() <TAG_A> iteration = 30, energy = 9.430, converged = false
+[2020-01-01 11:40:16.12352486] [EVENT] [APP-A] [1001] [1041] [acquisition.py:188] [100] [0:0:0] get_camera_frame() <TAG_A> frame_id: 12184, exposure_us: 100, status: ready
+[2020-01-01 11:40:16.12352523] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1284] [100] [0:0:0] get_burst_data_info() <TAG_A> burstEuvEnergyMean: 9.414220809936523
+burstEuvEnergy3sigma: 0.21338501572608948
+burstEuvEnergyMin: 9.101
+burstEuvEnergyMax: 9.725
+burstPpEnergyMean: 4.501
+burstPpEnergy3sigma: 0.023
+burstMpEnergyMean: 86.31
+burstMpEnergy3sigma: 0.821
+burstDropletCount: 420
+burstStartTime: 1234567890123456789
+burstEndTime: 1234567890173456789
+burstOffsetX: -1.5
+burstOffsetY: -2.5
+euvConversionEfficiency: 0.050
+euvPulseWidth: 0.00012
+euvPositionX: 0.11
+euvPositionY: -0.13
+isValid: true
+
+[2020-01-01 11:40:17.12352560] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1228] [100] [0:0:0] get_setpoint() <TAG_A> get current PPe: 4.51mJ
+[2020-01-01 11:40:17.12352597] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1241] [100] [0:0:0] get_setpoint() <TAG_A> get current GLOBAL_Delay: 3000ns
+[2020-01-01 11:40:17.12352634] [EVENT] [APP-A] [1001] [1041] [device.py:166] [100] [0:0:0] set_setpoint_now() <TAG_A> PARAM_A call success!! name = PARAM_B,value = 3004
+[2020-01-01 11:40:18.12352671] [EVENT] [APP-A] [1001] [1001] [algorithm.py:947] [100] [0:0:0] optimize() <TAG_A> iteration = 31, energy = 9.410, converged = false
+[2020-01-01 11:40:18.12352708] [EVENT] [APP-A] [1001] [1041] [acquisition.py:188] [100] [0:0:0] get_camera_frame() <TAG_A> frame_id: 12190, exposure_us: 100, status: ready
+[2020-01-01 11:40:18.12352745] [EVENT] [APP-A] malformed header: missing fields
+该行用于演示无法识别的头部，不应并入上一条记录。
+[2020-01-01 11:40:19.12352782] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1228] [100] [0:0:0] get_setpoint() <TAG_A> get current PPe: 4.52mJ
+[2020-01-01 11:40:19.12352819] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1241] [100] [0:0:0] get_setpoint() <TAG_A> get current GLOBAL_Delay: 3000ns
+[2020-01-01 11:40:19.12352856] [EVENT] [APP-A] [1001] [1041] [device.py:166] [100] [0:0:0] set_setpoint_now() <TAG_A> PARAM_A call success!! name = PARAM_B,value = 3002
+[2020-01-01 11:40:20.12352893] [EVENT] [APP-A] [1001] [1041] [algorithm.py:947] [100] [0:0:0] optimize() <TAG_A> iteration = 32, energy = 9.430, converged = false
+[2020-01-01 11:40:20.12352930] [EVENT] [APP-A] [1001] [1041] [acquisition.py:188] [100] [0:0:0] get_camera_frame() <TAG_A> frame_id: 12196, exposure_us: 100, status: ready
+[2020-01-01 11:40:20.12352967] [EVENT] [APP-A] [1001] [1041] [report.py:208] [101] [0:0:0] report_event() Finish to report event, rpc_success: True, err_code: 0x0.
+[2020-01-01 11:40:21.12353004] [EVENT] [APP-A] [1001] [1001] [algorithm.py:1228] [100] [0:0:0] get_setpoint() <TAG_A> get current PPe: 4.53mJ
+[2020-01-01 11:40:21.12353041] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1241] [100] [0:0:0] get_setpoint() <TAG_A> get current GLOBAL_Delay: 3000ns
+[2020-01-01 11:40:21.12353078] [EVENT] [APP-A] [1001] [1041] [device.py:166] [100] [0:0:0] set_setpoint_now() <TAG_A> PARAM_A call success!! name = PARAM_B,value = 3000
+[2020-01-01 11:40:22.12353115] [EVENT] [APP-A] [1001] [1041] [algorithm.py:947] [100] [0:0:0] optimize() <TAG_A> iteration = 33, energy = 9.410, converged = false
+[2020-01-01 11:40:22.12353152] [EVENT] [APP-A] [1001] [1041] [acquisition.py:188] [100] [0:0:0] get_camera_frame() <TAG_A> frame_id: 12202, exposure_us: 100, status: ready
+[2020-01-01 11:40:22.12353189] [EVENT] [APP-A] [1001] [1041] [diagnostics.py:70] [100] [0:0:0] inspect_payload() <TAG_A> payload: <b>literal text</b> & x < 5; this is log text
+[2020-01-01 11:40:23.12353226] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1228] [100] [0:0:0] get_setpoint() <TAG_A> get current PPe: 4.54mJ
+[2020-01-01 11:40:23.12353263] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1241] [100] [0:0:0] get_setpoint() <TAG_A> get current GLOBAL_Delay: 3000ns
+[2020-01-01 11:40:23.12353300] [EVENT] [APP-A] [1001] [1041] [device.py:166] [100] [0:0:0] set_setpoint_now() <TAG_A> PARAM_A call success!! name = PARAM_B,value = 3006
+[2020-01-01 11:40:24.12353337] [EVENT] [APP-A] [1001] [1001] [algorithm.py:947] [100] [0:0:0] optimize() <TAG_A> iteration = 34, energy = 9.430, converged = false
+[2020-01-01 11:40:24.12353374] [EVENT] [APP-A] [1001] [1041] [acquisition.py:188] [100] [0:0:0] get_camera_frame() <TAG_A> frame_id: 12208, exposure_us: 100, status: ready
+[2020-01-01 11:40:24.12353411] [EVENT] [APP-A] [1001] [1041] [report.py:208] [101] [0:0:0] report_event() Finish to report event, rpc_success: True, err_code: 0x0.
+[2020-01-01 11:40:25.12353448] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1228] [100] [0:0:0] get_setpoint() <TAG_A> get current PPe: 4.50mJ
+[2020-01-01 11:40:25.12353485] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1241] [100] [0:0:0] get_setpoint() <TAG_A> get current GLOBAL_Delay: 3000ns
+[2020-01-01 11:40:25.12353522] [EVENT] [APP-A] [1001] [1041] [device.py:166] [100] [0:0:0] set_setpoint_now() <TAG_A> PARAM_A call success!! name = PARAM_B,value = 3004
+[2020-01-01 11:40:26.12353559] [EVENT] [APP-A] [1001] [1041] [algorithm.py:947] [100] [0:0:0] optimize() <TAG_A> iteration = 35, energy = 9.410, converged = false
+[2020-01-01 11:40:26.12353596] [EVENT] [APP-A] [1001] [1041] [acquisition.py:188] [100] [0:0:0] get_camera_frame() <TAG_A> frame_id: 12214, exposure_us: 100, status: ready
+[2020-01-01 11:40:26.12353633] [EVENT] [APP-A] [1001] [1041] [report.py:208] [101] [0:0:0] report_event() Finish to report event, rpc_success: True, err_code: 0x0.
+[2020-01-01 11:40:27.12353670] [EVENT] [APP-A] [1001] [1001] [algorithm.py:1350] [100] [0:0:0] calculate() <TAG_A> value = 10, value = 11
+  offset: -0.12
+comment:
+[2020-01-01 11:40:27.12353707] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1241] [100] [0:0:0] get_setpoint() <TAG_A> get current GLOBAL_Delay: 3000ns
+[2020-01-01 11:40:27.12353744] [EVENT] [APP-A] [1001] [1041] [device.py:166] [100] [0:0:0] set_setpoint_now() <TAG_A> PARAM_A call success!! name = PARAM_B,value = 3002
+[2020-01-01 11:40:28.12353781] [EVENT] [APP-A] [1001] [1041] [algorithm.py:947] [100] [0:0:0] optimize() <TAG_A> iteration = 36, energy = 9.430, converged = false
+[2020-01-01 11:40:28.12353818] [EVENT] [APP-A] [1001] [1041] [acquisition.py:188] [100] [0:0:0] get_camera_frame() <TAG_A> frame_id: 12220, exposure_us: 100, status: ready
+[2020-01-01 11:40:28.12353855] [EVENT] [APP-A] [1001] [1041] [report.py:208] [101] [0:0:0] report_event() Finish to report event, rpc_success: True, err_code: 0x0.
+[2020-01-01 11:40:29.12353892] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1284] [100] [0:0:0] get_burst_data_info() <TAG_A> burstEuvEnergyMean: 9.414220809936523
+burstEuvEnergy3sigma: 0.21338501572608948
+burstEuvEnergyMin: 9.101
+burstEuvEnergyMax: 9.725
+burstPpEnergyMean: 4.501
+burstPpEnergy3sigma: 0.023
+burstMpEnergyMean: 86.31
+burstMpEnergy3sigma: 0.821
+burstDropletCount: 420
+burstStartTime: 1234567890123456789
+burstEndTime: 1234567890173456789
+burstOffsetX: -1.5
+burstOffsetY: -2.5
+euvConversionEfficiency: 0.050
+euvPulseWidth: 0.00012
+euvPositionX: 0.11
+euvPositionY: -0.13
+isValid: true
+
+[2020-01-01 11:40:29.12353929] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1241] [100] [0:0:0] get_setpoint() <TAG_A> get current GLOBAL_Delay: 3000ns
+[2020-01-01 11:40:29.12353966] [EVENT] [APP-A] [1001] [1041] [device.py:166] [100] [0:0:0] set_setpoint_now() <TAG_A> PARAM_A call success!! name = PARAM_B,value = 3000
+[2020-01-01 11:40:30.12354003] [EVENT] [APP-A] [1001] [1001] [algorithm.py:947] [100] [0:0:0] optimize() <TAG_A> iteration = 37, energy = 9.410, converged = false
+[2020-01-01 11:40:30.12354040] [EVENT] [APP-A] [1001] [1041] [acquisition.py:188] [100] [0:0:0] get_camera_frame() <TAG_A> frame_id: 12226, exposure_us: 100, status: ready
+[2020-01-01 11:40:30.12354077] [EVENT] [APP-A] [1001] [1041] [report.py:208] [101] [0:0:0] report_event() Finish to report event, rpc_success: True, err_code: 0x0.
+[2020-01-01 11:40:31.12354114] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1228] [100] [0:0:0] get_setpoint() <TAG_A> get current PPe: 4.53mJ
+[2020-01-01 11:40:31.12354151] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1241] [100] [0:0:0] get_setpoint() <TAG_A> get current GLOBAL_Delay: 3000ns
+[2020-01-01 11:40:31.12354188] [EVENT] [APP-A] [1001] [1041] [device.py:166] [100] [0:0:0] set_setpoint_now() <TAG_A> PARAM_A call success!! name = PARAM_B,value = 3006
+[2020-01-01 11:40:32.12354225] [EVENT] [APP-A] [1001] [1041] [algorithm.py:947] [100] [0:0:0] optimize() <TAG_A> iteration = 38, energy = 9.430, converged = false
+[2020-01-01 11:40:32.12354262] [EVENT] [APP-A] [1001] [1041] [acquisition.py:188] [100] [0:0:0] get_camera_frame() <TAG_A> frame_id: 12232, exposure_us: 100, status: ready
+[2020-01-01 11:40:32.12354299] [EVENT] [APP-A] [1001] [1041] [report.py:208] [101] [0:0:0] report_event() Finish to report event, rpc_success: True, err_code: 0x0.
+[2020-01-01 11:40:33.12354336] [EVENT] [APP-A] [1001] [1001] [algorithm.py:1228] [100] [0:0:0] get_setpoint() <TAG_A> get current PPe: 4.54mJ
+[2020-01-01 11:40:33.12354373] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1241] [100] [0:0:0] get_setpoint() <TAG_A> get current GLOBAL_Delay: 3000ns
+[2020-01-01 11:40:33.12354410] [EVENT] [APP-A] [1001] [1041] [device.py:166] [100] [0:0:0] set_setpoint_now() <TAG_A> PARAM_A call success!! name = PARAM_B,value = 3004
+[2020-01-01 11:40:34.12354447] [EVENT] [APP-A] [1001] [1041] [algorithm.py:947] [100] [0:0:0] optimize() <TAG_A> iteration = 39, energy = 9.410, converged = false
+[2020-01-01 11:40:34.12354484] [EVENT] [APP-A] [1001] [1041] [acquisition.py:188] [100] [0:0:0] get_camera_frame() <TAG_A> frame_id: 12238, exposure_us: 100, status: ready
+[2020-01-01 11:40:34.12354521] [EVENT] [APP-A] [1001] [1041] [report.py:208] [101] [0:0:0] report_event() Finish to report event, rpc_success: True, err_code: 0x0.

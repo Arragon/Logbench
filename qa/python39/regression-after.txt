@@ -1,0 +1,14 @@
+test_all_python_sources_parse_using_python39_grammar (test_python39.Python39Compatibility.test_all_python_sources_parse_using_python39_grammar) ... ok
+test_catalog_with_python39_pathlib_signature (test_python39.Python39Compatibility.test_catalog_with_python39_pathlib_signature) ... ok
+test_directory_listing_with_python39_pathlib_signature (test_python39.Python39Compatibility.test_directory_listing_with_python39_pathlib_signature) ... ok
+test_filesystem_listing_does_not_expose_symlinks (test_python39.Python39Compatibility.test_filesystem_listing_does_not_expose_symlinks) ... ok
+test_no_python310_union_annotations (test_python39.Python39Compatibility.test_no_python310_union_annotations) ... ok
+test_older_interpreter_is_rejected_before_database_initialization (test_python39.Python39Compatibility.test_older_interpreter_is_rejected_before_database_initialization) ... ok
+test_public_dataclass_annotations_can_be_resolved (test_python39.Python39Compatibility.test_public_dataclass_annotations_can_be_resolved) ... ok
+test_target_version_passes_launcher_and_initializes_real_database (test_python39.Python39Compatibility.test_target_version_passes_launcher_and_initializes_real_database) ... 2026-10-31 06:58:20,062 INFO LogBench 初始化完成。
+ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.166s
+
+OK

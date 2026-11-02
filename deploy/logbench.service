@@ -1,0 +1,21 @@
+# Review User/Group/paths first. Bootstrap the administrator manually before enabling.
+# Supervisor remains enabled: KillMode=mixed gives it time to drain the child.
+[Unit]
+Description=LogBench R5 log workbench
+After=network.target
+
+[Service]
+Type=simple
+User=logbench
+Group=logbench
+WorkingDirectory=/opt/LogBench
+ExecStart=/usr/bin/python3 -B /opt/LogBench/run.py --config /opt/LogBench/config.json
+Restart=on-failure
+RestartSec=5
+KillMode=mixed
+TimeoutStopSec=45
+UMask=0077
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target

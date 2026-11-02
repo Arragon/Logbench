@@ -1,0 +1,14 @@
+{
+  "host": "127.0.0.1",
+  "port": 50004,
+  "data_dir": "data",
+  "state_dir": "var",
+  "allowed_hosts": [
+    "localhost",
+    "127.0.0.1",
+    "::1"
+  ],
+  "trusted_proxies": [],
+  "public_origin": "",
+  "max_connections": 32
+}

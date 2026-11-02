@@ -1,0 +1,20 @@
+Launcher options: --no-reload (disable updates), --settle SECONDS (default 1.5), --poll SECONDS (default .5).
+usage: run.py [-h] [--config CONFIG] [--init-only] [--host HOST] [--port PORT]
+              [--data-dir DATA_DIR] [--state-dir STATE_DIR]
+              [--admin-ip ADMIN_IP] [--local-identity]
+              [--allow-host ALLOW_HOST]
+
+LogBench 独立日志工作台
+
+options:
+  -h, --help            show this help message and exit
+  --config CONFIG       JSON 配置文件
+  --init-only           初始化数据库/管理员后退出，不启动监听
+  --host HOST
+  --port PORT
+  --data-dir DATA_DIR
+  --state-dir STATE_DIR
+  --admin-ip ADMIN_IP   显式新增/恢复本地管理员 IP，可重复；外部身份模式不授予权限
+  --local-identity      显式恢复本地身份模式（要求同时 --admin-ip）
+  --allow-host ALLOW_HOST
+                        允许的请求主机名/IP，不含端口；可重复

@@ -1,0 +1,2 @@
+# Runtime: Python standard library only. No pip install required.
+# Optional development tests (not runtime): Playwright + Chromium, Node.js.

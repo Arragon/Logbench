@@ -1,0 +1,83 @@
+test_all_python_sources_parse_using_python39_grammar (test_python39.Python39Compatibility.test_all_python_sources_parse_using_python39_grammar) ... ok
+test_catalog_with_python39_pathlib_signature (test_python39.Python39Compatibility.test_catalog_with_python39_pathlib_signature) ... FAIL
+test_directory_listing_with_python39_pathlib_signature (test_python39.Python39Compatibility.test_directory_listing_with_python39_pathlib_signature) ... FAIL
+test_filesystem_listing_does_not_expose_symlinks (test_python39.Python39Compatibility.test_filesystem_listing_does_not_expose_symlinks) ... FAIL
+test_no_python310_union_annotations (test_python39.Python39Compatibility.test_no_python310_union_annotations) ... FAIL
+test_older_interpreter_is_rejected_before_database_initialization (test_python39.Python39Compatibility.test_older_interpreter_is_rejected_before_database_initialization) ... 
+  test_older_interpreter_is_rejected_before_database_initialization (test_python39.Python39Compatibility.test_older_interpreter_is_rejected_before_database_initialization) (version=(3, 8, 20)) ... FAIL
+  test_older_interpreter_is_rejected_before_database_initialization (test_python39.Python39Compatibility.test_older_interpreter_is_rejected_before_database_initialization) (version=(3, 9, 10)) ... FAIL
+test_public_dataclass_annotations_can_be_resolved (test_python39.Python39Compatibility.test_public_dataclass_annotations_can_be_resolved) ... ok
+test_target_version_passes_launcher_and_initializes_real_database (test_python39.Python39Compatibility.test_target_version_passes_launcher_and_initializes_real_database) ... FAIL
+
+======================================================================
+FAIL: test_catalog_with_python39_pathlib_signature (test_python39.Python39Compatibility.test_catalog_with_python39_pathlib_signature)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/data/logbench_py39_work/LogBench/tests/test_python39.py", line 91, in test_catalog_with_python39_pathlib_signature
+    self.assertEqual(response.status, 200, response.value)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 400 != 200 : {'error': {'code': 'INVALID_INPUT', 'message': '请求字段格式不正确。', 'details': {}}}
+
+======================================================================
+FAIL: test_directory_listing_with_python39_pathlib_signature (test_python39.Python39Compatibility.test_directory_listing_with_python39_pathlib_signature)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/data/logbench_py39_work/LogBench/tests/test_python39.py", line 101, in test_directory_listing_with_python39_pathlib_signature
+    self.assertEqual(response.status, 200, response.value)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 400 != 200 : {'error': {'code': 'INVALID_INPUT', 'message': '请求字段格式不正确。', 'details': {}}}
+
+======================================================================
+FAIL: test_filesystem_listing_does_not_expose_symlinks (test_python39.Python39Compatibility.test_filesystem_listing_does_not_expose_symlinks)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/data/logbench_py39_work/LogBench/tests/test_python39.py", line 117, in test_filesystem_listing_does_not_expose_symlinks
+    self.assertEqual(response.status, 200, response.value)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 400 != 200 : {'error': {'code': 'INVALID_INPUT', 'message': '请求字段格式不正确。', 'details': {}}}
+
+======================================================================
+FAIL: test_no_python310_union_annotations (test_python39.Python39Compatibility.test_no_python310_union_annotations)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/data/logbench_py39_work/LogBench/tests/test_python39.py", line 67, in test_no_python310_union_annotations
+    self.assertFalse(any(isinstance(n, ast.BinOp) and isinstance(n.op, ast.BitOr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                         for n in ast.walk(annotation)),
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                     '%s:%s uses Python 3.10 union evaluation' % (path.name, annotation.lineno))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: True is not false : app.py:92 uses Python 3.10 union evaluation
+
+======================================================================
+FAIL: test_older_interpreter_is_rejected_before_database_initialization (test_python39.Python39Compatibility.test_older_interpreter_is_rejected_before_database_initialization) (version=(3, 8, 20))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/data/logbench_py39_work/LogBench/tests/test_python39.py", line 54, in test_older_interpreter_is_rejected_before_database_initialization
+    self.assertIn('3.9.11', environment.stderr.getvalue())
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: '3.9.11' not found in 'LogBench requires Python 3.10 or newer.\n'
+
+======================================================================
+FAIL: test_older_interpreter_is_rejected_before_database_initialization (test_python39.Python39Compatibility.test_older_interpreter_is_rejected_before_database_initialization) (version=(3, 9, 10))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/data/logbench_py39_work/LogBench/tests/test_python39.py", line 54, in test_older_interpreter_is_rejected_before_database_initialization
+    self.assertIn('3.9.11', environment.stderr.getvalue())
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: '3.9.11' not found in 'LogBench requires Python 3.10 or newer.\n'
+
+======================================================================
+FAIL: test_target_version_passes_launcher_and_initializes_real_database (test_python39.Python39Compatibility.test_target_version_passes_launcher_and_initializes_real_database)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/data/logbench_py39_work/LogBench/tests/test_python39.py", line 42, in test_target_version_passes_launcher_and_initializes_real_database
+    self.assertEqual(result, 0, environment.stderr.getvalue())
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2 != 0 : LogBench requires Python 3.10 or newer.
+
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.174s
+
+FAILED (failures=7)
