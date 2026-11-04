@@ -1,0 +1,389 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LogBench R6 · Rev2 交互原型</title>
+<style>
+/* unify-design v1.0.1 tokens (light). Product overrides mirror src/style.css:27. */
+:root{
+  --ud-bg:#f5f6f8; --ud-surface:#ffffff; --ud-surface-2:#fafbfc; --ud-border:#e2e6ec;
+  --ud-ink:#1b2430; --ud-ink-2:#445266; --ud-muted:#596b82; --ud-primary:#2563eb;
+  --ud-primary-ink:#ffffff; --ud-primary-soft:#eaf1ff; --ud-danger:#c0392b; --ud-danger-soft:#fdecea;
+  --ud-warn:#9a6700; --ud-warn-soft:#fff8e1; --ud-ok:#1a7f4b; --ud-ok-soft:#e8f6ee;
+  --ud-radius:6px; --ud-radius-lg:8px; --ud-control-h:32px; --ud-table-row-h:28px;
+  --ud-gap-1:4px; --ud-gap-2:8px; --ud-gap-3:12px; --ud-sidebar-w:208px; --ud-topbar-h:52px;
+  --ud-font: -apple-system, "PingFang SC", "Segoe UI", system-ui, sans-serif;
+  --ud-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--ud-bg);color:var(--ud-ink);font:13px/1.5 var(--ud-font)}
+button,input,select{font:inherit;color:inherit}
+.app{display:grid;grid-template-columns:var(--ud-sidebar-w) 1fr;grid-template-rows:var(--ud-topbar-h) 1fr;height:100vh;overflow:hidden}
+.topbar{grid-column:1/-1;display:flex;align-items:center;gap:var(--ud-gap-3);padding:0 var(--ud-gap-3);background:var(--ud-surface);border-bottom:1px solid var(--ud-border)}
+.brand{font-weight:600;letter-spacing:.2px}
+.badge{font-size:11px;padding:1px 6px;border-radius:999px;background:var(--ud-warn-soft);color:var(--ud-warn);border:1px solid #f0e0b0}
+.spacer{flex:1}
+.state-picker{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--ud-ink-2)}
+.state-picker select{height:var(--ud-control-h);border:1px solid var(--ud-border);border-radius:var(--ud-radius);background:var(--ud-surface);padding:0 6px}
+.sidebar{background:var(--ud-surface);border-right:1px solid var(--ud-border);padding:var(--ud-gap-2);overflow:auto}
+.nav{display:flex;flex-direction:column;gap:2px}
+.nav button{height:var(--ud-control-h);display:flex;align-items:center;gap:8px;padding:0 10px;background:none;border:0;border-radius:var(--ud-radius);cursor:pointer;text-align:left;color:var(--ud-ink-2)}
+.nav button[aria-current="page"]{background:var(--ud-primary-soft);color:var(--ud-primary);font-weight:600}
+.nav button:hover{background:var(--ud-surface-2)}
+.main{display:flex;flex-direction:column;min-width:0;overflow:hidden}
+.toolbar{display:flex;align-items:center;gap:var(--ud-gap-2);height:44px;flex:0 0 auto;padding:0 var(--ud-gap-3);border-bottom:1px solid var(--ud-border);background:var(--ud-surface)}
+.btn{height:var(--ud-control-h);padding:0 10px;border:1px solid var(--ud-border);background:var(--ud-surface);border-radius:var(--ud-radius);cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:6px}
+.btn.primary{background:var(--ud-primary);border-color:var(--ud-primary);color:var(--ud-primary-ink)}
+.btn.ghost{border-color:transparent;background:none}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.search{flex:1;min-width:120px;height:var(--ud-control-h);border:1px solid var(--ud-border);border-radius:var(--ud-radius);padding:0 8px;background:var(--ud-surface)}
+.counter{font-size:11px;padding:0 6px;height:18px;line-height:18px;border-radius:9px;background:var(--ud-primary-soft);color:var(--ud-primary)}
+.timeline{display:flex;align-items:flex-end;gap:2px;height:34px;flex:0 0 auto;padding:0 var(--ud-gap-3);border-bottom:1px solid var(--ud-border);background:var(--ud-surface-2)}
+.timeline i{display:block;width:8px;background:#cfd8e3;border-radius:1px 1px 0 0}
+.timeline i.hit{background:#e0a3a3}
+.tablewrap{flex:1 1 auto;overflow:auto;background:var(--ud-surface);min-height:0}
+table{border-collapse:collapse;width:100%;table-layout:fixed}
+th{position:sticky;top:0;background:var(--ud-surface-2);text-align:left;font-weight:600;font-size:12px;color:var(--ud-ink-2);border-bottom:1px solid var(--ud-border);height:26px;padding:0 8px}
+td{height:var(--ud-table-row-h);padding:0 8px;border-bottom:1px solid #eef1f5;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+tr[aria-selected="true"] td{background:var(--ud-primary-soft)}
+.lvl{font-family:var(--ud-mono);font-size:11px;font-weight:600}
+.lvl.ERROR{color:var(--ud-danger)} .lvl.WARNING{color:var(--ud-warn)} .lvl.INFO{color:var(--ud-ink-2)}
+.foot{height:32px;flex:0 0 auto;display:flex;align-items:center;gap:var(--ud-gap-2);padding:0 var(--ud-gap-3);border-top:1px solid var(--ud-border);background:var(--ud-surface);font-size:12px;color:var(--ud-ink-2)}
+.status{height:26px;flex:0 0 auto;display:flex;align-items:center;gap:var(--ud-gap-2);padding:0 var(--ud-gap-3);border-top:1px solid var(--ud-border);background:var(--ud-surface-2);font-size:11px;color:var(--ud-muted)}
+.drawer{width:340px;flex:0 0 auto;border-left:1px solid var(--ud-border);background:var(--ud-surface);overflow:auto;padding:var(--ud-gap-3)}
+.drawer h3{margin:0 0 8px;font-size:13px}
+.kv{display:grid;grid-template-columns:96px 1fr;gap:2px 8px;font-size:12px}
+.kv dt{color:var(--ud-muted)} .kv dd{margin:0;font-family:var(--ud-mono);overflow-wrap:anywhere}
+.work{display:flex;min-height:0;flex:1}
+.overlay{position:fixed;inset:0;background:rgba(20,26,34,.36);display:flex;align-items:center;justify-content:center;padding:24px;z-index:20}
+.overlay[hidden]{display:none}
+.panel{background:var(--ud-surface);border-radius:var(--ud-radius-lg);box-shadow:0 12px 32px rgba(16,24,40,.18);width:min(720px,100%);max-height:82vh;overflow:auto}
+.panel header{display:flex;align-items:center;gap:8px;padding:12px 16px;border-bottom:1px solid var(--ud-border)}
+.panel header h2{margin:0;font-size:14px}
+.panel .body{padding:12px 16px;display:flex;flex-direction:column;gap:12px}
+.panel footer{display:flex;justify-content:flex-end;gap:8px;padding:12px 16px;border-top:1px solid var(--ud-border)}
+.note{font-size:12px;color:var(--ud-muted)}
+.choice{display:grid;gap:8px}
+.choice label{display:flex;gap:10px;padding:10px;border:1px solid var(--ud-border);border-radius:var(--ud-radius);cursor:pointer}
+.choice label:has(input:checked){border-color:var(--ud-primary);background:var(--ud-primary-soft)}
+.choice strong{display:block;font-size:13px}
+.filelist{display:flex;flex-direction:column;gap:6px}
+.file{border:1px solid var(--ud-border);border-radius:var(--ud-radius);padding:8px 10px;display:grid;gap:6px}
+.file .row{display:flex;align-items:center;gap:8px;font-size:12px}
+.file .name{font-family:var(--ud-mono);font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.meters{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.meter{font-size:11px;color:var(--ud-muted)}
+.bar{height:4px;background:#e9edf3;border-radius:2px;overflow:hidden;margin-top:3px}
+.bar > i{display:block;height:100%;background:var(--ud-primary)}
+.bar.warn > i{background:var(--ud-warn)} .bar.done > i{background:var(--ud-ok)}
+.chip{font-size:11px;padding:1px 6px;border-radius:999px;border:1px solid var(--ud-border);background:var(--ud-surface-2)}
+.chip.ok{background:var(--ud-ok-soft);color:var(--ud-ok);border-color:#bfe3cd}
+.chip.warn{background:var(--ud-warn-soft);color:var(--ud-warn);border-color:#f0e0b0}
+.chip.err{background:var(--ud-danger-soft);color:var(--ud-danger);border-color:#f3c9c3}
+.result-head{display:flex;align-items:center;gap:8px;font-size:12px;padding:6px 0}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+@media (max-width:760px){
+  .app{grid-template-columns:1fr}
+  .sidebar{display:none}
+  .drawer{display:none}
+  .toolbar{flex-wrap:nowrap;overflow-x:auto}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <span class="brand">LogBench</span>
+    <span class="badge">开发原型 · 非生产数据</span>
+    <label class="sr-only" for="state">原型状态</label>
+    <div class="state-picker">
+      <span>状态</span>
+      <select id="state" aria-describedby="state-help"></select>
+    </div>
+    <span class="spacer"></span>
+    <span class="note" id="state-help">选择器只切换确定性样例，不模拟随机进度</span>
+  </header>
+
+  <nav class="sidebar" aria-label="主导航">
+    <div class="nav">
+      <button aria-current="page">日志浏览</button>
+      <button>文件库</button>
+      <button>规则管理</button>
+      <button>管理后台</button>
+    </div>
+  </nav>
+
+  <main class="main">
+    <div class="toolbar" role="toolbar" aria-label="日志工具条">
+      <button class="btn primary" id="open">本机打开 ▾</button>
+      <input class="search" id="q" type="search" placeholder="搜索正文、字段或来源…" aria-label="搜索日志">
+      <button class="btn" id="level">级别：全部</button>
+      <button class="btn" id="tasks">任务 <span class="counter" id="task-count">2</span></button>
+      <button class="btn ghost" id="views">视图 ▾</button>
+    </div>
+
+    <div class="timeline" aria-hidden="true" id="timeline"></div>
+
+    <div class="work">
+      <div class="tablewrap">
+        <div class="result-head" id="result-head" hidden></div>
+        <table>
+          <thead><tr><th style="width:150px">时间</th><th style="width:64px">级别</th><th style="width:130px">来源</th><th>正文</th></tr></thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+      <aside class="drawer" id="drawer" aria-label="记录详情">
+        <h3>记录详情</h3>
+        <dl class="kv">
+          <dt>时间</dt><dd>2020-01-01 11:39:15.123456789</dd>
+          <dt>级别</dt><dd>ERROR</dd>
+          <dt>来源</dt><dd>euv.energy:118</dd>
+          <dt>字段</dt><dd>retries=0 · converged=false · note=""</dd>
+        </dl>
+        <p class="note">0 / false / 空串在这里必须是三种不同取值——这是 R6 契约 C7 的直接体现。</p>
+      </aside>
+    </div>
+
+    <div class="foot">
+      <span id="count">130,295 条记录</span>
+      <span class="note">按需渲染 · 保留完整记录</span>
+      <span class="spacer"></span>
+      <button class="btn ghost">上一页</button><span class="note">1 / 131</span><button class="btn ghost">下一页</button>
+    </div>
+    <div class="status" id="status">本机读取 · 不上传 · 原始时间不转换时区</div>
+  </main>
+</div>
+
+<div class="overlay" id="overlay" hidden><div class="panel" role="dialog" aria-modal="true" aria-labelledby="panel-title" id="panel"></div></div>
+
+<script>
+'use strict';
+const ROWS = [
+  ['2020-01-01 11:39:15.123456789','ERROR','euv.energy:118','burst energy below floor (retries=0)'],
+  ['2020-01-01 11:39:15.223456789','WARNING','euv.energy:121','converged=false, sigma=0.2133'],
+  ['2020-01-01 11:39:15.323456789','INFO','euv.control:44','recipe accepted, note=""'],
+  ['2020-01-01 11:39:15.423456789','ERROR','euv.energy:118','RuntimeError: periodic'],
+  ['2020-01-01 11:39:15.523456789','INFO','euv.control:51','pulse width 3000ns'],
+  ['2020-01-01 11:39:15.623456789','WARNING','euv.energy:130','energy drift over window'],
+  ['2020-01-01 11:39:15.723456789','INFO','euv.control:44','recipe accepted'],
+  ['2020-01-01 11:39:15.823456789','ERROR','euv.energy:118','burst energy below floor'],
+  ['2020-01-01 11:39:15.923456789','INFO','euv.control:51','pulse width 3000ns'],
+  ['2020-01-01 11:39:16.023456789','INFO','euv.control:44','recipe accepted']
+];
+
+const STATES = {
+  'idle': {label:'默认视图（R5 基线）', count:'130,295 条记录', status:'本机读取 · 不上传 · 原始时间不转换时区'},
+  'open-choice': {label:'打开方式：本机默认 / 服务器加速', overlay:'choice'},
+  'reading': {label:'逐文件读取中的水位', overlay:'reading'},
+  'queued': {label:'排队中（1 个运行，3 个等待）', overlay:'queued'},
+  'partial': {label:'部分可读：1 个文件失败可重选', overlay:'partial'},
+  'quota': {label:'配额失败：保留已读部分', overlay:'quota'},
+  'search-exact': {label:'搜索：精确结果', count:'243 条记录', result:'exact'},
+  'search-partial': {label:'搜索：预算暂停（至少 N 条）', count:'130,295 条记录', result:'partial'},
+  'search-unknown': {label:'搜索：计数未知（扫描中）', count:'130,295 条记录', result:'unknown'},
+  'upload-offset': {label:'私有上传：断点续传', overlay:'upload-offset'},
+  'upload-uploaded': {label:'上传完成但未索引（关键反例）', overlay:'upload-uploaded'},
+  'library-private': {label:'文件库：私有区域', count:'私有 3 个 · 共享 12 个', overlay:'library'}
+};
+
+const picker = document.getElementById('state');
+Object.entries(STATES).forEach(([key, cfg]) => {
+  const option = document.createElement('option');
+  option.value = key;
+  option.textContent = cfg.label;
+  picker.append(option);
+});
+
+function meter(label, value, tone) {
+  return `<div class="meter">${label}<div class="bar ${tone||''}"><i style="width:${value}%"></i></div></div>`;
+}
+
+function panelChoice() {
+  return `<header><h2 id="panel-title">打开日志</h2><span class="chip">样例</span></header>
+  <div class="body">
+    <p class="note">本机读取是默认路径：文件不出浏览器，不需要登录，也不占服务器配额。服务器加速只在文件已在共享库或你已登录上传时可用。</p>
+    <div class="choice">
+      <label><input type="radio" name="mode" checked><span><strong>本机读取（默认）</strong>
+        <span class="note">流式分块 + 浏览器内分帧；支持 64 MiB 单文件；不产生服务器副本。</span></span></label>
+      <label><input type="radio" name="mode"><span><strong>服务器加速</strong>
+        <span class="note">需要有效身份与已建索引；搜索可跨文件，但会在服务器留存副本。</span></span></label>
+    </div>
+    <p class="note">关闭本面板不会中断已在进行的读取；取消读取不会删除原文。</p>
+  </div>
+  <footer><button class="btn" data-close>取消</button><button class="btn primary" data-close>开始读取</button></footer>`;
+}
+
+function panelReading() {
+  const files = [
+    ['cpqpsgx_run_A.log','读取 100%','保存本机 100%','分帧 62%','规则检索 40%','warn'],
+    ['cpqpsgx_run_B.log','读取 74%','保存本机 0%','分帧 0%','规则检索 0%',''],
+    ['cpqpsgx_run_C.log','读取 12%','保存本机 0%','分帧 0%','规则检索 0%','']
+  ];
+  return `<header><h2 id="panel-title">正在读取 3 个文件</h2><span class="chip warn">部分可读</span></header>
+  <div class="body">
+    <p class="note">四个水位分别显示：读取、保存到本机、分帧、规则检索。任一水位未完成时，结果计数只能是「至少」。</p>
+    <div class="filelist">${files.map(([name, a, b, c, d, tone]) => `
+      <div class="file">
+        <div class="row"><span class="name">${name}</span><span class="spacer"></span><span class="chip ${tone==='warn'?'warn':''}">${tone?'可读，分帧未完成':'等待'}</span></div>
+        <div class="meters">${meter('读取', a.match(/\d+/)[0], 'done')}${meter('保存', b.match(/\d+/)[0], '')}${meter('分帧', c.match(/\d+/)[0], 'warn')}${meter('规则', d.match(/\d+/)[0], '')}</div>
+      </div>`).join('')}</div>
+    <p class="note">暂停只停后续分帧，已完成部分仍可读；取消不移除已保存的原文。</p>
+  </div>
+  <footer><button class="btn" data-close>取消读取</button><button class="btn" data-close>暂停</button><button class="btn primary" data-close>继续</button></footer>`;
+}
+
+function panelQueued() {
+  return `<header><h2 id="panel-title">导入队列</h2><span class="chip">1 运行 / 3 等待</span></header>
+  <div class="body">
+    <div class="filelist">
+      ${[['A.log','运行中 · 读取 46%','warn'],['B.log','排队第 1 位',''],['C.log','排队第 2 位',''],['D.log','排队第 3 位','']]
+        .map(([n,s,t])=>`<div class="file"><div class="row"><span class="name">${n}</span><span class="spacer"></span><span class="chip ${t}">${s}</span></div></div>`).join('')}
+    </div>
+    <p class="note">排队不是失败。队列中的文件不会显示为「0 条」，而是显示「等待中」，避免把未开始误读成没有匹配。</p>
+  </div>
+  <footer><button class="btn" data-close>全部取消</button><button class="btn primary" data-close>知道了</button></footer>`;
+}
+
+function panelPartial() {
+  return `<header><h2 id="panel-title">部分文件无法读取</h2><span class="chip warn">2 可读 / 1 失败</span></header>
+  <div class="body">
+    <div class="filelist">
+      <div class="file"><div class="row"><span class="name">A.log</span><span class="spacer"></span><span class="chip ok">可读 · 130,295 条</span></div></div>
+      <div class="file"><div class="row"><span class="name">B.log</span><span class="spacer"></span><span class="chip ok">可读 · 129,880 条</span></div></div>
+      <div class="file"><div class="row"><span class="name">C.log</span><span class="spacer"></span><span class="chip err">编码错误 · 第 12 行</span></div>
+        <div class="note">该文件其余部分仍可读；也可以重新选择编码或跳过该文件。</div></div>
+    </div>
+    <p class="note">界面必须写「2 个文件可读，1 个失败」，而不是「读取完成」。</p>
+  </div>
+  <footer><button class="btn" data-close>跳过失败文件</button><button class="btn primary" data-close>重选文件</button></footer>`;
+}
+
+function panelQuota() {
+  return `<header><h2 id="panel-title">本机存储配额不足</h2><span class="chip err">已保留已读部分</span></header>
+  <div class="body">
+    <p class="note">已写入本机的 82,140 条记录仍然可读，未写入的部分需要释放空间后重试。原文没有被删除。</p>
+    <div class="meters">${meter('已使用 1.9 GB / 2.0 GB', 95, 'warn')}</div>
+    <p class="note">推荐动作：清理回收站或改为仅内存读取（关闭浏览器后失效）。</p>
+  </div>
+  <footer><button class="btn" data-close>仅内存读取</button><button class="btn primary" data-close>去清理</button></footer>`;
+}
+
+function panelUploadOffset(state) {
+  const uploaded = state === 'upload-uploaded';
+  return `<header><h2 id="panel-title">私有上传 · 1.0 GiB</h2><span class="chip ${uploaded?'ok':'warn'}">${uploaded?'已上传，未索引':'从 512 MiB 续传'}</span></header>
+  <div class="body">
+    <div class="meters">${meter('上传', uploaded?100:50, uploaded?'done':'')}${meter('校验', uploaded?100:50, uploaded?'done':'')}${meter('索引', uploaded?0:0, '')}</div>
+    <p class="note">${uploaded
+      ? '上传完成不等于可以搜索。此刻正确显示是「已上传 · 索引排队中」，而不是「可检索」。'
+      : '续传按已确认的偏移继续，避免整份重传；取消只停上传，不删除已上传分片。'}</p>
+    <div class="kv" style="grid-template-columns:110px 1fr">
+      <dt>已确认偏移</dt><dd>${uploaded?'1073741824':'536870912'} B</dd>
+      <dt>分片大小</dt><dd>8388608 B</dd>
+      <dt>校验方式</dt><dd>sha256 分片 + 整体</dd>
+    </div>
+    <p class="note">上传区域是私有区域：只有上传者本人和管理员可见，不进入共享文件库列表。</p>
+  </div>
+  <footer><button class="btn" data-close>取消上传</button><button class="btn primary" data-close>${uploaded?'查看索引进度':'继续上传'}</button></footer>`;
+}
+
+function panelLibrary() {
+  return `<header><h2 id="panel-title">文件库</h2><span class="chip">私有 3 · 共享 12</span></header>
+  <div class="body">
+    <div class="filelist">
+      ${[['私有','run_A.log','private','仅你可见 · 已索引'],['私有','run_B.log','private','仅你可见 · 索引中'],['共享','cpqpsgx_demo_A.log','shared','全员可读 · 已索引']]
+        .map(([scope,name,kind,note])=>`<div class="file"><div class="row">
+          <span class="chip ${kind==='private'?'warn':'ok'}">${scope}</span>
+          <span class="name">${name}</span><span class="spacer"></span><span class="note">${note}</span></div></div>`).join('')}
+    </div>
+    <p class="note">私有文件不能通过共享链接访问；上传完成但索引未完成的条目显示「索引中」，不显示为可搜索。</p>
+  </div>
+  <footer><button class="btn" data-close>关闭</button></footer>`;
+}
+
+const OVERLAYS = {
+  'choice': panelChoice, 'reading': panelReading, 'queued': panelQueued,
+  'partial': panelPartial, 'quota': panelQuota,
+  'upload-offset': () => panelUploadOffset('upload-offset'),
+  'upload-uploaded': () => panelUploadOffset('upload-uploaded'),
+  'library': panelLibrary
+};
+
+function renderRows() {
+  document.getElementById('rows').innerHTML = ROWS.map((row, index) => `
+    <tr ${index === 0 ? 'aria-selected="true"' : ''}>
+      <td>${row[0]}</td><td><span class="lvl ${row[1]}">${row[1]}</span></td>
+      <td>${row[2]}</td><td>${row[3]}</td>
+    </tr>`).join('');
+}
+
+function renderTimeline() {
+  const bars = [];
+  for (let i = 0; i < 96; i++) {
+    const height = 6 + ((i * 37) % 22);
+    bars.push(`<i class="${i % 11 === 0 ? 'hit' : ''}" style="height:${height}px"></i>`);
+  }
+  document.getElementById('timeline').innerHTML = bars.join('');
+}
+
+const RESULT_HEADS = {
+  exact: '<span class="chip ok">精确</span><strong>243</strong><span class="note">已扫描 100%（130,295 / 130,295 条）</span>',
+  partial: '<span class="chip warn">至少 61 条</span><span class="note">预算 1800 ms 用尽，已扫描 34%，可继续</span><button class="btn" id="resume">继续扫描</button>',
+  unknown: '<span class="chip warn">计数未知</span><span class="note">正在扫描，暂不显示具体条数</span>'
+};
+
+function applyState(key) {
+  const cfg = STATES[key] || STATES.idle;
+  document.getElementById('count').textContent = cfg.count;
+  document.getElementById('status').textContent = cfg.status;
+  const head = document.getElementById('result-head');
+  if (cfg.result) {
+    head.hidden = false;
+    head.innerHTML = RESULT_HEADS[cfg.result];
+  } else {
+    head.hidden = true;
+    head.innerHTML = '';
+  }
+  const overlay = document.getElementById('overlay');
+  const builder = cfg.overlay && OVERLAYS[cfg.overlay];
+  if (builder) {
+    document.getElementById('panel').innerHTML = builder();
+    overlay.hidden = false;
+    const focusable = document.querySelector('#panel button, #panel input');
+    if (focusable) focusable.focus();
+  } else {
+    overlay.hidden = true;
+    document.getElementById('panel').innerHTML = '';
+  }
+  if (window.parent !== window) {
+    window.parent.postMessage({ type: 'r6-prototype-state', state: key }, '*');
+  }
+}
+
+picker.addEventListener('change', () => applyState(picker.value));
+document.getElementById('overlay').addEventListener('click', (event) => {
+  if (event.target.dataset.close !== undefined || event.target.id === 'overlay') {
+    applyState('idle');
+    picker.value = 'idle';
+  }
+});
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape' && !document.getElementById('overlay').hidden) {
+    applyState('idle');
+    picker.value = 'idle';
+    picker.focus();
+  }
+});
+document.getElementById('tasks').addEventListener('click', () => { picker.value = 'reading'; applyState('reading'); });
+document.getElementById('open').addEventListener('click', () => { picker.value = 'open-choice'; applyState('open-choice'); });
+
+renderRows();
+renderTimeline();
+const initial = new URLSearchParams(location.search).get('state') || 'idle';
+picker.value = STATES[initial] ? initial : 'idle';
+applyState(picker.value);
+window.__r6 = { applyState, states: Object.keys(STATES) };
+</script>
+</body>
+</html>

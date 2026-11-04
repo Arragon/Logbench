@@ -1,0 +1,35 @@
+{
+  "contract_version": "logbench.r6/1",
+  "note": "Allowed state transitions. Any edge not listed is a contract violation and must be rejected by both implementations. Terminal states have no outgoing edges.",
+  "query": {
+    "states": ["queued", "running", "paused", "partial", "done", "cancelled", "failed"],
+    "terminal": ["done", "cancelled", "failed"],
+    "transitions": {
+      "queued": ["running", "cancelled", "failed"],
+      "running": ["paused", "partial", "done", "cancelled", "failed"],
+      "paused": ["running", "cancelled", "failed"],
+      "partial": ["running", "done", "cancelled", "failed"],
+      "done": [],
+      "cancelled": [],
+      "failed": []
+    },
+    "resume_from": ["paused", "partial"]
+  },
+  "task": {
+    "states": ["queued", "reading", "framing", "uploading", "uploaded", "indexing", "indexed", "paused", "failed", "cancelled"],
+    "terminal": ["indexed", "failed", "cancelled"],
+    "transitions": {
+      "queued": ["reading", "failed", "cancelled"],
+      "reading": ["framing", "uploading", "failed", "cancelled"],
+      "framing": ["indexing", "failed", "cancelled"],
+      "uploading": ["uploaded", "paused", "failed", "cancelled"],
+      "uploaded": ["indexing", "failed", "cancelled"],
+      "indexing": ["indexed", "failed", "cancelled"],
+      "paused": ["uploading", "cancelled", "failed"],
+      "indexed": [],
+      "failed": [],
+      "cancelled": []
+    },
+    "resume_from": ["paused"]
+  }
+}

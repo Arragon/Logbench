@@ -1,0 +1,233 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://logbench.local/contracts/r6/contracts.schema.json",
+  "title": "LogBench R6 public contracts",
+  "description": "Single source of truth for RecordRef/RecordHeader/Finding/TaskProgress/QuerySpec/QueryState/ReaderProvider/WorkerEnvelope. Consumers must not re-declare shapes locally.",
+  "contract_version": "logbench.r6/1",
+  "$defs": {
+    "DecimalString": {
+      "description": "Unbounded integer or byte offset encoded as decimal text. Never a JSON number.",
+      "type": "string",
+      "pattern": "^-?(0|[1-9][0-9]*)$"
+    },
+    "RawTimestamp": {
+      "description": "Timestamp text as it appeared in the log. The zone is optional because many producers omit it; ordering must use ts_ns instead of the text.",
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}[T ][0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,9})?(Z|[+-][0-9]{2}:[0-9]{2})?$"
+    },
+    "ByteRange": {
+      "description": "Half-open byte range [start, end) within one dataset. Offsets are decimal strings.",
+      "type": "object",
+      "required": ["start", "end"],
+      "additionalProperties": false,
+      "properties": {
+        "start": { "$ref": "#/$defs/DecimalString" },
+        "end": { "$ref": "#/$defs/DecimalString" }
+      }
+    },
+    "LineRange": {
+      "description": "Physical line numbers, 1-based, both ends inclusive.",
+      "type": "object",
+      "required": ["first", "last"],
+      "additionalProperties": false,
+      "properties": {
+        "first": { "type": "integer", "minimum": 1 },
+        "last": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "FieldValue": {
+      "description": "Typed key/value pair. 0, false, null and \"\" are distinct values and must keep their JSON type. Missing is represented by absence, never by null.",
+      "type": "object",
+      "required": ["key", "value", "value_type"],
+      "additionalProperties": false,
+      "properties": {
+        "key": { "type": "string", "minLength": 1 },
+        "value": { "type": ["string", "number", "boolean", "null"] },
+        "value_type": { "enum": ["string", "integer", "number", "boolean", "null"] }
+      }
+    },
+    "RecordRef": {
+      "description": "Stable identity of one logical record. version increases on rewrite; stale versions must be rejected.",
+      "type": "object",
+      "required": ["dataset_id", "record_id", "version", "ordinal", "bytes", "lines"],
+      "additionalProperties": false,
+      "properties": {
+        "dataset_id": { "type": "string", "minLength": 1 },
+        "record_id": { "type": "string", "minLength": 1 },
+        "version": { "type": "integer", "minimum": 1 },
+        "ordinal": { "type": "integer", "minimum": 0 },
+        "bytes": { "oneOf": [{ "$ref": "#/$defs/ByteRange" }, { "type": "null" }] },
+        "lines": { "$ref": "#/$defs/LineRange" }
+      }
+    },
+    "RecordHeader": {
+      "description": "What a list row may render without touching the body. provisional=1 means the record is still being framed and must never be reported as a final match count.",
+      "type": "object",
+      "required": ["ref", "ts", "level", "message", "fields", "provisional"],
+      "additionalProperties": false,
+      "properties": {
+        "ref": { "$ref": "#/$defs/RecordRef" },
+        "ts": { "oneOf": [{ "$ref": "#/$defs/RawTimestamp" }, { "type": "null" }] },
+        "ts_ns": { "$ref": "#/$defs/DecimalString" },
+        "level": { "type": "string", "minLength": 1 },
+        "logger": { "type": "string" },
+        "kind": { "enum": ["text", "kv", "stack", "mask", "unparsed"] },
+        "has_trace": { "type": "boolean" },
+        "message": { "type": "string" },
+        "fields": { "type": "array", "items": { "$ref": "#/$defs/FieldValue" } },
+        "provisional": { "type": "boolean" }
+      }
+    },
+    "Finding": {
+      "description": "Rule or anomaly hit attached to a record ref. severity is the raw rule level, not a re-mapped display level.",
+      "type": "object",
+      "required": ["finding_id", "ref", "severity", "code", "title"],
+      "additionalProperties": false,
+      "properties": {
+        "finding_id": { "type": "string", "minLength": 1 },
+        "ref": { "$ref": "#/$defs/RecordRef" },
+        "severity": { "enum": ["INFO", "WARNING", "ERROR", "FATAL"] },
+        "code": { "type": "string", "minLength": 1 },
+        "title": { "type": "string" },
+        "detail": { "type": "string" },
+        "rule_revision": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "CountRelation": {
+      "description": "exact: matched is final. at_least: matched is a floor because scanning stopped early. unknown: matched is null and must render as an open range, never as 0.",
+      "type": "object",
+      "required": ["matched", "returned", "relation"],
+      "additionalProperties": false,
+      "properties": {
+        "matched": { "type": ["integer", "null"], "minimum": 0 },
+        "returned": { "type": "integer", "minimum": 0 },
+        "relation": { "enum": ["exact", "at_least", "unknown"] }
+      }
+    },
+    "Coverage": {
+      "description": "How much of the dataset a query actually saw. complete must equal scanned_bytes >= total_bytes.",
+      "type": "object",
+      "required": ["scanned_bytes", "total_bytes", "complete"],
+      "additionalProperties": false,
+      "properties": {
+        "scanned_bytes": { "$ref": "#/$defs/DecimalString" },
+        "total_bytes": { "$ref": "#/$defs/DecimalString" },
+        "complete": { "type": "boolean" }
+      }
+    },
+    "QuerySpec": {
+      "description": "A query request. text is the literal or regex source; flags are explicit so the server never guesses.",
+      "type": "object",
+      "required": ["query_id", "dataset_id", "text", "flags"],
+      "additionalProperties": false,
+      "properties": {
+        "query_id": { "type": "string", "minLength": 1 },
+        "dataset_id": { "type": "string", "minLength": 1 },
+        "text": { "type": "string" },
+        "flags": {
+          "type": "object",
+          "required": ["case_sensitive", "whole_word", "regex"],
+          "additionalProperties": false,
+          "properties": {
+            "case_sensitive": { "type": "boolean" },
+            "whole_word": { "type": "boolean" },
+            "regex": { "type": "boolean" }
+          }
+        },
+        "levels": { "type": "array", "items": { "type": "string" } },
+        "time_range": {
+          "type": ["object", "null"],
+          "additionalProperties": false,
+          "required": ["from_ns", "to_ns"],
+          "properties": {
+            "from_ns": { "$ref": "#/$defs/DecimalString" },
+            "to_ns": { "$ref": "#/$defs/DecimalString" }
+          }
+        },
+        "limit": { "type": "integer", "minimum": 1, "maximum": 2000 },
+        "budget_ms": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "QueryState": {
+      "description": "Query lifecycle snapshot. partial means the scan is incomplete, which is never the same as exact zero. paused must carry resume_token.",
+      "type": "object",
+      "required": ["query_id", "dataset_id", "state", "count", "coverage"],
+      "additionalProperties": false,
+      "properties": {
+        "query_id": { "type": "string", "minLength": 1 },
+        "dataset_id": { "type": "string", "minLength": 1 },
+        "state": { "enum": ["queued", "running", "paused", "partial", "done", "cancelled", "failed"] },
+        "count": { "$ref": "#/$defs/CountRelation" },
+        "coverage": { "$ref": "#/$defs/Coverage" },
+        "index_version": { "type": "integer", "minimum": 0 },
+        "budget_ms": { "type": "integer", "minimum": 1 },
+        "elapsed_ms": { "type": "integer", "minimum": 0 },
+        "resume_token": { "type": ["string", "null"] },
+        "error": { "type": ["object", "null"], "additionalProperties": false, "required": ["code", "message"], "properties": { "code": { "type": "string" }, "message": { "type": "string" } } }
+      }
+    },
+    "TaskProgress": {
+      "description": "Import/upload task progress. phase uploaded never implies indexed. cancel != delete. bytes_done may reach bytes_total before indexing starts.",
+      "type": "object",
+      "required": ["task_id", "kind", "phase", "bytes_total", "bytes_done", "indexed", "cancel_requested"],
+      "additionalProperties": false,
+      "properties": {
+        "task_id": { "type": "string", "minLength": 1 },
+        "dataset_id": { "type": "string" },
+        "kind": { "enum": ["local_import", "private_upload", "remote_collect", "index_build", "archive"] },
+        "phase": { "enum": ["queued", "reading", "framing", "uploading", "uploaded", "indexing", "indexed", "paused", "failed", "cancelled"] },
+        "bytes_total": { "$ref": "#/$defs/DecimalString" },
+        "bytes_done": { "$ref": "#/$defs/DecimalString" },
+        "records_indexed": { "type": "integer", "minimum": 0 },
+        "indexed": { "type": "boolean" },
+        "cancel_requested": { "type": "boolean" },
+        "action_id": { "type": "string", "minLength": 8 },
+        "error": { "type": ["object", "null"], "additionalProperties": false, "required": ["code", "message"], "properties": { "code": { "type": "string" }, "message": { "type": "string" } } }
+      }
+    },
+    "ProviderCapabilities": {
+      "description": "Capability flags a provider may advertise. A provider without an ability must say so instead of silently approximating.",
+      "type": "object",
+      "required": ["search", "stream_bytes", "resume", "write"],
+      "additionalProperties": false,
+      "properties": {
+        "search": { "type": "boolean" },
+        "stream_bytes": { "type": "boolean" },
+        "resume": { "type": "boolean" },
+        "write": { "type": "boolean" },
+        "max_page_records": { "type": "integer", "minimum": 1, "maximum": 2000 },
+        "max_page_bytes": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "ReaderProvider": {
+      "description": "Descriptor for a Local, Server or Combined reader. The three kinds expose identical methods, errors, cancellation and paging; kind only changes transport.",
+      "type": "object",
+      "required": ["provider_id", "kind", "dataset_id", "capabilities"],
+      "additionalProperties": false,
+      "properties": {
+        "provider_id": { "type": "string", "minLength": 1 },
+        "kind": { "enum": ["local", "server", "combined"] },
+        "dataset_id": { "type": "string", "minLength": 1 },
+        "capabilities": { "$ref": "#/$defs/ProviderCapabilities" },
+        "disabled_reason": { "type": ["string", "null"] },
+        "sources": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "WorkerEnvelope": {
+      "description": "Every worker message is a new envelope. A reply whose generation or dataset mismatches the current one is dropped, not merged.",
+      "type": "object",
+      "required": ["protocol", "request_id", "dataset_id", "generation", "version", "snapshot"],
+      "additionalProperties": false,
+      "properties": {
+        "protocol": { "const": "logbench.worker/2" },
+        "request_id": { "type": "string", "minLength": 1 },
+        "dataset_id": { "type": "string", "minLength": 1 },
+        "generation": { "type": "integer", "minimum": 1 },
+        "query_id": { "type": ["string", "null"] },
+        "version": { "type": "integer", "minimum": 1 },
+        "snapshot": { "type": "string", "minLength": 1 },
+        "payload": {}
+      }
+    }
+  }
+}

@@ -1,0 +1,78 @@
+{
+  "schema": "logbench.r6.source-manifest/1",
+  "generated_at": "2026-11-03T06:48:19+00:00",
+  "baseline": {
+    "product": "LogBench R5 Server",
+    "version": "3.0.3",
+    "profile": "Floating Details / Python 3.9 compatible",
+    "git_commit": "d2422a781a39d1c6a2587e79debfc2d74c470380",
+    "git_subject": "Publish LogBench 3.0.3 as a standalone deployment package",
+    "git_dirty": false
+  },
+  "package": {
+    "declared_zip_sha256": "07aa5d88de44f7794233fc1b69d66dacf41512520f5e176fcb88cc598b2e2d54",
+    "zip_present_in_workspace": false,
+    "zip_verification": "unavailable: workspace holds the unpacked tree, not the delivery ZIP",
+    "tree_digest_sha256": "3ae5222b49c9e3a2bcbffc2f4071f84a835bf1ecdc7568ab2f0f15cd8a097032",
+    "tree_digest_note": "sha256 over sorted \"<path>\\0<file sha256>\" pairs; equals the identity run.py computes for a release",
+    "file_count": 89,
+    "mismatched": []
+  },
+  "frontend_bundle": {
+    "path": "/assets/workbench.js",
+    "bytes": 295046,
+    "sha256": "96c3cd59aad278262090785fb20aa60733f84f8544a38b6d79592d799a4fd259"
+  },
+  "environment": {
+    "os": "macOS-27.0.1-arm64-arm-64bit",
+    "machine": "arm64",
+    "python_current": {
+      "executable": "python3.9",
+      "available": true,
+      "version": "3.9.11",
+      "sqlite": "3.38.1"
+    },
+    "python_39": {
+      "executable": "python3.9",
+      "available": true,
+      "version": "3.9.11",
+      "sqlite": "3.38.1"
+    },
+    "node": {
+      "executable": "node",
+      "available": true,
+      "version": "v22.22.2"
+    },
+    "chrome_present": true
+  },
+  "tests": {
+    "python_39_unittest": {
+      "status": "pass",
+      "tests": 55,
+      "seconds": 7.897,
+      "detail": ""
+    },
+    "python_current_unittest": {
+      "status": "pass",
+      "tests": 55,
+      "seconds": 8.98,
+      "detail": ""
+    },
+    "node_test": {
+      "status": "pass",
+      "tests": 33,
+      "pass": 33,
+      "fail": 0
+    },
+    "worker_self_test_py39": {
+      "status": "pass",
+      "stdout_bytes": 0
+    },
+    "sha256sums_check": {
+      "status": "pass",
+      "ok": 89,
+      "failed": 0
+    }
+  },
+  "evidence_dir": "qa/r6/baseline"
+}
