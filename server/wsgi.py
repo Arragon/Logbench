@@ -4,7 +4,7 @@ Install Waitress only on a connected build machine; this module itself has no
 third-party dependency. Configure LOGBENCH_CONFIG and bootstrap users once with CLI.
 """
 from http import HTTPStatus
-from .app import Application, MAX_JSON, Response, compact
+from .app import Application, MAX_JSON, Response, compact, transport_limit
 from .httpd import load_config, response_headers
 
 
@@ -23,7 +23,7 @@ class WSGI:
         headers = {key[5:].replace('_', '-').lower(): value for key, value in environ.items() if key.startswith('HTTP_')}
         headers['content-type'] = environ.get('CONTENT_TYPE', '')
         raw_length = environ.get('CONTENT_LENGTH') or '0'
-        if not raw_length.isdigit() or int(raw_length) > MAX_JSON:
+        if not raw_length.isdigit() or int(raw_length) > transport_limit(environ.get('PATH_INFO', '/')):
             response = Response(413, {'error': {'code': 'BODY_TOO_LARGE', 'message': '请求内容超过限制。', 'details': {}}})
         else:
             length = int(raw_length)
@@ -40,13 +40,20 @@ class WSGI:
         output = compact(response.value).encode('utf-8') if response.value is not None and not response.stream else b''
         final = response_headers(response)
         final.setdefault('Content-Type', 'application/json; charset=utf-8')
-        final['Content-Length'] = str(response.length if response.stream else len(output))
+        if not response.sse:
+            final['Content-Length'] = str(response.length if response.stream else len(output))
         start_response(str(response.status) + ' ' + HTTPStatus(response.status).phrase, list(final.items()))
         def stream():
             try:
                 if environ['REQUEST_METHOD'] == 'HEAD':
                     return
-                if response.stream:
+                if response.stream and response.sse:
+                    while True:
+                        chunk = response.stream.read(8192)
+                        if not chunk:
+                            break
+                        yield chunk
+                elif response.stream:
                     remaining = response.length
                     while remaining:
                         chunk = response.stream.read(min(131072, remaining))

@@ -16,7 +16,7 @@ import threading
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
-from .app import Application, Config, MAX_JSON, Response, compact, VERSION
+from .app import Application, Config, MAX_JSON, Response, compact, transport_limit, VERSION
 
 LOG = logging.getLogger('logbench')
 
@@ -87,7 +87,7 @@ class Handler(BaseHTTPRequestHandler):
                 response = Response(400, {'error': {'code': 'INVALID_HEADERS', 'message': '重复或缺失的请求头。', 'details': {}}})
             else:
                 raw_length = self.headers.get('Content-Length', '0')
-                if not raw_length.isdigit() or int(raw_length) > MAX_JSON:
+                if not raw_length.isdigit() or int(raw_length) > transport_limit(self.path.split('?', 1)[0]):
                     response = Response(413, {'error': {'code': 'BODY_TOO_LARGE', 'message': '请求内容超过限制。', 'details': {}}})
                 else:
                     length = int(raw_length)
@@ -112,7 +112,8 @@ class Handler(BaseHTTPRequestHandler):
         body = compact(response.value).encode('utf-8') if response.value is not None and not response.stream else b''
         headers = response_headers(response)
         headers.setdefault('Content-Type', 'application/json; charset=utf-8')
-        headers['Content-Length'] = str(response.length if response.stream else len(body))
+        if not response.sse:
+            headers['Content-Length'] = str(response.length if response.stream else len(body))
         headers['Connection'] = 'close'
         self.send_response(response.status)
         for key, value in headers.items():
@@ -120,7 +121,16 @@ class Handler(BaseHTTPRequestHandler):
         self.end_headers()
         if self.command == 'HEAD':
             return
-        if response.stream:
+        if response.stream and response.sse:
+            # Event stream: no length, flush every frame, stop when the generator ends
+            # or the client goes away.
+            while True:
+                chunk = response.stream.read(8192)
+                if not chunk:
+                    break
+                self.wfile.write(chunk)
+                self.wfile.flush()
+        elif response.stream:
             remaining = response.length
             while remaining:
                 chunk = response.stream.read(min(128 * 1024, remaining))
@@ -193,6 +203,13 @@ def main(argv=None):
         LOG.info('LogBench 初始化完成。')
         return 0
     server = Server((config.host, config.port), application)
+    # Collection is a server concern: it does not need a browser, and it must survive
+    # one closing. Off by default so a plain `--init` or a test run never starts
+    # talking to remote hosts by surprise.
+    if os.environ.get('LOGBENCH_COLLECT') == '1':
+        LOG.info('collection loop: %s',
+                 application.start_background(
+                     tick=float(os.environ.get('LOGBENCH_COLLECT_TICK', '5'))))
     LOG.info('LogBench %s; serving http://%s:%s', VERSION, config.host, config.port)
     stopping = threading.Event()
     def stop(*_):
@@ -215,5 +232,6 @@ def main(argv=None):
     except KeyboardInterrupt:
         pass
     finally:
+        application.stop_background()
         server.server_close()
     return 0

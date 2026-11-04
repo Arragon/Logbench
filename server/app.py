@@ -27,8 +27,26 @@ from pathlib import Path
 from typing import Any, BinaryIO, Optional
 from urllib.parse import parse_qs, quote, urlsplit
 
+from .capabilities import collect as collect_capabilities
+from .events import EventBroker, scopes_for
+from .migrations import apply as apply_migrations, verify as verify_migrations
+from .jobs.service import JobService
+from .storage.guard import StorageError
+
 VERSION = '3.0.3'
 MAX_JSON = 2 * 1024 * 1024
+#: Upload parts are the only binary write path, with their own transport cap.
+MAX_UPLOAD_PART = 8 * 1024 * 1024
+UPLOAD_PART_PATH = re.compile(r'^/api/v2/uploads/[A-Za-z0-9-]+/parts/[0-9]{1,6}$')
+
+
+def transport_limit(path: str) -> int:
+    """Body cap for a request path, so a part upload is not rejected by the JSON rule."""
+    return MAX_UPLOAD_PART if UPLOAD_PART_PATH.match(path) else MAX_JSON
+
+
+def is_upload_part_path(path: str) -> bool:
+    return bool(UPLOAD_PART_PATH.match(path))
 MC_REFERENCE = '429dafaa4938ee42f59807b1720e56c225d8cbfa'
 READ_CAPABILITIES = ('read', 'localImport', 'preferencesWrite')
 ADMIN_CAPABILITIES = ('admin', 'rulesWrite', 'filesWrite', 'usersWrite', 'settingsWrite')
@@ -126,6 +144,9 @@ class Response:
     headers: dict[str, str] = field(default_factory=dict)
     stream: Optional[BinaryIO] = None
     length: int = 0
+    #: `text/event-stream`: the transport must not add Content-Length and must flush
+    #: each frame. The generator owns its own lifetime and ends the response.
+    sse: bool = False
 
     def close(self):
         if self.stream:
@@ -134,7 +155,8 @@ class Response:
 
 class Store:
     def __init__(self, directory: Path):
-        directory.mkdir(mode=0o700, parents=True, exist_ok=True)
+        if not directory.is_dir():
+            directory.mkdir(mode=0o700, parents=True)
         self.path = directory / 'logbench.sqlite3'
         self.lock = threading.RLock()
         with self.connect() as db:
@@ -184,16 +206,53 @@ class Store:
         db.execute('INSERT INTO audit(at,actor,action,target,detail) VALUES(?,?,?,?,?)', (now(), actor, action, target, compact(detail or {})))
 
 
+class _FrameStream:
+    """Adapts an SSE generator to the `read(n)` interface the transports expect."""
+
+    def __init__(self, frames):
+        self.frames = frames
+        self.pending = b''
+        self.done = False
+
+    def read(self, size: int = 0) -> bytes:
+        while not self.pending and not self.done:
+            try:
+                frame = next(self.frames)
+            except StopIteration:
+                self.done = True
+                break
+            self.pending = frame.encode('utf-8') if not isinstance(frame, bytes) else frame
+        if not self.pending:
+            return b''
+        chunk, self.pending = self.pending, b''
+        return chunk
+
+    def close(self):
+        self.done = True
+        try:
+            self.frames.close()
+        except Exception:  # noqa: BLE001 - closing twice is fine
+            pass
+
+
 class Application:
     def __init__(self, config: Config):
         self.config = config
-        config.data_dir.mkdir(parents=True, exist_ok=True)
+        if not config.data_dir.is_dir():
+            config.data_dir.mkdir(parents=True)
         self.store = Store(config.state_dir)
         self.fs_lock = threading.RLock()
+        # Uploaded parts are binary and cannot travel through the JSON payload; the
+        # body is parked on a thread-local so the handler can read it without
+        # widening every route signature.
+        self.request_local = threading.local()
         self.trash_root = config.data_dir / '.logbench-trash'
         if self.trash_root.is_symlink():
             raise ValueError('回收站目录不能是符号链接。')
-        self.trash_root.mkdir(mode=0o700, exist_ok=True)
+        # A second start on the same deployment must not fail because the
+        # directory already exists (some sandboxes turn EEXIST into an exception).
+        if not self.trash_root.is_dir():
+            self.trash_root.mkdir(mode=0o700, parents=True)
         with self.store.transaction() as db:
             if not db.execute("SELECT 1 FROM settings WHERE key='secret'").fetchone():
                 db.execute("INSERT INTO settings(key,value) VALUES('secret',?)", (compact(secrets.token_hex(32)),))
@@ -211,6 +270,96 @@ class Application:
                     db.execute('INSERT INTO rules VALUES(?,?,?,?,1,NULL,?,?)', (rid, profile.get('name', 'CPQPSGX'), '内置方括号日志规则，可复制或修改', compact(profile), now(), 'system'))
                     db.execute('INSERT INTO bindings VALUES(?,?,?,?,?)', ('default', '', rid, 1, now()))
         self.secret = bytes.fromhex(self.store.get_setting('secret')[0])
+        # Expand-only migration: new tables beside the v1 ones, never a rewrite.
+        self.migration = apply_migrations(self.store)
+        # Multi-root storage comes before indexing: an index job asks the catalog
+        # for the file's stable identity, so one registry decides file ids.
+        from .storage import Storage
+        self.storage = Storage(self)
+        self.storage_boot = self.storage.boot()
+        self.jobs = JobService(self.store)
+        # Index jobs share the store, the job repository and the layer registry.
+        # The Node pool starts on first use, so importing an app stays cheap.
+        from .indexing.service import IndexService
+        self.index_jobs = IndexService(self)
+        from .indexing.read_api import ReadApi
+        self.records = ReadApi(self)
+        from .query.api import QueryService
+        self.queries = QueryService(self)
+        # R6-081: rule signatures, impact preview and trial runs live beside the
+        # index service because they read its published layer signatures.
+        from .rules.api import RulesApi
+        self.rules = RulesApi(self)
+        from .uploads.api import UploadApi
+        self.uploads = UploadApi(self)
+        # Remote collection is configured here, executed by the collector
+        # scheduler (R6-072). Construction is cheap: no adapter is built and no
+        # process is started until an administrator probes a source.
+        from .collectors.api import CollectorApi
+        self.collectors = CollectorApi(self)
+        # One reusable status stream per browser (R6-074). The broker is cheap and
+        # has no thread of its own: subscribers drain it from their request thread.
+        from .events import EventBroker
+        self.events = EventBroker(self.store)
+        # R6-082/083: cache management and the runtime/budget surface. Both read the
+        # pools above, so they are constructed last.
+        from .indexing.cache_api import CacheApi
+        self.cache = CacheApi(self)
+        from .runtime.api import RuntimeApi
+        self.runtime = RuntimeApi(self)
+        self.budget = self.runtime.base
+        # Background collection is created on demand, never at import or in tests:
+        # an always-on thread would make every unit test a scheduler test.
+        self.collect_scheduler = None
+        self.lifecycle = None
+
+    # ------------------------------------------------------------ background (M7)
+    def start_background(self, *, tick: float = 5.0) -> dict:
+        """Start the collection loop and the storage watchdog.
+
+        Collection belongs to the server process, not to a browser tab: once this is
+        started, closing the page only unsubscribes from events.
+        """
+        from .collectors.scheduler import CollectScheduler
+        from .indexing.incremental import IncrementalIndexer
+        from .storage.lifecycle import Lifecycle
+        if self.collect_scheduler is None:
+            self.lifecycle = Lifecycle(self)
+            self.collect_scheduler = CollectScheduler(self, indexer=IncrementalIndexer(self))
+        self.collect_scheduler.start(interval=tick)
+        self._start_watchdog()
+        return {'scheduler': True, 'tick': tick,
+                'due': len(self.collect_scheduler.due_sources())}
+
+    def _start_watchdog(self, *, every: float = 60.0) -> None:
+        """Storage pressure is checked on its own cadence, not per collection pass."""
+        if getattr(self, '_watchdog', None) is not None:
+            return
+        self._watchdog_stop = threading.Event()
+        self._watchdog = True
+
+        def loop():
+            while not self._watchdog_stop.wait(every):
+                try:
+                    self.lifecycle.enforce()
+                except Exception:  # noqa: BLE001 - a watchdog must not die
+                    pass
+
+        threading.Thread(target=loop, name='lb-watchdog', daemon=True).start()
+
+    def stop_background(self) -> None:
+        event = getattr(self, '_watchdog_stop', None)
+        if event is not None:
+            event.set()
+            self._watchdog = None
+        if self.collect_scheduler is not None:
+            self.collect_scheduler.stop()
+
+    def background_state(self) -> dict:
+        return {'running': bool(self.collect_scheduler and self.collect_scheduler.running()),
+                'tick': getattr(self.collect_scheduler, 'tick_seconds', None),
+                'lastTick': getattr(self.collect_scheduler, 'last_tick', None),
+                'events': self.events.snapshot()}
 
     def trusted(self, raw: str) -> bool:
         address = ipaddress.ip_address(raw)
@@ -323,7 +472,7 @@ class Application:
                 if len(values) != 1:
                     fail(400, 'DUPLICATE_PARAMETER', '参数不能重复。', field=key)
                 return values[0]
-            if method not in ('GET', 'HEAD', 'POST', 'PUT', 'DELETE'):
+            if method not in ('GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE'):
                 fail(405, 'METHOD_NOT_ALLOWED', '不支持此请求方法。')
             if not path.startswith('/api/'):
                 if method not in ('GET', 'HEAD'):
@@ -331,6 +480,7 @@ class Application:
                 return self.static(path)
             ip = self.client_ip(peer, headers)
             actor = self.actor(ip)
+            self.request_local.body = body
             if method in ('POST', 'PUT', 'DELETE'):
                 if headers.get('sec-fetch-site', '') == 'cross-site':
                     fail(403, 'CSRF_REJECTED', '拒绝跨站写入请求。')
@@ -345,12 +495,15 @@ class Application:
                 token = headers.get('x-logbench-csrf', '')
                 if not hmac.compare_digest(token, self.csrf(ip)):
                     fail(403, 'CSRF_REJECTED', '操作凭据已失效，请刷新页面。')
-                if len(body) > MAX_JSON:
-                    fail(413, 'BODY_TOO_LARGE', '请求内容超过 2 MiB。')
-                if body and headers.get('content-type', '').split(';')[0].lower() != 'application/json':
-                    fail(415, 'JSON_REQUIRED', '写入请求需要 application/json。')
+                # Upload parts are raw bytes with their own cap; everything else
+                # stays JSON-only so a JSON write cannot smuggle a different type.
+                if not is_upload_part_path(path):
+                    if len(body) > MAX_JSON:
+                        fail(413, 'BODY_TOO_LARGE', '请求内容超过 2 MiB。')
+                    if body and headers.get('content-type', '').split(';')[0].lower() != 'application/json':
+                        fail(415, 'JSON_REQUIRED', '写入请求需要 application/json。')
             payload = {}
-            if body:
+            if body and not is_upload_part_path(path):
                 try:
                     payload = json.loads(body.decode('utf-8'), parse_constant=lambda _: (_ for _ in ()).throw(ValueError()))
                 except (UnicodeError, ValueError):
@@ -374,6 +527,10 @@ class Application:
             return {'user': actor, 'capabilities': {**{k: True for k in READ_CAPABILITIES}, **{k: actor['role'] == 'admin' for k in ADMIN_CAPABILITIES}}, 'csrfToken': self.csrf(ip), 'version': VERSION, 'identityMode': actor['source']}
         if path == '/api/v1/health' and method in ('GET', 'HEAD'):
             return {'status': 'ok', 'version': VERSION, 'release': os.environ.get('LOGBENCH_RELEASE', 'direct'), 'pid': os.getpid()}
+        if path == '/api/v2/capabilities' and method in ('GET', 'HEAD'):
+            # Admin-only: the report names local paths and bounds in this machine.
+            self.require_admin(actor)
+            return collect_capabilities(self.config.data_dir)
         if path == '/api/v1/preferences':
             if method in ('GET', 'HEAD'):
                 with self.store.connect() as db:
@@ -412,9 +569,12 @@ class Application:
             return {'path': rel}
         if path == '/api/v1/files/trash' and method in ('GET', 'HEAD'):
             self.require_admin(actor)
-            with self.store.connect() as db:
-                rows = db.execute('SELECT * FROM trash WHERE restored_at IS NULL ORDER BY deleted_at DESC LIMIT 1000').fetchall()
-            return {'items': [{'id': r['id'], 'path': r['path'], 'type': r['type'], 'deletedAt': r['deleted_at'], 'deletedBy': r['deleted_by']} for r in rows]}
+            # One list for both bins: the v3.0.3 `trash` rows (directories and
+            # pre-upgrade entries) and the per-root `trash_entries` rows.
+            merged = self.storage.trash.list(actor, limit=1000)
+            return {'items': [{'id': item['id'], 'path': item['path'], 'type': item['type'],
+                               'deletedAt': item['deletedAt'], 'deletedBy': item['deletedBy']}
+                              for item in merged['items']]}
         if path == '/api/v1/files/restore' and method == 'POST':
             self.require_admin(actor)
             return self.restore_file(text(payload.get('id'), '回收站编号'), ip)
@@ -453,11 +613,72 @@ class Application:
                 self.require_admin(actor)
                 return self.write_binding(payload, ip, method == 'DELETE')
         if path == '/api/v1/bindings/resolve' and method in ('GET', 'HEAD'):
-            return self.resolve_binding(self.normal_path(q('path'), allow_root=True))
+            return self.resolve_binding(self.normal_path(q('path'), allow_root=True), actor)
+        if path.startswith('/api/v2/rules'):
+            return self.rules.route(method, path, q, payload, actor)
+        if path.startswith('/api/v2/cache'):
+            return self.cache.route(method, path, q, payload, actor)
+        if path.startswith('/api/v2/runtime'):
+            return self.runtime.route(method, path, q, payload, actor, headers)
+        if path.startswith('/api/v2/storage-roots') or path.startswith('/api/v2/library') \
+                or path.startswith('/api/v2/bindings'):
+            return self.storage.api.route(method, path, q, payload, actor, headers)
+        if path.startswith('/api/v2/jobs') or path.startswith('/api/v2/index-jobs'):
+            return self.jobs_route(method, path, q, payload, actor)
+        if path.startswith('/api/v2/records/') or path.startswith('/api/v2/files/'):
+            return self.records.route(method, path, q, actor)
+        if path.startswith('/api/v2/queries'):
+            return self.queries_route(method, path, q, payload, actor)
+        if path.startswith('/api/v2/uploads'):
+            from .uploads.sessions import UploadError
+            try:
+                return self.uploads.route(method, path, payload, actor, headers)
+            except UploadError as exc:
+                status = {'unknown_session': 404, 'quota_exceeded': 413,
+                          'too_many_sessions': 429,
+                          'part_too_large': 413, 'session_closed': 409,
+                          'parts_missing': 409, 'size_mismatch': 409,
+                          'digest_mismatch': 400, 'invalid_name': 400,
+                          'invalid_size': 400, 'invalid_chunk_size': 400,
+                          'invalid_part': 400, 'part_size_mismatch': 400}.get(exc.code, 400)
+                fail(status, exc.code, exc.message, **exc.details)
+        if path == '/api/v2/events' and method in ('GET', 'HEAD'):
+            return self.events_stream(actor, headers, q)
+        if path == '/api/v2/events/poll' and method in ('GET', 'HEAD'):
+            last = q('last') or headers.get('last-event-id') or ''
+            return self.events.poll(actor, int(last) if last.isdigit() else None)
+        if path.startswith('/api/v2/sources') or path.startswith('/api/v2/collectors') \
+                or path.startswith('/api/v2/credentials') or path == '/api/v2/intake':
+            return self.collectors.route(method, path, q, payload, actor, headers)
         if path.startswith('/api/v1/admin/'):
             self.require_admin(actor)
             return self.admin_route(method, path, q, payload, actor)
         fail(404, 'NOT_FOUND', '接口或资源不存在。')
+
+    def events_stream(self, actor: dict, headers: dict, q) -> Response:
+        """Server-sent events. The generator ends on lifetime, revocation or drop."""
+        if not scopes_for(actor):
+            fail(403, 'FORBIDDEN', '当前身份没有事件订阅权限。')
+        last = q('last') or headers.get('last-event-id') or ''
+        last_id = int(last) if str(last).isdigit() else None
+        ip = actor['ip']
+
+        def authorize() -> bool:
+            try:
+                current = self.actor(ip)
+            except ApiError:
+                return False
+            except Exception:  # noqa: BLE001 - a store that cannot be read denies
+                return False
+            return actor.get('role') == current.get('role')
+
+        frames = self.events.stream(actor, last_event_id=last_id, authorize=authorize)
+        stream = _FrameStream(frames)
+        return Response(headers={'Content-Type': 'text/event-stream; charset=utf-8',
+                                 'Cache-Control': 'no-store',
+                                 'X-Accel-Buffering': 'no',
+                                 'Connection': 'close'},
+                        stream=stream, length=0, sse=True)
 
     @staticmethod
     def check_revision(expected, actual):
@@ -616,13 +837,35 @@ class Application:
         stream.seek(start)
         return Response(status=status, headers=common, stream=stream, length=max(0, end - start + 1))
 
-    def delete_file(self, rel, actor):
+    def delete_file(self, rel, actor_ip):
+        """v1 delete: files go through the storage trash so references are checked.
+
+        Directories keep the v3.0.3 behaviour (a directory is not a logical file
+        and cannot carry a generation), but the record still lands in the same
+        merged recycling list, so one UI sees both.
+        """
+        actor = self.actor(actor_ip)
         rel = self.normal_path(rel)
+        source = self.safe_path(rel)
+        if source.is_file():
+            try:
+                # A file placed by the operator is not registered yet; registering
+                # it here is what makes the delete auditable and restorable.
+                self.storage.catalog.register_path(source)
+            except StorageError as exc:
+                fail(400, exc.code.upper(), exc.message)
+            try:
+                result = self.storage.trash.delete(actor=actor, root_id='legacy', rel_path=rel)
+            except StorageError as exc:
+                status = {'active_references': 409, 'binding_active': 409,
+                          'cross_device_trash': 409, 'storage_root_offline': 409,
+                          'not_found': 404}.get(exc.code, 400)
+                fail(status, exc.code.upper(), exc.message, **exc.details)
+            return {'item': {'id': result['item']['id'], 'path': rel, 'type': 'file'}}
         with self.fs_lock, self.store.transaction() as db:
-            source = self.safe_path(rel)
-            if not (source.is_file() or source.is_dir()):
+            if not source.is_dir():
                 fail(400, 'NOT_A_FILE', '只能删除常规文件或目录。')
-            kind = 'directory' if source.is_dir() else 'file'
+            kind = 'directory'
             ident = uuid.uuid4().hex
             target = self.trash_root / ident
             try:
@@ -632,32 +875,22 @@ class Application:
                     fail(409, 'CROSS_DEVICE_TRASH', '文件所在目录跨越了独立挂载点，无法安全移入回收站。')
                 raise
             try:
-                db.execute('INSERT INTO trash VALUES(?,?,?,?,?,NULL)', (ident, rel, kind, now(), actor))
-                self.store.audit(db, actor, 'file.delete', rel, {'trashId': ident})
+                db.execute('INSERT INTO trash VALUES(?,?,?,?,?,NULL)', (ident, rel, kind, now(), actor_ip))
+                self.store.audit(db, actor_ip, 'file.delete', rel, {'trashId': ident})
             except Exception:
                 os.replace(target, source)
                 raise
         return {'item': {'id': ident, 'path': rel, 'type': kind}}
 
-    def restore_file(self, ident, actor):
-        with self.fs_lock, self.store.transaction() as db:
-            row = db.execute('SELECT * FROM trash WHERE id=? AND restored_at IS NULL', (ident,)).fetchone()
-            if not row:
-                fail(404, 'TRASH_NOT_FOUND', '回收站条目不存在。')
-            target = self.safe_path(row['path'], exists=False)
-            if target.exists():
-                fail(409, 'ALREADY_EXISTS', '原路径已有同名文件，恢复不会覆盖它。')
-            source = self.trash_root / ident
-            if not source.exists() or source.is_symlink():
-                fail(409, 'TRASH_MISSING', '回收站文件缺失，无法恢复。')
-            os.replace(source, target)
-            try:
-                db.execute('UPDATE trash SET restored_at=? WHERE id=?', (now(), ident))
-                self.store.audit(db, actor, 'file.restore', row['path'])
-            except Exception:
-                os.replace(target, source)
-                raise
-        return {'path': row['path']}
+    def restore_file(self, ident, actor_ip):
+        try:
+            result = self.storage.trash.restore(self.actor(actor_ip), ident)
+        except StorageError as exc:
+            status = {'trash_not_found': 404, 'trash_missing': 409, 'already_exists': 409,
+                      'storage_root_offline': 409, 'trash_not_restorable': 409,
+                      'not_found': 404}.get(exc.code, 400)
+            fail(status, exc.code.upper(), exc.message, **exc.details)
+        return {'path': result['path']}
 
     @staticmethod
     def rule_row(row):
@@ -725,8 +958,15 @@ class Application:
             if bool(row['deleted_at']) == deleted:
                 fail(409, 'RULE_STATE_CONFLICT', '规则状态已改变，请刷新。')
             bound = db.execute('SELECT count(*) FROM bindings WHERE rule_id=?', (ident,)).fetchone()[0]
+            # R6 adds two more referrers: per-root shared bindings (mapping and
+            # non-legacy roots) and personal overrides. A delete that ignored them
+            # would leave a file pointing at a rule nobody can read.
+            bound += db.execute('SELECT count(*) FROM root_bindings WHERE rule_id=?',
+                                (ident,)).fetchone()[0]
+            bound += db.execute('SELECT count(*) FROM personal_bindings WHERE rule_id=?',
+                                (ident,)).fetchone()[0]
             if deleted and bound:
-                fail(409, 'RULE_IN_USE', '规则仍被共享目录或文件使用，请先解除绑定。', bindings=bound)
+                fail(409, 'RULE_IN_USE', '规则仍被目录或文件绑定使用，请先解除绑定。', bindings=bound)
             db.execute('UPDATE rules SET deleted_at=?,revision=revision+1,updated_at=?,updated_by=? WHERE id=?', (now() if deleted else None, now(), actor, ident))
             self.store.audit(db, actor, 'rule.delete' if deleted else 'rule.restore', ident, {'bindingsRetained': bound})
         result = self.get_rule(ident, True)
@@ -750,14 +990,12 @@ class Application:
                 candidates.append((1, 0, row))
         return max(candidates, key=lambda x: (x[0], x[1]))[2] if candidates else None
 
-    def resolve_binding(self, path):
-        with self.store.connect() as db:
-            rows = db.execute('SELECT bindings.* FROM bindings JOIN rules ON rules.id=rule_id WHERE rules.deleted_at IS NULL').fetchall()
-        chosen = self.choose_binding(path, rows)
-        if not chosen:
-            return {'rule': None, 'source': None, 'scope': None, 'path': None}
-        source = self.binding_row(chosen)
-        return {'rule': self.get_rule(chosen['rule_id']), 'source': source, 'scope': chosen['scope'], 'path': chosen['path']}
+    def resolve_binding(self, path, actor):
+        """v1 resolve: legacy root, same four keys, one shared resolver underneath."""
+        result = self.storage.bindings.resolve(actor, root_id='legacy', rel_path=path,
+                                               personal=[])
+        return {'rule': result['rule'], 'source': result['source'],
+                'scope': result['scope'], 'path': result['path']}
 
     def write_binding(self, payload, actor, deleted):
         scope = payload.get('scope')
@@ -869,6 +1107,60 @@ class Application:
             row = db.execute('SELECT * FROM users WHERE ip=? AND enabled=1', (ip,)).fetchone()
         return {'valid': True, 'currentUser': {'ip': ip, 'name': row['name'] if row else ip, 'role': row['role'] if row else 'viewer', 'source': 'local'}, 'readOnly': False}
 
+    def queries_route(self, method, path, q, payload, actor):
+        from .query.snapshots import QueryError
+        try:
+            return self.queries.route(method, path, q, payload, actor)
+        except QueryError as exc:
+            status = {'unknown_query': 404, 'not_found': 404, 'invalid_cursor': 400,
+                      'cursor_expired': 410, 'index_pending': 409,
+                      'job_finished': 409}.get(exc.code, 400)
+            fail(status, exc.code, exc.message, **exc.details)
+
+    def jobs_route(self, method, path, q, payload, actor):
+        from .jobs.repository import LeaseError
+        try:
+            return self._jobs_route(method, path, q, payload, actor)
+        except LeaseError as exc:
+            # Codes are part of the API contract; the HTTP status follows from them
+            # rather than from a generic 500.
+            status = {'unknown_job': 404, 'unknown_action': 400,
+                      'missing_action_id': 400, 'illegal_transition': 409,
+                      'revision_conflict': 409, 'stale_fencing': 409,
+                      'lease_held': 409, 'lease_expired': 409, 'no_lease': 409,
+                      'job_finished': 409,
+                      'pause_not_supported_in_state': 400}.get(exc.code, 400)
+            fail(status, exc.code, exc.message, **exc.details)
+
+    def _jobs_route(self, method, path, q, payload, actor):
+        if path == '/api/v2/index-jobs':
+            if method in ('GET', 'HEAD'):
+                return {'items': self.jobs.list(actor, states=None, limit=integer(q('limit', '50'), '数量', 1, 200))}
+            if method != 'POST':
+                fail(405, 'METHOD_NOT_ALLOWED', '索引任务只支持创建或读取。')
+            return self.index_jobs.create(actor, payload)
+        match = re.fullmatch(r'/api/v2/index-jobs/([A-Za-z0-9_-]+)', path)
+        if match:
+            if method not in ('GET', 'HEAD'):
+                fail(405, 'METHOD_NOT_ALLOWED', '索引任务只支持读取。')
+            return self.index_jobs.status(actor, match.group(1))
+        if path == '/api/v2/jobs' and method in ('GET', 'HEAD'):
+            states = [value for value in q('state').split(',') if value] or None
+            limit = integer(q('limit', '100'), '数量', 1, 500)
+            return {'items': self.jobs.list(actor, states=states, limit=limit)}
+        match = re.fullmatch(r'/api/v2/jobs/([A-Za-z0-9_-]+)(?:/(actions))?', path)
+        if not match:
+            fail(404, 'NOT_FOUND', '任务接口不存在。')
+        job_id, action = match.groups()
+        if action:
+            if method != 'POST':
+                fail(405, 'METHOD_NOT_ALLOWED', '任务动作只支持 POST。')
+            name = text(payload.get('action'), '动作', 32)
+            return self.jobs.action(actor, job_id, name, payload)
+        if method in ('GET', 'HEAD'):
+            return {'item': self.jobs.get(actor, job_id, include_payload=q('include') == 'payload')}
+        fail(405, 'METHOD_NOT_ALLOWED', '任务只支持读取或动作。')
+
     def static(self, path):
         # Explicit allowlist: never expose data/, var/, Python, configuration or backups.
         import io
@@ -879,9 +1171,45 @@ class Application:
             return Response(status=204)
         if path in ('/', '/index.html', '/LogBench.html'):
             target=code/'src'/'index.html';mime='text/html; charset=utf-8'
+        elif path in ('/r6', '/r6.html'):
+            target=code/'src'/'r6.html';mime='text/html; charset=utf-8'
+        elif path == '/assets/r6/app.js':
+            target=code/'src'/'r6-app.js';mime='text/javascript; charset=utf-8'
+        elif path == '/assets/r6/r6.css':
+            target=code/'src'/'r6.css';mime='text/css; charset=utf-8'
+        elif path == '/assets/rules/default.json':
+            target=code/'rules'/'cpqpsgx-default.json';mime='application/json; charset=utf-8'
         elif path == '/assets/workbench.js':
             from .frontend import bundle
             content=bundle(code)
+            return Response(headers={'Content-Type':'text/javascript; charset=utf-8'},stream=io.BytesIO(content),length=len(content))
+        elif path == '/assets/r6.js':
+            from .frontend import r6_bundle
+            try:
+                content=r6_bundle(code)
+            except FileNotFoundError as exc:
+                fail(503,'ASSET_MISSING',str(exc))
+            return Response(headers={'Content-Type':'text/javascript; charset=utf-8'},stream=io.BytesIO(content),length=len(content))
+        elif path.startswith('/assets/qa/r6/') and (path.endswith('.html') or path.endswith('.js')):
+            # QA harness pages and their scripts, development only. Production sets
+            # no flag, so qa/ is never exposed by default.
+            import re as _re
+            suffix='.html' if path.endswith('.html') else '.js'
+            name=path[len('/assets/qa/r6/'):-len(suffix)]
+            if os.environ.get('LOGBENCH_DEV_ASSETS')!='1' or not _re.fullmatch(r'[a-z0-9_-]+',name):
+                fail(404,'NOT_FOUND','资源不存在。')
+            target=code/'qa'/'r6'/(name+suffix)
+            mime='text/html; charset=utf-8' if suffix=='.html' else 'text/javascript; charset=utf-8'
+        elif path.startswith('/assets/workers/') and path.endswith('.js'):
+            # Worker bundles: allowlisted names only, assembled from src/.
+            from .frontend import worker_bundle, worker_names
+            name=path[len('/assets/workers/'):-3]
+            if name not in worker_names():
+                fail(404,'NOT_FOUND','资源不存在。')
+            try:
+                content=worker_bundle(code,name)
+            except FileNotFoundError as exc:
+                fail(503,'ASSET_MISSING',str(exc))
             return Response(headers={'Content-Type':'text/javascript; charset=utf-8'},stream=io.BytesIO(content),length=len(content))
         elif path in ('/assets/boot.js','/assets/style.css','/assets/service.css'):
             target=code/'src'/path.rsplit('/',1)[1]
