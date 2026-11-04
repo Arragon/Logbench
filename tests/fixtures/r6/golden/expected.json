@@ -1,0 +1,553 @@
+{
+  "schema": "logbench.r6.golden-expected/1",
+  "recorded_from": "src/app.js::parseLocal (shipped R5 parser, extracted by tests/r6/parser-harness.cjs)",
+  "app_sha256": "a9a7187c94f0b31bc1f56f0c8bdd58e48ab9e00f1cc8f55f6233f0fb75815a08",
+  "fixtures": {
+    "edge_cases.log": {
+      "sha256": "1d231d2334e5acbcd07cb663d944f699fb5d20bdcb6b6922719f60bab5f43f05",
+      "bytes": 1676,
+      "records": [
+        {
+          "line": 1,
+          "lineEnd": 1,
+          "ts": "2020-01-01 11:39:15.1234567",
+          "key": "2020-01-01 11:39:15.123456700",
+          "level": "EVENT",
+          "logger": "APP-A",
+          "pid": "1001",
+          "tid": "1041",
+          "src": "algorithm.py",
+          "srcLine": 1241,
+          "fn": "get_setpoint",
+          "message": "GLOBAL_Delay: 3000ns energy: 9.430 converged: false",
+          "body": [],
+          "kind": "text",
+          "fields": [
+            [
+              "GLOBAL_Delay",
+              "3000ns energy: 9.430 converged: false"
+            ]
+          ],
+          "hasTrace": false,
+          "phaseId": "import"
+        },
+        {
+          "line": 2,
+          "lineEnd": 2,
+          "ts": "2020-01-01 11:39:15.12345678",
+          "key": "2020-01-01 11:39:15.123456780",
+          "level": "EVENT",
+          "logger": "APP-A",
+          "pid": "1001",
+          "tid": "1041",
+          "src": "recipe.py",
+          "srcLine": 140,
+          "fn": "set_recipe",
+          "message": "recipe: axis_01=100.0, axis_02=200.5 key: first key: second",
+          "body": [],
+          "kind": "text",
+          "fields": [
+            [
+              "recipe",
+              "axis_01=100.0, axis_02=200.5 key: first key: second"
+            ]
+          ],
+          "hasTrace": false,
+          "phaseId": "import"
+        },
+        {
+          "line": 3,
+          "lineEnd": 3,
+          "ts": "2020-01-01 11:39:15.123456789",
+          "key": "2020-01-01 11:39:15.123456789",
+          "level": "EVENT",
+          "logger": "APP-A",
+          "pid": "1001",
+          "tid": "1041",
+          "src": "acquisition.py",
+          "srcLine": 188,
+          "fn": "get_camera_frame",
+          "message": "frame_id: 12004 exposure_us: 100 status: ready",
+          "body": [],
+          "kind": "text",
+          "fields": [
+            [
+              "frame_id",
+              "12004 exposure_us: 100 status: ready"
+            ]
+          ],
+          "hasTrace": false,
+          "phaseId": "import"
+        },
+        {
+          "line": 4,
+          "lineEnd": 4,
+          "ts": "2020-01-01 11:39:16.100000000",
+          "key": "2020-01-01 11:39:16.100000000",
+          "level": "WARNING",
+          "logger": "APP-B",
+          "pid": "2002",
+          "tid": "2042",
+          "src": "device.py",
+          "srcLine": 166,
+          "fn": "set_setpoint_now",
+          "message": "retry: 0 enabled: false payload: null note: ",
+          "body": [],
+          "kind": "text",
+          "fields": [
+            [
+              "retry",
+              "0 enabled: false payload: null note:"
+            ]
+          ],
+          "hasTrace": false,
+          "phaseId": "import"
+        },
+        {
+          "line": 5,
+          "lineEnd": 5,
+          "ts": "2020-01-01 11:39:16.200000000",
+          "key": "2020-01-01 11:39:16.200000000",
+          "level": "ERROR",
+          "logger": "APP-B",
+          "pid": "2002",
+          "tid": "2042",
+          "src": "rpc.py",
+          "srcLine": 88,
+          "fn": "flush_buffer",
+          "message": "rpc_success: False err_code: 0x0 detail: 中文全角：值，后续",
+          "body": [],
+          "kind": "text",
+          "fields": [
+            [
+              "rpc_success",
+              "False err_code: 0x0 detail: 中文全角：值，后续"
+            ]
+          ],
+          "hasTrace": false,
+          "phaseId": "import"
+        },
+        {
+          "line": 6,
+          "lineEnd": 6,
+          "ts": "2020-01-01 11:39:17.300000000",
+          "key": "2020-01-01 11:39:17.300000000",
+          "level": "EVENT",
+          "logger": "CTRL-A",
+          "pid": "3003",
+          "tid": "3003",
+          "src": "counter.py",
+          "srcLine": 12,
+          "fn": "health_check",
+          "message": "burstStartTime: 1234567890123456789 burstEndTime: 1234567890173456789",
+          "body": [],
+          "kind": "text",
+          "fields": [
+            [
+              "burstStartTime",
+              "1234567890123456789 burstEndTime: 1234567890173456789"
+            ]
+          ],
+          "hasTrace": false,
+          "phaseId": "import"
+        },
+        {
+          "line": 7,
+          "lineEnd": 9,
+          "ts": "2020-01-01 11:39:18.400000000",
+          "key": "2020-01-01 11:39:18.400000000",
+          "level": "EVENT",
+          "logger": "APP-C",
+          "pid": "4004",
+          "tid": "4044",
+          "src": "buffer.py",
+          "srcLine": 77,
+          "fn": "flush_buffer",
+          "message": "depth: 0 ratio: 0.0 flag: true name: \"\"",
+          "body": [
+            "",
+            "orphan line without any bracket header"
+          ],
+          "kind": "text",
+          "fields": [
+            [
+              "depth",
+              "0 ratio: 0.0 flag: true name: \"\""
+            ]
+          ],
+          "hasTrace": false,
+          "phaseId": "import"
+        },
+        {
+          "line": 10,
+          "lineEnd": 10,
+          "ts": "2020-01-01 11:39:19.500000000",
+          "key": "2020-01-01 11:39:19.500000000",
+          "level": "DEBUG",
+          "logger": "APP-C",
+          "pid": "4004",
+          "tid": "4044",
+          "src": "buffer.py",
+          "srcLine": 78,
+          "fn": "flush_buffer",
+          "message": "after orphan: ok",
+          "body": [],
+          "kind": "text",
+          "fields": [],
+          "hasTrace": false,
+          "phaseId": "import"
+        },
+        {
+          "line": 11,
+          "lineEnd": 11,
+          "ts": "2020-01-01 11:39:18.000000000",
+          "key": "2020-01-01 11:39:18.000000000",
+          "level": "EVENT",
+          "logger": "APP-A",
+          "pid": "1001",
+          "tid": "1041",
+          "src": "algorithm.py",
+          "srcLine": 947,
+          "fn": "optimize",
+          "message": "iteration: 9 energy: 9.100 converged: true",
+          "body": [],
+          "kind": "text",
+          "fields": [
+            [
+              "iteration",
+              "9 energy: 9.100 converged: true"
+            ]
+          ],
+          "hasTrace": false,
+          "phaseId": "import"
+        },
+        {
+          "line": 12,
+          "lineEnd": 12,
+          "ts": "2020-01-01 11:39:18.000000000",
+          "key": "2020-01-01 11:39:18.000000000",
+          "level": "ERROR",
+          "logger": "APP-A",
+          "pid": "1001",
+          "tid": "1041",
+          "src": "algorithm.py",
+          "srcLine": 948,
+          "fn": "optimize",
+          "message": "iteration: 9 err_code: 5 rpc_success: false",
+          "body": [],
+          "kind": "text",
+          "fields": [
+            [
+              "iteration",
+              "9 err_code: 5 rpc_success: false"
+            ]
+          ],
+          "hasTrace": false,
+          "phaseId": "import"
+        }
+      ]
+    },
+    "no_trailing_newline.log": {
+      "sha256": "b621563678aaf354962e4db4ea423e5c0bffab2dd8a5776ce8a8aee871dbe449",
+      "bytes": 370,
+      "records": [
+        {
+          "line": 1,
+          "lineEnd": 5,
+          "ts": "2020-01-01 11:39:45.000000000",
+          "key": "2020-01-01 11:39:45.000000000",
+          "level": "EVENT",
+          "logger": "APP-A",
+          "pid": "1001",
+          "tid": "1041",
+          "src": "algorithm.py",
+          "srcLine": 1284,
+          "fn": "best_index",
+          "message": "burstEuvEnergyMean: 9.414220809936523",
+          "body": [
+            "burstEuvEnergy3sigma: 0.21338501572608948",
+            "burstDropletCount: 420",
+            "isValid: true",
+            ""
+          ],
+          "kind": "kv",
+          "fields": [
+            [
+              "burstEuvEnergyMean",
+              "9.414220809936523"
+            ],
+            [
+              "burstEuvEnergy3sigma",
+              "0.21338501572608948"
+            ],
+            [
+              "burstDropletCount",
+              "420"
+            ],
+            [
+              "isValid",
+              "true"
+            ]
+          ],
+          "hasTrace": false,
+          "phaseId": "import"
+        },
+        {
+          "line": 6,
+          "lineEnd": 6,
+          "ts": "2020-01-01 11:39:46.000000000",
+          "key": "2020-01-01 11:39:46.000000000",
+          "level": "EVENT",
+          "logger": "APP-A",
+          "pid": "1001",
+          "tid": "1041",
+          "src": "algorithm.py",
+          "srcLine": 1285,
+          "fn": "best_index",
+          "message": "best_index_mask: 0",
+          "body": [],
+          "kind": "text",
+          "fields": [
+            [
+              "best_index_mask",
+              "0"
+            ]
+          ],
+          "hasTrace": false,
+          "phaseId": "import"
+        }
+      ]
+    },
+    "traceback_chain.log": {
+      "sha256": "00039b078d0677c83a124cf662a7e4a23367001742033284a1e754548abc0904",
+      "bytes": 1708,
+      "records": [
+        {
+          "line": 1,
+          "lineEnd": 14,
+          "ts": "2020-01-01 11:39:25.000000000",
+          "key": "2020-01-01 11:39:25.000000000",
+          "level": "ERROR",
+          "logger": "APP-A",
+          "pid": "1001",
+          "tid": "1041",
+          "src": "runner.py",
+          "srcLine": 50,
+          "fn": "run",
+          "message": "job failed -> module: demo",
+          "body": [
+            "Traceback (most recent call last):",
+            "  File \"/opt/APP-A/runner.py\", line 47, in run",
+            "    return worker.execute()",
+            "  File \"/opt/APP-A/worker.py\", line 88, in execute",
+            "    raise ValueError(\"bad recipe\")",
+            "ValueError: bad recipe",
+            "",
+            "The above exception was the direct cause of the following exception:",
+            "",
+            "Traceback (most recent call last):",
+            "  File \"/opt/APP-A/job.py\", line 12, in main",
+            "    run()",
+            "RuntimeError: wrapper failed"
+          ],
+          "kind": "stack",
+          "fields": [
+            [
+              "ValueError",
+              "bad recipe"
+            ],
+            [
+              "RuntimeError",
+              "wrapper failed"
+            ]
+          ],
+          "hasTrace": true,
+          "phaseId": "import"
+        },
+        {
+          "line": 15,
+          "lineEnd": 15,
+          "ts": "2020-01-01 11:39:26.000000000",
+          "key": "2020-01-01 11:39:26.000000000",
+          "level": "ERROR",
+          "logger": "APP-B",
+          "pid": "2002",
+          "tid": "2042",
+          "src": "runner.py",
+          "srcLine": 51,
+          "fn": "run",
+          "message": "| Traceback (most recent call last):",
+          "body": [],
+          "kind": "stack",
+          "fields": [],
+          "hasTrace": true,
+          "phaseId": "import"
+        },
+        {
+          "line": 16,
+          "lineEnd": 16,
+          "ts": "2020-01-01 11:39:26.100000000",
+          "key": "2020-01-01 11:39:26.100000000",
+          "level": "ERROR",
+          "logger": "APP-B",
+          "pid": "2002",
+          "tid": "2042",
+          "src": "runner.py",
+          "srcLine": 52,
+          "fn": "run",
+          "message": "|   File \"/opt/APP-B/x.py\", line 3, in <module>",
+          "body": [],
+          "kind": "text",
+          "fields": [],
+          "hasTrace": false,
+          "phaseId": "import"
+        },
+        {
+          "line": 17,
+          "lineEnd": 17,
+          "ts": "2020-01-01 11:39:26.200000000",
+          "key": "2020-01-01 11:39:26.200000000",
+          "level": "ERROR",
+          "logger": "APP-B",
+          "pid": "2002",
+          "tid": "2042",
+          "src": "runner.py",
+          "srcLine": 53,
+          "fn": "run",
+          "message": "| KeyError: 'missing'",
+          "body": [],
+          "kind": "text",
+          "fields": [],
+          "hasTrace": false,
+          "phaseId": "import"
+        },
+        {
+          "line": 18,
+          "lineEnd": 21,
+          "ts": "2020-01-01 11:39:27.000000000",
+          "key": "2020-01-01 11:39:27.000000000",
+          "level": "ERROR",
+          "logger": "APP-C",
+          "pid": "4004",
+          "tid": "4044",
+          "src": "trunc.py",
+          "srcLine": 9,
+          "fn": "flush_buffer",
+          "message": "truncated traceback follows",
+          "body": [
+            "Traceback (most recent call last):",
+            "  File \"/opt/APP-C/trunc.py\", line 8, in flush_buffer",
+            "    raise OSError(\"no terminal line\")"
+          ],
+          "kind": "stack",
+          "fields": [],
+          "hasTrace": true,
+          "phaseId": "import"
+        },
+        {
+          "line": 22,
+          "lineEnd": 30,
+          "ts": "2020-01-01 11:39:28.000000000",
+          "key": "2020-01-01 11:39:28.000000000",
+          "level": "ERROR",
+          "logger": "CTRL-A",
+          "pid": "3003",
+          "tid": "3003",
+          "src": "group.py",
+          "srcLine": 21,
+          "fn": "health_check",
+          "message": "ExceptionGroup raised",
+          "body": [
+            "  + Exception Group Traceback (most recent call last):",
+            "  |   File \"/opt/CTRL-A/group.py\", line 20, in health_check",
+            "  | ExceptionGroup: grouped failures (2 sub-exceptions)",
+            "  +-+---------------- 1 ----------------",
+            "    | ValueError: first",
+            "    +---------------- 2 ----------------",
+            "    | KeyError: second",
+            "    +------------------------------------"
+          ],
+          "kind": "stack",
+          "fields": [],
+          "hasTrace": true,
+          "phaseId": "import"
+        }
+      ]
+    },
+    "unicode_crlf_bom.log": {
+      "sha256": "878656c71193287c911f28b5eb9dd8cd51946ecb005ee7029e0cceafe8b5b2bb",
+      "bytes": 470,
+      "records": [
+        {
+          "line": 1,
+          "lineEnd": 1,
+          "ts": "2020-01-01 11:39:35.000000000",
+          "key": "2020-01-01 11:39:35.000000000",
+          "level": "EVENT",
+          "logger": "APP-A",
+          "pid": "1001",
+          "tid": "1041",
+          "src": "中文模块.py",
+          "srcLine": 7,
+          "fn": "initialize",
+          "message": "参数：轴1＝100.0，状态：就绪",
+          "body": [],
+          "kind": "text",
+          "fields": [],
+          "hasTrace": false,
+          "phaseId": "import"
+        },
+        {
+          "line": 2,
+          "lineEnd": 2,
+          "ts": "2020-01-01 11:39:35.500000000",
+          "key": "2020-01-01 11:39:35.500000000",
+          "level": "WARNING",
+          "logger": "APP-A",
+          "pid": "1001",
+          "tid": "1041",
+          "src": "中文模块.py",
+          "srcLine": 8,
+          "fn": "initialize",
+          "message": "告警：温度偏高（６５℃）",
+          "body": [],
+          "kind": "text",
+          "fields": [],
+          "hasTrace": false,
+          "phaseId": "import"
+        },
+        {
+          "line": 3,
+          "lineEnd": 3,
+          "ts": "2020-01-01 11:39:36.000000000",
+          "key": "2020-01-01 11:39:36.000000000",
+          "level": "EVENT",
+          "logger": "APP-A",
+          "pid": "1001",
+          "tid": "1041",
+          "src": "中文模块.py",
+          "srcLine": 9,
+          "fn": "initialize",
+          "message": "Ünïcode: ÄÖÜ ß ﾊﾝｶｸ",
+          "body": [],
+          "kind": "text",
+          "fields": [],
+          "hasTrace": false,
+          "phaseId": "import"
+        }
+      ]
+    }
+  },
+  "known_defects": [
+    {
+      "id": "orphan-absorbed",
+      "area": "parseLocal continuation",
+      "detail": "一条既无方括号头部、也不在空行之后的孤立文本行，会被当成上一条记录的 body 续行，而不是独立 UNPARSED 记录。R5 现有行为如此，R6 需保持兼容或显式改造，不得静默改变。"
+    },
+    {
+      "id": "prefixed-traceback-split",
+      "area": "parseLocal per-line stamped stack",
+      "detail": "每行都带方括号头部的 `| Traceback` 形式，只有首行获得 hasTrace，后续 `|   File ...` / `| KeyError ...` 行被切成独立记录，未合并为同一条堆栈记录。"
+    }
+  ]
+}

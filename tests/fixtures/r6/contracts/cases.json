@@ -1,0 +1,439 @@
+{
+  "contract_version": "logbench.r6/1",
+  "note": "Shared by tests/test_r6_contracts.py and tests/r6/contracts.test.cjs. Every case is validated against contracts/r6/contracts.schema.json plus the semantic invariants C1-C12 documented in docs/r6/contracts.md.",
+  "cases": [
+    {
+      "name": "record-header-typed-values",
+      "def": "RecordHeader",
+      "valid": true,
+      "why": "0, false, null and empty string survive with distinct types",
+      "doc": {
+        "ref": {
+          "dataset_id": "ds-1",
+          "record_id": "ds-1#0",
+          "version": 1,
+          "ordinal": 0,
+          "bytes": { "start": "0", "end": "486" },
+          "lines": { "first": 1, "last": 4 }
+        },
+        "ts": "2020-01-01 11:39:15.123456789",
+        "ts_ns": "1577878755123456789",
+        "level": "WARNING",
+        "logger": "euv.energy",
+        "kind": "kv",
+        "has_trace": false,
+        "message": "burst energy below floor",
+        "fields": [
+          { "key": "retries", "value": 0, "value_type": "integer" },
+          { "key": "converged", "value": false, "value_type": "boolean" },
+          { "key": "override", "value": null, "value_type": "null" },
+          { "key": "note", "value": "", "value_type": "string" },
+          { "key": "sigma", "value": 0.2133, "value_type": "number" }
+        ],
+        "provisional": false
+      }
+    },
+    {
+      "name": "record-header-missing-provisional",
+      "def": "RecordHeader",
+      "valid": false,
+      "why": "provisional is mandatory: callers must never infer finality",
+      "doc": {
+        "ref": {
+          "dataset_id": "ds-1",
+          "record_id": "ds-1#1",
+          "version": 1,
+          "ordinal": 1,
+          "bytes": { "start": "486", "end": "600" },
+          "lines": { "first": 5, "last": 5 }
+        },
+        "ts": "2020-01-01 11:39:16.000000000",
+        "level": "INFO",
+        "message": "ok",
+        "fields": []
+      }
+    },
+    {
+      "name": "record-header-unsafe-integer-offset",
+      "def": "RecordHeader",
+      "valid": false,
+      "why": "byte offsets past 2^53 must travel as decimal strings, not JSON numbers",
+      "doc": {
+        "ref": {
+          "dataset_id": "ds-1",
+          "record_id": "ds-1#2",
+          "version": 1,
+          "ordinal": 2,
+          "bytes": { "start": 12345678901234567890, "end": "12345678901234700000" },
+          "lines": { "first": 6, "last": 6 }
+        },
+        "ts": "2020-01-01 11:39:17.000000000",
+        "level": "INFO",
+        "message": "ok",
+        "fields": [],
+        "provisional": false
+      }
+    },
+    {
+      "name": "record-header-legacy-unframed",
+      "def": "RecordHeader",
+      "valid": true,
+      "why": "records migrating from the R5 view have no byte range yet and must stay provisional",
+      "doc": {
+        "ref": {
+          "dataset_id": "file-a",
+          "record_id": "file-a-7",
+          "version": 1,
+          "ordinal": 7,
+          "bytes": null,
+          "lines": { "first": 30, "last": 33 }
+        },
+        "ts": "2020-01-01 11:40:02.000000000",
+        "level": "ERROR",
+        "message": "legacy",
+        "fields": [],
+        "provisional": true
+      }
+    },
+    {
+      "name": "record-header-null-bytes-but-final",
+      "def": "RecordHeader",
+      "valid": false,
+      "why": "C10: a record without a byte range cannot be final",
+      "doc": {
+        "ref": {
+          "dataset_id": "file-a",
+          "record_id": "file-a-8",
+          "version": 1,
+          "ordinal": 8,
+          "bytes": null,
+          "lines": { "first": 34, "last": 34 }
+        },
+        "ts": "2020-01-01 11:40:03.000000000",
+        "level": "ERROR",
+        "message": "legacy",
+        "fields": [],
+        "provisional": false
+      }
+    },
+    {
+      "name": "record-header-impossible-timestamp",
+      "def": "RecordHeader",
+      "valid": false,
+      "why": "month 13 / second 99 must be rejected instead of coerced",
+      "doc": {
+        "ref": {
+          "dataset_id": "ds-1",
+          "record_id": "ds-1#3",
+          "version": 1,
+          "ordinal": 3,
+          "bytes": { "start": "600", "end": "700" },
+          "lines": { "first": 7, "last": 7 }
+        },
+        "ts": "2020-13-01 99:99:99.000",
+        "level": "INFO",
+        "message": "ok",
+        "fields": [],
+        "provisional": false
+      }
+    },
+    {
+      "name": "record-header-value-type-lies",
+      "def": "RecordHeader",
+      "valid": false,
+      "why": "C7: declaring integer while carrying the string \"0\" would erase the 0/\"\" distinction",
+      "doc": {
+        "ref": {
+          "dataset_id": "ds-1",
+          "record_id": "ds-1#4",
+          "version": 1,
+          "ordinal": 4,
+          "bytes": { "start": "700", "end": "800" },
+          "lines": { "first": 8, "last": 8 }
+        },
+        "ts": "2020-01-01 11:39:18.000000000",
+        "level": "INFO",
+        "message": "ok",
+        "fields": [{ "key": "retries", "value": "0", "value_type": "integer" }],
+        "provisional": false
+      }
+    },
+    {
+      "name": "record-header-reversed-bytes",
+      "def": "RecordHeader",
+      "valid": false,
+      "why": "C1: the half-open range must satisfy start <= end",
+      "doc": {
+        "ref": {
+          "dataset_id": "ds-1",
+          "record_id": "ds-1#5",
+          "version": 1,
+          "ordinal": 5,
+          "bytes": { "start": "900", "end": "100" },
+          "lines": { "first": 9, "last": 9 }
+        },
+        "ts": "2020-01-01 11:39:19.000000000",
+        "level": "INFO",
+        "message": "ok",
+        "fields": [],
+        "provisional": false
+      }
+    },
+    {
+      "name": "finding-valid",
+      "def": "Finding",
+      "valid": true,
+      "why": "rule severity stays raw; no display remapping",
+      "doc": {
+        "finding_id": "f-1",
+        "ref": {
+          "dataset_id": "ds-1",
+          "record_id": "ds-1#0",
+          "version": 2,
+          "ordinal": 0,
+          "bytes": { "start": "0", "end": "486" },
+          "lines": { "first": 1, "last": 4 }
+        },
+        "severity": "ERROR",
+        "code": "energy.floor",
+        "title": "burst energy below floor",
+        "rule_revision": 12
+      }
+    },
+    {
+      "name": "finding-lowercase-severity",
+      "def": "Finding",
+      "valid": false,
+      "why": "severity vocabulary is closed; \"warn\" would create a second dialect",
+      "doc": {
+        "finding_id": "f-2",
+        "ref": {
+          "dataset_id": "ds-1",
+          "record_id": "ds-1#0",
+          "version": 1,
+          "ordinal": 0,
+          "bytes": { "start": "0", "end": "486" },
+          "lines": { "first": 1, "last": 4 }
+        },
+        "severity": "warn",
+        "code": "energy.floor",
+        "title": "x"
+      }
+    },
+    {
+      "name": "query-spec-valid",
+      "def": "QuerySpec",
+      "valid": true,
+      "why": "flags are explicit; limit stays under the 2000 page cap",
+      "doc": {
+        "query_id": "q-1",
+        "dataset_id": "ds-1",
+        "text": "energy",
+        "flags": { "case_sensitive": false, "whole_word": true, "regex": false },
+        "levels": ["ERROR", "FATAL"],
+        "limit": 200,
+        "budget_ms": 1500
+      }
+    },
+    {
+      "name": "query-spec-limit-too-large",
+      "def": "QuerySpec",
+      "valid": false,
+      "why": "paging above 2000 records hides memory blowups instead of preventing them",
+      "doc": {
+        "query_id": "q-2",
+        "dataset_id": "ds-1",
+        "text": "energy",
+        "flags": { "case_sensitive": false, "whole_word": false, "regex": false },
+        "limit": 5000
+      }
+    },
+    {
+      "name": "query-state-done-exact",
+      "def": "QueryState",
+      "valid": true,
+      "why": "complete coverage plus exact count is the only shape that may say \"共 N 条\"",
+      "doc": {
+        "query_id": "q-1",
+        "dataset_id": "ds-1",
+        "state": "done",
+        "count": { "matched": 243, "returned": 200, "relation": "exact" },
+        "coverage": { "scanned_bytes": "21474836", "total_bytes": "21474836", "complete": true },
+        "index_version": 4,
+        "elapsed_ms": 812
+      }
+    },
+    {
+      "name": "query-state-partial",
+      "def": "QueryState",
+      "valid": true,
+      "why": "budget pause mid-scan: 61 matches is a floor, coverage is incomplete",
+      "doc": {
+        "query_id": "q-3",
+        "dataset_id": "ds-1",
+        "state": "partial",
+        "count": { "matched": 61, "returned": 61, "relation": "at_least" },
+        "coverage": { "scanned_bytes": "7340032", "total_bytes": "21474836", "complete": false },
+        "resume_token": "rt-7340032",
+        "elapsed_ms": 1502
+      }
+    },
+    {
+      "name": "query-state-partial-but-complete",
+      "def": "QueryState",
+      "valid": false,
+      "why": "C5: partial cannot claim complete coverage",
+      "doc": {
+        "query_id": "q-4",
+        "dataset_id": "ds-1",
+        "state": "partial",
+        "count": { "matched": 61, "returned": 61, "relation": "at_least" },
+        "coverage": { "scanned_bytes": "21474836", "total_bytes": "21474836", "complete": true }
+      }
+    },
+    {
+      "name": "query-state-paused-without-token",
+      "def": "QueryState",
+      "valid": false,
+      "why": "C5: paused without a resume token cannot be resumed and must not be shown",
+      "doc": {
+        "query_id": "q-5",
+        "dataset_id": "ds-1",
+        "state": "paused",
+        "count": { "matched": 10, "returned": 10, "relation": "at_least" },
+        "coverage": { "scanned_bytes": "1024", "total_bytes": "21474836", "complete": false },
+        "resume_token": null
+      }
+    },
+    {
+      "name": "query-state-unknown-with-number",
+      "def": "QueryState",
+      "valid": false,
+      "why": "C3: unknown must carry matched=null so the UI renders an open range instead of a fake count",
+      "doc": {
+        "query_id": "q-6",
+        "dataset_id": "ds-1",
+        "state": "running",
+        "count": { "matched": 3, "returned": 3, "relation": "unknown" },
+        "coverage": { "scanned_bytes": "0", "total_bytes": "21474836", "complete": false }
+      }
+    },
+    {
+      "name": "query-state-returned-exceeds-matched",
+      "def": "QueryState",
+      "valid": false,
+      "why": "C3: returned records are a subset of matched ones",
+      "doc": {
+        "query_id": "q-7",
+        "dataset_id": "ds-1",
+        "state": "running",
+        "count": { "matched": 5, "returned": 10, "relation": "at_least" },
+        "coverage": { "scanned_bytes": "2048", "total_bytes": "21474836", "complete": false }
+      }
+    },
+    {
+      "name": "task-uploaded-not-indexed",
+      "def": "TaskProgress",
+      "valid": true,
+      "why": "upload finished, index not started: the honest shape after the last byte lands",
+      "doc": {
+        "task_id": "t-1",
+        "dataset_id": "ds-9",
+        "kind": "private_upload",
+        "phase": "uploaded",
+        "bytes_total": "1073741824",
+        "bytes_done": "1073741824",
+        "records_indexed": 0,
+        "indexed": false,
+        "cancel_requested": false,
+        "action_id": "act-00000001"
+      }
+    },
+    {
+      "name": "task-uploaded-but-claims-indexed",
+      "def": "TaskProgress",
+      "valid": false,
+      "why": "C6: upload completion must never be reported as index completion",
+      "doc": {
+        "task_id": "t-2",
+        "dataset_id": "ds-9",
+        "kind": "private_upload",
+        "phase": "uploaded",
+        "bytes_total": "1073741824",
+        "bytes_done": "1073741824",
+        "indexed": true,
+        "cancel_requested": false
+      }
+    },
+    {
+      "name": "task-bytes-over-total",
+      "def": "TaskProgress",
+      "valid": false,
+      "why": "C6: progress cannot exceed the advertised total",
+      "doc": {
+        "task_id": "t-3",
+        "kind": "local_import",
+        "phase": "reading",
+        "bytes_total": "1024",
+        "bytes_done": "2048",
+        "indexed": false,
+        "cancel_requested": false
+      }
+    },
+    {
+      "name": "provider-combined",
+      "def": "ReaderProvider",
+      "valid": true,
+      "why": "combined providers expose the merged source list and keep identical capabilities",
+      "doc": {
+        "provider_id": "p-combined",
+        "kind": "combined",
+        "dataset_id": "ds-9",
+        "capabilities": { "search": true, "stream_bytes": true, "resume": true, "write": false, "max_page_records": 2000, "max_page_bytes": 4194304 },
+        "sources": ["local:c1", "server:s1"]
+      }
+    },
+    {
+      "name": "provider-unknown-kind",
+      "def": "ReaderProvider",
+      "valid": false,
+      "why": "kind is a closed set of three transports",
+      "doc": {
+        "provider_id": "p-ftp",
+        "kind": "ftp",
+        "dataset_id": "ds-9",
+        "capabilities": { "search": true, "stream_bytes": true, "resume": false, "write": false }
+      }
+    },
+    {
+      "name": "envelope-valid",
+      "def": "WorkerEnvelope",
+      "valid": true,
+      "why": "generation plus snapshot lets the main thread drop stale replies",
+      "doc": {
+        "protocol": "logbench.worker/2",
+        "request_id": "r-1",
+        "dataset_id": "ds-1",
+        "generation": 3,
+        "query_id": "q-1",
+        "version": 1,
+        "snapshot": "3ae5222b",
+        "payload": { "kind": "header-batch", "items": [] }
+      }
+    },
+    {
+      "name": "envelope-old-protocol",
+      "def": "WorkerEnvelope",
+      "valid": false,
+      "why": "v1 replies must be rejected rather than silently merged with v2 state",
+      "doc": {
+        "protocol": "logbench.worker/1",
+        "request_id": "r-2",
+        "dataset_id": "ds-1",
+        "generation": 1,
+        "version": 1,
+        "snapshot": "3ae5222b"
+      }
+    }
+  ]
+}

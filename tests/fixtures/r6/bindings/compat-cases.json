@@ -1,0 +1,128 @@
+{
+  "comment": "Frozen binding-resolution cases shared by the Python resolver and the browser-side rule. Both sides replay this file; a change in either that contradicts it must be reviewed and the file regenerated deliberately.",
+  "layerOrder": [
+    "personal_file",
+    "personal_directory",
+    "shared_file",
+    "shared_directory",
+    "mapping_default",
+    "service_default"
+  ],
+  "rules": {
+    "R-personal-file": "我的单文件",
+    "R-personal-dir": "我的目录",
+    "R-shared-file": "共享单文件",
+    "R-shared-dir": "共享目录",
+    "R-shared-parent": "共享上级目录",
+    "R-map": "映射默认",
+    "R-default": "服务默认"
+  },
+  "cases": [
+    {
+      "name": "personal single file wins over everything",
+      "rootId": "r1",
+      "path": "a/b/c.log",
+      "personal": [
+        {"scope": "file", "rootId": "r1", "path": "a/b/c.log", "ruleId": "R-personal-file"},
+        {"scope": "directory", "rootId": "r1", "path": "a", "ruleId": "R-personal-dir"}
+      ],
+      "shared": [
+        {"scope": "file", "rootId": "r1", "path": "a/b/c.log", "ruleId": "R-shared-file"},
+        {"scope": "directory", "rootId": "r1", "path": "a/b", "ruleId": "R-shared-dir"},
+        {"scope": "mapping", "rootId": "r1", "path": "a/b", "ruleId": "R-map"},
+        {"scope": "default", "rootId": "legacy", "path": "", "ruleId": "R-default"}
+      ],
+      "expected": {"ruleId": "R-personal-file", "layer": "personal_file"}
+    },
+    {
+      "name": "personal directory beats shared file",
+      "rootId": "r1",
+      "path": "a/b/c.log",
+      "personal": [
+        {"scope": "directory", "rootId": "r1", "path": "a/b", "ruleId": "R-personal-dir"}
+      ],
+      "shared": [
+        {"scope": "file", "rootId": "r1", "path": "a/b/c.log", "ruleId": "R-shared-file"}
+      ],
+      "expected": {"ruleId": "R-personal-dir", "layer": "personal_directory"}
+    },
+    {
+      "name": "shared file beats shared directory",
+      "rootId": "r1",
+      "path": "a/b/c.log",
+      "personal": [],
+      "shared": [
+        {"scope": "file", "rootId": "r1", "path": "a/b/c.log", "ruleId": "R-shared-file"},
+        {"scope": "directory", "rootId": "r1", "path": "a/b", "ruleId": "R-shared-dir"}
+      ],
+      "expected": {"ruleId": "R-shared-file", "layer": "shared_file"}
+    },
+    {
+      "name": "the nearest shared directory wins",
+      "rootId": "r1",
+      "path": "a/b/c.log",
+      "personal": [],
+      "shared": [
+        {"scope": "directory", "rootId": "r1", "path": "a", "ruleId": "R-shared-parent"},
+        {"scope": "directory", "rootId": "r1", "path": "a/b", "ruleId": "R-shared-dir"}
+      ],
+      "expected": {"ruleId": "R-shared-dir", "layer": "shared_directory"}
+    },
+    {
+      "name": "mapping default applies below directories and above the service default",
+      "rootId": "r1",
+      "path": "a/b/c.log",
+      "personal": [],
+      "shared": [
+        {"scope": "mapping", "rootId": "r1", "path": "a", "ruleId": "R-map"},
+        {"scope": "default", "rootId": "legacy", "path": "", "ruleId": "R-default"}
+      ],
+      "expected": {"ruleId": "R-map", "layer": "mapping_default"}
+    },
+    {
+      "name": "a directory beats the mapping default",
+      "rootId": "r1",
+      "path": "a/b/c.log",
+      "personal": [],
+      "shared": [
+        {"scope": "directory", "rootId": "r1", "path": "a/b", "ruleId": "R-shared-dir"},
+        {"scope": "mapping", "rootId": "r1", "path": "a", "ruleId": "R-map"}
+      ],
+      "expected": {"ruleId": "R-shared-dir", "layer": "shared_directory"}
+    },
+    {
+      "name": "another root with the same relative path inherits nothing",
+      "rootId": "r2",
+      "path": "a/b/c.log",
+      "personal": [],
+      "shared": [
+        {"scope": "directory", "rootId": "r1", "path": "a", "ruleId": "R-shared-parent"},
+        {"scope": "file", "rootId": "r1", "path": "a/b/c.log", "ruleId": "R-shared-file"},
+        {"scope": "default", "rootId": "legacy", "path": "", "ruleId": "R-default"}
+      ],
+      "expected": {"ruleId": "R-default", "layer": "service_default"}
+    },
+    {
+      "name": "a deleted rule is skipped and reported",
+      "rootId": "r1",
+      "path": "a/b/c.log",
+      "deleted": ["R-personal-dir"],
+      "personal": [
+        {"scope": "directory", "rootId": "r1", "path": "a/b", "ruleId": "R-personal-dir"}
+      ],
+      "shared": [
+        {"scope": "directory", "rootId": "r1", "path": "a", "ruleId": "R-shared-parent"}
+      ],
+      "expected": {"ruleId": "R-shared-parent", "layer": "shared_directory",
+                   "skipped": "R-personal-dir"}
+    },
+    {
+      "name": "no binding at all resolves to nothing",
+      "rootId": "r3",
+      "path": "x/y.log",
+      "personal": [],
+      "shared": [],
+      "expected": {"ruleId": null, "layer": null}
+    }
+  ]
+}

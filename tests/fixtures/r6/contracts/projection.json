@@ -1,0 +1,161 @@
+{
+  "contract_version": "logbench.r6/1",
+  "note": "R5 view (v1) to R6 view (v2) projection. The projection never invents information: byte ranges stay null until a record is re-framed, and every R5 field value stays a string because v1 already lost its type.",
+  "cases": [
+    {
+      "name": "v1-record-typed-loss-is-explicit",
+      "valid": true,
+      "why": "0/false/\"\" arrive as strings from v1; the projection must not guess types",
+      "input": {
+        "id": "file-a-7",
+        "fileId": "file-a",
+        "ordinal": 7,
+        "line": 30,
+        "lineEnd": 33,
+        "ts": "2020-01-01 11:40:02.123",
+        "key": "1577878802123000000",
+        "level": "ERROR",
+        "logger": "euv.energy",
+        "pid": "4242",
+        "tid": "4243",
+        "src": "energy.py",
+        "srcLine": 118,
+        "fn": "burst",
+        "message": "burst energy below floor",
+        "body": "Traceback (most recent call last):\n  File \"energy.py\", line 118\nValueError: floor",
+        "hasTrace": true,
+        "fields": [["retries", "0"], ["converged", "false"], ["note", ""]],
+        "kind": "kv"
+      },
+      "expect": {
+        "ref": {
+          "dataset_id": "file-a",
+          "record_id": "file-a-7",
+          "version": 1,
+          "ordinal": 7,
+          "bytes": null,
+          "lines": { "first": 30, "last": 33 }
+        },
+        "ts": "2020-01-01 11:40:02.123",
+        "level": "ERROR",
+        "logger": "euv.energy",
+        "kind": "kv",
+        "has_trace": true,
+        "message": "burst energy below floor",
+        "fields": [
+          { "key": "retries", "value": "0", "value_type": "string" },
+          { "key": "converged", "value": "false", "value_type": "string" },
+          { "key": "note", "value": "", "value_type": "string" }
+        ],
+        "provisional": true
+      }
+    },
+    {
+      "name": "v1-unparsed-line",
+      "valid": true,
+      "why": "UNPARSED rows keep their level token and empty ts instead of being dropped",
+      "input": {
+        "id": "file-a-12",
+        "fileId": "file-a",
+        "ordinal": 12,
+        "line": 61,
+        "lineEnd": 61,
+        "ts": "",
+        "key": null,
+        "level": "UNPARSED",
+        "logger": "—",
+        "message": "stray continuation",
+        "body": "",
+        "hasTrace": false,
+        "fields": [],
+        "kind": "unparsed"
+      },
+      "expect": {
+        "ref": {
+          "dataset_id": "file-a",
+          "record_id": "file-a-12",
+          "version": 1,
+          "ordinal": 12,
+          "bytes": null,
+          "lines": { "first": 61, "last": 61 }
+        },
+        "ts": null,
+        "level": "UNPARSED",
+        "logger": "—",
+        "kind": "unparsed",
+        "has_trace": false,
+        "message": "stray continuation",
+        "fields": [],
+        "provisional": true
+      }
+    },
+    {
+      "name": "v1-fields-as-object",
+      "valid": false,
+      "why": "v1 fields are ordered [key, value] pairs; an object has already lost duplicate keys and order",
+      "input": {
+        "id": "file-a-1",
+        "fileId": "file-a",
+        "ordinal": 1,
+        "line": 1,
+        "lineEnd": 1,
+        "ts": "2020-01-01 11:40:02.000",
+        "level": "INFO",
+        "message": "m",
+        "fields": { "retries": "0" },
+        "kind": "kv"
+      }
+    },
+    {
+      "name": "v1-line-not-positive",
+      "valid": false,
+      "why": "physical lines are 1-based; line 0 means the framer drifted",
+      "input": {
+        "id": "file-a-2",
+        "fileId": "file-a",
+        "ordinal": 2,
+        "line": 0,
+        "lineEnd": 0,
+        "ts": "2020-01-01 11:40:02.000",
+        "level": "INFO",
+        "message": "m",
+        "fields": [],
+        "kind": "text"
+      }
+    },
+    {
+      "name": "v1-unknown-kind",
+      "valid": false,
+      "why": "kind is a closed set; unknown values would silently disable body rendering paths",
+      "input": {
+        "id": "file-a-3",
+        "fileId": "file-a",
+        "ordinal": 3,
+        "line": 4,
+        "lineEnd": 4,
+        "ts": "2020-01-01 11:40:02.000",
+        "level": "INFO",
+        "message": "m",
+        "fields": [],
+        "kind": "binary"
+      }
+    },
+    {
+      "name": "v1-missing-identity",
+      "valid": false,
+      "why": "a record without id or dataset id cannot be referenced by Finding or QueryState",
+      "input": {
+        "id": "",
+        "fileId": "",
+        "ordinal": 0,
+        "line": 1,
+        "lineEnd": 1,
+        "ts": "2020-01-01 11:40:02.000",
+        "level": "INFO",
+        "message": "m",
+        "fields": [],
+        "kind": "text"
+      }
+    }
+  ]
+}

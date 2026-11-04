@@ -1,0 +1,57 @@
+{
+  "files": [
+    {
+      "bytes": 1676,
+      "first_key": "2020-01-01 11:39:15.1234567",
+      "last_key": "2020-01-01 11:39:18.000000000",
+      "name": "edge_cases.log",
+      "notes": "fraction digits, missing tag, duplicate keys, 0/false/null/empty, 19-digit int, orphan line, descending and duplicate timestamps",
+      "physical_lines": 12,
+      "records": 10,
+      "sha256": "1d231d2334e5acbcd07cb663d944f699fb5d20bdcb6b6922719f60bab5f43f05"
+    },
+    {
+      "bytes": 1708,
+      "first_key": "2020-01-01 11:39:25.000000000",
+      "last_key": "2020-01-01 11:39:28.000000000",
+      "name": "traceback_chain.log",
+      "notes": "cause/context chain, per-line stamped prefix, truncated traceback without terminal line, ExceptionGroup body preserved raw",
+      "physical_lines": 30,
+      "records": 6,
+      "sha256": "00039b078d0677c83a124cf662a7e4a23367001742033284a1e754548abc0904"
+    },
+    {
+      "bytes": 470,
+      "first_key": "2020-01-01 11:39:35.000000000",
+      "last_key": "2020-01-01 11:39:36.000000000",
+      "name": "unicode_crlf_bom.log",
+      "notes": "UTF-8 BOM, CRLF line endings, full-width punctuation, mixed Latin diacritics",
+      "physical_lines": 3,
+      "records": 3,
+      "sha256": "878656c71193287c911f28b5eb9dd8cd51946ecb005ee7029e0cceafe8b5b2bb"
+    },
+    {
+      "bytes": 370,
+      "first_key": "2020-01-01 11:39:45.000000000",
+      "last_key": "2020-01-01 11:39:46.000000000",
+      "name": "no_trailing_newline.log",
+      "notes": "multi-line continuation body, blank continuation line, file ends without newline",
+      "physical_lines": 6,
+      "records": 2,
+      "sha256": "b621563678aaf354962e4db4ea423e5c0bffab2dd8a5776ce8a8aee871dbe449"
+    }
+  ],
+  "format": "bracket",
+  "generator": "tools/generate_log_fixture.py",
+  "generator_version": 1,
+  "preset": "golden",
+  "rule_profile": "cpqpsgx-default",
+  "schema": "logbench.r6.fixture-manifest/1",
+  "seed": 20261102,
+  "totals": {
+    "bytes": 4224,
+    "files": 4,
+    "physical_lines": 51,
+    "records": 21
+  }
+}

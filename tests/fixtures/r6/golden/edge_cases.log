@@ -1,0 +1,12 @@
+[2020-01-01 11:39:15.1234567] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1241] [100] [0:0:0] get_setpoint() <TAG_A> GLOBAL_Delay: 3000ns energy: 9.430 converged: false
+[2020-01-01 11:39:15.12345678] [EVENT] [APP-A] [1001] [1041] [recipe.py:140] [100] [0:0:0] set_recipe() <TAG_A> recipe: axis_01=100.0, axis_02=200.5 key: first key: second
+[2020-01-01 11:39:15.123456789] [EVENT] [APP-A] [1001] [1041] [acquisition.py:188] [100] [0:0:0] get_camera_frame() frame_id: 12004 exposure_us: 100 status: ready
+[2020-01-01 11:39:16.100000000] [WARNING] [APP-B] [2002] [2042] [device.py:166] [100] [0:0:0] set_setpoint_now() <TAG_A> retry: 0 enabled: false payload: null note: 
+[2020-01-01 11:39:16.200000000] [ERROR] [APP-B] [2002] [2042] [rpc.py:88] [100] [0:0:0] flush_buffer() <TAG_A> rpc_success: False err_code: 0x0 detail: 中文全角：值，后续
+[2020-01-01 11:39:17.300000000] [EVENT] [CTRL-A] [3003] [3003] [counter.py:12] [100] [0:0:0] health_check() <TAG_A> burstStartTime: 1234567890123456789 burstEndTime: 1234567890173456789
+[2020-01-01 11:39:18.400000000] [EVENT] [APP-C] [4004] [4044] [buffer.py:77] [100] [0:0:0] flush_buffer() <TAG_A> depth: 0 ratio: 0.0 flag: true name: ""
+
+orphan line without any bracket header
+[2020-01-01 11:39:19.500000000] [DEBUG] [APP-C] [4004] [4044] [buffer.py:78] [100] [0:0:0] flush_buffer() <TAG_A> after orphan: ok
+[2020-01-01 11:39:18.000000000] [EVENT] [APP-A] [1001] [1041] [algorithm.py:947] [100] [0:0:0] optimize() <TAG_A> iteration: 9 energy: 9.100 converged: true
+[2020-01-01 11:39:18.000000000] [ERROR] [APP-A] [1001] [1041] [algorithm.py:948] [100] [0:0:0] optimize() <TAG_A> iteration: 9 err_code: 5 rpc_success: false

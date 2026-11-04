@@ -1,0 +1,30 @@
+[2020-01-01 11:39:25.000000000] [ERROR] [APP-A] [1001] [1041] [runner.py:50] [100] [0:0:0] run() <TAG_A> job failed -> module: demo
+Traceback (most recent call last):
+  File "/opt/APP-A/runner.py", line 47, in run
+    return worker.execute()
+  File "/opt/APP-A/worker.py", line 88, in execute
+    raise ValueError("bad recipe")
+ValueError: bad recipe
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/opt/APP-A/job.py", line 12, in main
+    run()
+RuntimeError: wrapper failed
+[2020-01-01 11:39:26.000000000] [ERROR] [APP-B] [2002] [2042] [runner.py:51] [100] [0:0:0] run() <TAG_A> | Traceback (most recent call last):
+[2020-01-01 11:39:26.100000000] [ERROR] [APP-B] [2002] [2042] [runner.py:52] [100] [0:0:0] run() <TAG_A> |   File "/opt/APP-B/x.py", line 3, in <module>
+[2020-01-01 11:39:26.200000000] [ERROR] [APP-B] [2002] [2042] [runner.py:53] [100] [0:0:0] run() <TAG_A> | KeyError: 'missing'
+[2020-01-01 11:39:27.000000000] [ERROR] [APP-C] [4004] [4044] [trunc.py:9] [100] [0:0:0] flush_buffer() <TAG_A> truncated traceback follows
+Traceback (most recent call last):
+  File "/opt/APP-C/trunc.py", line 8, in flush_buffer
+    raise OSError("no terminal line")
+[2020-01-01 11:39:28.000000000] [ERROR] [CTRL-A] [3003] [3003] [group.py:21] [100] [0:0:0] health_check() <TAG_A> ExceptionGroup raised
+  + Exception Group Traceback (most recent call last):
+  |   File "/opt/CTRL-A/group.py", line 20, in health_check
+  | ExceptionGroup: grouped failures (2 sub-exceptions)
+  +-+---------------- 1 ----------------
+    | ValueError: first
+    +---------------- 2 ----------------
+    | KeyError: second
+    +------------------------------------

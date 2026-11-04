@@ -1,0 +1,6 @@
+[2020-01-01 11:39:45.000000000] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1284] [100] [0:0:0] best_index() <TAG_A> burstEuvEnergyMean: 9.414220809936523
+burstEuvEnergy3sigma: 0.21338501572608948
+burstDropletCount: 420
+isValid: true
+
+[2020-01-01 11:39:46.000000000] [EVENT] [APP-A] [1001] [1041] [algorithm.py:1285] [100] [0:0:0] best_index() <TAG_A> best_index_mask: 0
