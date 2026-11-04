@@ -27,15 +27,24 @@ from pathlib import Path
 from typing import Optional
 
 from .cache_versions import LAYERS, REBUILDABLE, CacheError, CacheRegistry
+from ..settings import CACHE_QUOTA, SettingsService
 
 SCHEMA = 'logbench.cache/1'
+USAGE_SCHEMA = 'logbench.cache.usage/1'
 DERIVED = ('structure', 'rules', 'search')
 PAGE_MAX = 100
 ATTEMPT_STATES = ('building', 'failed', 'cancelled', 'stale', 'superseded', 'revoked')
+# The quota is a warning threshold, not a hard stop (see `usage()`), so the
+# default is generous: a 1 GiB derived cache covers roughly a million framed
+# lines before an operator has to think about it.
+DEFAULT_QUOTA_BYTES = 1024 ** 3
+MIN_QUOTA_BYTES = 16 * 1024 ** 2
+MAX_QUOTA_BYTES = 1024 ** 4
 
 STATUS = {'invalid_layer': 400, 'raw_not_purgeable': 400, 'confirmation_required': 400,
           'not_found': 404, 'root_offline': 409, 'nothing_to_rebuild': 409,
-          'pinned': 409, 'storage_unavailable': 503}
+          'pinned': 409, 'storage_unavailable': 503, 'invalid_quota': 400,
+          'version_pinned': 409}
 
 
 class CacheApiError(RuntimeError):
@@ -51,6 +60,7 @@ class CacheApi:
         self.app = app
         self.store = app.store
         self.registry = CacheRegistry(app.store)
+        self.settings = SettingsService(app)
 
     # ------------------------------------------------------------------ routing
     def route(self, method: str, path: str, q, payload: dict, actor: dict):
@@ -76,6 +86,18 @@ class CacheApi:
                 'scope': q('scope', 'shared'), 'q': q('q'), 'cursor': q('cursor', ''),
                 'limit': integer(q('limit', '50'), '数量', 1, PAGE_MAX),
                 'layer': q('layer'), 'state': q('state')})
+        if path == '/api/v2/cache/usage' and method in ('GET', 'HEAD'):
+            # Readable by every signed-in principal: the header meter is visible to
+            # all of them, and the payload carries totals only — no file names, no
+            # paths, nothing that would leak which logs exist.
+            return self.usage(actor)
+        if path == '/api/v2/cache/quota':
+            if method in ('GET', 'HEAD'):
+                return self.quota()
+            if method in ('PUT', 'POST'):
+                self.app.require_admin(actor)
+                return self.set_quota(actor, payload)
+            fail(405, 'METHOD_NOT_ALLOWED', '缓存限额只支持读取或修改。')
         if path == '/api/v2/cache/rebuild':
             if method != 'POST':
                 fail(405, 'METHOD_NOT_ALLOWED', '重建只支持 POST。')
@@ -308,6 +330,92 @@ class CacheApi:
             return os.stat(str(Path(path))).st_size
         except OSError:
             return None
+
+    # -------------------------------------------------------------------- usage
+    def usage(self, actor: dict) -> dict:
+        """Derived-cache bytes as the operator sees them, not as one file sees them.
+
+        `raw` is excluded on purpose: it cannot be rebuilt, so counting it would
+        mean the meter only drops when a log is deleted, and would invite an
+        operator to "clean" bytes that are really source data.
+
+        Exceeding the quota is a warning, never a refusal. Refusing to index
+        because a cache is full would turn a background optimisation into an
+        outage for the operator who set the number.
+        """
+        marks = ','.join('?' * len(DERIVED))
+        with self.store.connect() as db:
+            rows = db.execute(
+                'SELECT layer,COUNT(*) AS n,COALESCE(SUM(bytes),0) AS bytes '
+                'FROM layer_versions WHERE layer IN (%s) GROUP BY layer' % marks,
+                DERIVED).fetchall()
+            published = db.execute(
+                'SELECT v.layer AS layer,COALESCE(SUM(v.bytes),0) AS bytes '
+                'FROM layer_pointers p JOIN layer_versions v ON v.version_id=p.version_id '
+                'WHERE v.layer IN (%s) GROUP BY v.layer' % marks, DERIVED).fetchall()
+            files = db.execute(
+                'SELECT COUNT(DISTINCT file_id) AS n FROM layer_versions '
+                'WHERE layer IN (%s)' % marks, DERIVED).fetchone()
+        layers = {name: {'bytes': 0, 'versions': 0, 'publishedBytes': 0} for name in DERIVED}
+        total = 0
+        for row in rows:
+            entry = layers.setdefault(row['layer'], {'bytes': 0, 'versions': 0,
+                                                     'publishedBytes': 0})
+            entry['bytes'] = int(row['bytes'] or 0)
+            entry['versions'] = int(row['n'] or 0)
+            total += entry['bytes']
+        published_total = 0
+        for row in published:
+            entry = layers.setdefault(row['layer'], {'bytes': 0, 'versions': 0,
+                                                     'publishedBytes': 0})
+            entry['publishedBytes'] = int(row['bytes'] or 0)
+            published_total += entry['publishedBytes']
+        quota = self.settings.get_int(CACHE_QUOTA, DEFAULT_QUOTA_BYTES)
+        unlimited = quota is None or quota <= 0
+        return {
+            'schema': USAGE_SCHEMA,
+            'usedBytes': total,
+            'publishedBytes': published_total,
+            'quotaBytes': None if unlimited else quota,
+            'unlimited': unlimited,
+            'ratio': None if unlimited else round(total / float(quota), 4),
+            'overQuota': (not unlimited) and total > quota,
+            # Stated in the payload so the UI does not have to hardcode the policy.
+            'enforcement': 'warn',
+            'files': int(files['n'] or 0),
+            'layers': layers,
+            'observedAt': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()),
+        }
+
+    def quota(self) -> dict:
+        value = self.settings.get_int(CACHE_QUOTA, DEFAULT_QUOTA_BYTES)
+        return {'schema': USAGE_SCHEMA, 'quotaBytes': value,
+                'unlimited': value is None or value <= 0,
+                'defaultBytes': DEFAULT_QUOTA_BYTES,
+                'minBytes': MIN_QUOTA_BYTES, 'maxBytes': MAX_QUOTA_BYTES}
+
+    def set_quota(self, actor: dict, body: dict) -> dict:
+        raw = body.get('quotaBytes')
+        if raw is None and 'bytes' in body:
+            raw = body.get('bytes')
+        if raw is None or raw == '' or raw == 'unlimited':
+            value = None
+        else:
+            try:
+                value = int(raw)
+            except (TypeError, ValueError):
+                raise CacheApiError('invalid_quota', '限额必须是字节数，或 null 表示不限。')
+            if value < MIN_QUOTA_BYTES:
+                raise CacheApiError('invalid_quota',
+                                    '限额不能小于 16 MiB；如需不限请传 null。',
+                                    minBytes=MIN_QUOTA_BYTES)
+            if value > MAX_QUOTA_BYTES:
+                raise CacheApiError('invalid_quota', '限额超出可配置范围。',
+                                    maxBytes=MAX_QUOTA_BYTES)
+        saved = self.settings.set(actor, CACHE_QUOTA, value)
+        return {'schema': USAGE_SCHEMA, 'quotaBytes': saved['value'],
+                'unlimited': value is None, 'revision': saved.get('revision'),
+                'enforcement': 'warn'}
 
     # ------------------------------------------------------------------ rebuild
     def rebuild(self, actor: dict, body: dict) -> dict:

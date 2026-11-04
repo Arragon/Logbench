@@ -33,6 +33,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import secrets
 import time
 from typing import Any, Iterable, Optional
@@ -401,6 +402,77 @@ class CacheRegistry:
                 collected.append(version_id)
             self.counters['collected'] += len(collected)
         return {'collected': collected, 'kept': kept}
+
+    # -------------------------------------------------------------------- purge
+    def purge_file(self, file_id: str, *, scope: Optional[str] = None,
+                   reason: str = '') -> dict:
+        """Delete every version of one file, including the shard bytes they own.
+
+        `invalidate` is deliberately reversible and `gc` deliberately keeps the
+        bytes a stale version points at, because a pinned reader must survive a
+        rebuild. This method is neither: it is only called when the *source file*
+        is being destroyed, so keeping its cache would leave index data that can
+        never be validated against anything again.
+
+        A live pin means another window is still paging this version. Refusing
+        there is the only answer that keeps a visible reader from failing on its
+        next page, so the caller receives `version_pinned` with the tokens and can
+        retry after they expire.
+        """
+        where, args = ['file_id=?'], [file_id]
+        if scope:
+            where.append('scope=?')
+            args.append(scope)
+        clause = ' AND '.join(where)
+        shard_paths: list[str] = []
+        with self.store.transaction() as db:
+            versions = db.execute(
+                'SELECT * FROM layer_versions WHERE ' + clause, tuple(args)).fetchall()
+            if not versions:
+                return {'file_id': file_id, 'versions': 0, 'bytes': 0,
+                        'freed': [], 'orphans': [], 'reason': reason}
+            ids = [row['version_id'] for row in versions]
+            marks = ','.join('?' * len(ids))
+            live = db.execute(
+                'SELECT version_id,token FROM layer_pins WHERE version_id IN (%s) '
+                'AND expires_at>?' % marks,
+                tuple(ids) + (self.clock(),)).fetchall()
+            if live:
+                raise CacheError('version_pinned',
+                                 '该文件的索引版本仍被读取会话固定，请稍后再删除。',
+                                 fileId=file_id,
+                                 pins=[{'version': row['version_id'], 'token': row['token']}
+                                       for row in live])
+            total = 0
+            for row in versions:
+                total += int(row['bytes'] or 0)
+                stats = json.loads(row['stats'] or '{}')
+                shard = stats.get('shard')
+                if isinstance(shard, str) and shard:
+                    shard_paths.append(shard)
+                self._event(db, row['version_id'], 'purged', reason)
+            # Children before parents: `layer_pointers` and `layer_pins` reference
+            # `layer_versions`, and the events row is a log of that version.
+            db.execute('DELETE FROM layer_events WHERE version_id IN (%s)' % marks, tuple(ids))
+            db.execute('DELETE FROM layer_pins WHERE version_id IN (%s)' % marks, tuple(ids))
+            db.execute('DELETE FROM layer_pointers WHERE ' + clause, tuple(args))
+            db.execute('DELETE FROM layer_versions WHERE ' + clause, tuple(args))
+            db.execute('DELETE FROM cache_versions WHERE file_id=?', (file_id,))
+            self.counters['collected'] += len(ids)
+        freed, orphans = [], []
+        for path in shard_paths:
+            try:
+                os.unlink(path)
+                freed.append(path)
+            except FileNotFoundError:
+                # Already gone: the row was the only thing left.
+                continue
+            except OSError:
+                # A shard that cannot be unlinked is reported, not swallowed: the
+                # operator needs to know the byte count on disk did not drop.
+                orphans.append(path)
+        return {'file_id': file_id, 'versions': len(versions), 'bytes': total,
+                'freed': freed, 'orphans': orphans, 'reason': reason}
 
     # ------------------------------------------------------------------- views
     def versions(self, *, file_id: Optional[str] = None, layer: Optional[str] = None,

@@ -70,6 +70,9 @@
   var rulesView = null;
   var cacheView = null;
   var runtimeView = null;
+  /* Header cache meter: lives outside the cache page so it can be watched while
+   * the operator is doing something else. */
+  var cacheMeter = null;
 
   function $(id) { return document.getElementById(id); }
 
@@ -1207,6 +1210,9 @@
       library = window.LBLibrary.create({
         api: http,
         onStatus: setStatus,
+        // Purging from the recycling bin also drops the file's index cache, so the
+        // header total is stale the moment that succeeds.
+        onCacheChanged: function () { if (cacheMeter) cacheMeter.refresh(); },
         localFiles: function () {
           return provider.listFiles().then(function (value) { return value.files || []; });
         },
@@ -1317,6 +1323,9 @@
       if (isCache) {
         var cache = ensureAdminView('cache');
         if (cache) cache.show();
+        // Leaving the cache page can change the totals (purge, rebuild), so the
+        // meter is re-read on entry rather than waiting for its own interval.
+        if (cacheMeter) cacheMeter.refresh();
         setStatus('解析缓存');
         return;
       }
@@ -1410,6 +1419,17 @@
     bindCompare();
     bindLive();
 
+    // The meter is mounted once, not per view: it is the only place the cache
+    // total is visible while the cache page is closed.
+    if (window.LBCacheMeter) {
+      cacheMeter = window.LBCacheMeter.create({
+        api: http,
+        onStatus: setStatus,
+        onOpenCachePage: function () { viewSwitch('cache'); }
+      });
+      cacheMeter.mount($('cache-meter'));
+    }
+
     // The rule profile is fetched, not inlined: the same file the server ships is
     // what the importer uses, so field extraction on the page matches the CLI.
     var profilePromise = fetch('/assets/rules/default.json')
@@ -1441,6 +1461,7 @@
       storageRoots: function () { return storageRoots; },
       rules: function () { return rulesView; },
       cache: function () { return cacheView; },
+      cacheMeter: function () { return cacheMeter; },
       runtime: function () { return runtimeView; },
       compareView: function () { return compare; },
       intake: function () { return intakeView; },

@@ -80,6 +80,9 @@ R6_PAGE_PARTS = [
     'ui/compare.js',
     'ui/rule-impact.js',
     'ui/cache-manager.js',
+    # The header meter is separate from the cache page: it must exist even when
+    # that page was never opened, and it reads a totals-only endpoint.
+    'ui/cache-meter.js',
     'ui/runtime.js',
     # Unified library and storage roots (R6-056). Loaded before server-mode so a
     # library row can hand a file id to the server reader.

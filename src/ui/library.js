@@ -91,6 +91,9 @@
     var onStatus = options.onStatus || function () {};
     var localFiles = options.localFiles || function () { return Promise.resolve([]); };
     var onOpenLocal = options.onOpenLocal || function () {};
+    /* Called after anything that can change the server's cache total, so the
+     * header meter does not keep showing a number the operator just changed. */
+    var onCacheChanged = options.onCacheChanged || function () {};
 
     var state = {
       scope: 'shared',
@@ -109,6 +112,12 @@
       readOnly: true,
       admin: false,
       trashOpen: false,
+      /* Multi-select holds the row itself, not just its id: the confirm dialog
+       * has to name the file and its size without re-reading the list, which may
+       * have been paged away since the checkbox was ticked. */
+      selected: {},
+      trashSelected: {},
+      confirm: null,
       error: null,
       notice: null,
       favourites: readFavourites()
@@ -231,6 +240,52 @@
       parts.note.setAttribute('role', 'alert');
       parts.note.hidden = true;
 
+      // Library batch bar: only the destructive verb lives here. A selection that
+      // silently outlived a directory change is how people delete files they can
+      // no longer see, so `loadFiles(true)` clears it.
+      parts.batch = el('div', 'r6-toolbar lib-batch');
+      parts.batch.hidden = true;
+      parts.batchText = el('span', 'r6-meta', '');
+      parts.batchClear = el('button', 'r6-icon', '清除选择');
+      parts.batchClear.type = 'button';
+      parts.batchClear.addEventListener('click', function () {
+        state.selected = {};
+        renderTable();
+      });
+      parts.batchDelete = el('button', 'r6-button is-danger', '移入回收站');
+      parts.batchDelete.type = 'button';
+      parts.batchDelete.title = '移入各自的存储位置回收站，可从回收站恢复';
+      parts.batchDelete.addEventListener('click', function () { confirmBatchDelete(); });
+      parts.batch.append(parts.batchText, el('span', 'spacer'),
+        parts.batchClear, parts.batchDelete);
+
+      // Recycling-bin bar: same shape, different consequence — this one cannot
+      // be undone and also drops the index cache the file owned.
+      parts.trashBatch = el('div', 'r6-toolbar lib-batch');
+      parts.trashBatch.hidden = true;
+      parts.trashBatchText = el('span', 'r6-meta', '');
+      parts.trashClear = el('button', 'r6-icon', '清除选择');
+      parts.trashClear.type = 'button';
+      parts.trashClear.addEventListener('click', function () {
+        state.trashSelected = {};
+        renderTrash(state.trashItems || []);
+      });
+      parts.trashPurge = el('button', 'r6-button is-danger', '永久删除');
+      parts.trashPurge.type = 'button';
+      parts.trashPurge.title = '销毁回收站中的原文并释放其索引缓存，不可恢复';
+      parts.trashPurge.addEventListener('click', function () { confirmTrashPurge(); });
+      parts.trashBatch.append(parts.trashBatchText, el('span', 'spacer'),
+        parts.trashClear, parts.trashPurge);
+
+      parts.dialog = el('div', 'r6-dialog cm-dialog lib-confirm');
+      parts.dialog.setAttribute('role', 'dialog');
+      parts.dialog.setAttribute('aria-modal', 'true');
+      parts.dialog.setAttribute('aria-label', '确认删除');
+      parts.dialog.hidden = true;
+      document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape' && parts.dialog && !parts.dialog.hidden) closeConfirm();
+      });
+
       parts.scroll = el('div', 'r6-table-scroll lib-scroll');
       parts.table = el('table', 'r6-table lib-table');
       parts.scroll.appendChild(parts.table);
@@ -243,9 +298,10 @@
       parts.footMore.addEventListener('click', function () { loadFiles(false); });
       parts.foot.append(parts.footText, el('span', 'spacer'), parts.footMore);
 
-      main.append(bars, parts.note, parts.scroll, parts.foot);
+      main.append(bars, parts.note, parts.batch, parts.trashBatch, parts.scroll, parts.foot);
       shell.append(pane, main);
       host.appendChild(shell);
+      host.appendChild(parts.dialog);
 
       parts.scopeList.addEventListener('keydown', function (event) {
         if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp') return;
@@ -271,6 +327,9 @@
       state.rows = [];
       state.cursor = null;
       state.trashOpen = false;
+      state.selected = {};
+      state.trashSelected = {};
+      state.trashItems = [];
       if (parts.search) parts.search.value = '';
       renderScopes();
       return refresh(true);
@@ -334,6 +393,10 @@
       if (reset) {
         state.rows = [];
         state.cursor = null;
+        // The selection is deliberately *not* cleared here: a refresh can be
+        // triggered by a directory expand or an event, and dropping ticks the
+        // user just made would be a data-loss bug in a batch-delete flow. Entries
+        // that are no longer in the list are pruned in `renderTable` instead.
       }
       parts.footMore.disabled = true;
       state.loading = true;
@@ -445,6 +508,7 @@
           el('span', 'r6-meta', item.state === 'online' ? String(item.files) : '离线'));
         node.addEventListener('click', function () {
           state.rootId = item.rootId;
+          state.selected = {};
           state.path = '';
           state.selectedDir = '';
           state.expanded[item.rootId + ':'] = !state.expanded[item.rootId + ':'];
@@ -489,6 +553,7 @@
             el('span', 'r6-meta', item.files ? String(item.files) : ''));
           button.title = item.relPath;
           button.addEventListener('click', function () {
+            state.selected = {};
             state.path = item.relPath;
             state.selectedDir = item.relPath;
             state.expanded[key] = !state.expanded[key];
@@ -516,6 +581,7 @@
       crumb.addEventListener('click', function () {
         state.path = '';
         state.selectedDir = '';
+        state.selected = {};
         state.rootId = state.scope === 'local' ? '' : (root ? root.rootId : '');
         renderTree(); renderBar();
         if (state.rootId) loadTree(state.rootId, '').then(function () { refresh(true); });
@@ -528,6 +594,7 @@
         var button = el('button', 'lib-crumb-item', part);
         button.type = 'button';
         button.addEventListener('click', function () {
+          state.selected = {};
           state.path = target; state.selectedDir = target;
           renderTree(); renderBar();
           loadTree(state.rootId, target).then(function () { refresh(true); },
@@ -589,9 +656,143 @@
       return button;
     }
 
+    /* -------------------------------------------------------------- selection */
+    function syncBatchBar() {
+      var keys = Object.keys(state.selected);
+      parts.batch.hidden = !keys.length;
+      if (!keys.length) {
+        if (parts.headCheck) {
+          parts.headCheck.checked = false;
+          parts.headCheck.indeterminate = false;
+        }
+        return;
+      }
+      var total = keys.reduce(function (sum, key) {
+        return sum + (Number(state.selected[key].size) || 0);
+      }, 0);
+      parts.batchText.textContent = '已选 ' + keys.length + ' 项 · 合计 ' + bytes(total);
+      parts.batchDelete.textContent = '移入回收站（' + keys.length + '）';
+      var eligible = state.rows.filter(function (file) {
+        return file.scope !== 'local';
+      }).length;
+      if (parts.headCheck) {
+        parts.headCheck.checked = eligible > 0 && keys.length >= eligible;
+        parts.headCheck.indeterminate = keys.length > 0 && keys.length < eligible;
+      }
+    }
+
+    function syncTrashBar() {
+      var keys = Object.keys(state.trashSelected);
+      parts.trashBatch.hidden = !keys.length;
+      var visible = state.trashItems ? state.trashItems.length : 0;
+      if (parts.headCheck) {
+        parts.headCheck.checked = visible > 0 && keys.length >= visible;
+        parts.headCheck.indeterminate = keys.length > 0 && keys.length < visible;
+      }
+      if (!keys.length) return;
+      var size = keys.reduce(function (sum, key) {
+        return sum + (Number(state.trashSelected[key].size) || 0);
+      }, 0);
+      parts.trashBatchText.textContent = '已选 ' + keys.length + ' 项 · 合计 ' + bytes(size);
+      parts.trashPurge.textContent = '永久删除（' + keys.length + '）';
+    }
+
+    /* ----------------------------------------------------------------- dialog */
+    function openConfirm(spec) {
+      state.confirm = spec;
+      parts.dialog.innerHTML = '';
+      var head = el('div', 'cm-dialog-head');
+      head.append(el('strong', null, spec.title), el('span', 'r6-meta', spec.countText || ''));
+      var close = el('button', 'r6-icon', '✕');
+      close.type = 'button';
+      close.setAttribute('aria-label', '关闭');
+      close.addEventListener('click', closeConfirm);
+      head.appendChild(close);
+
+      var body = el('div', 'cm-dialog-body');
+      if (spec.summary) body.appendChild(el('p', 'lib-confirm-line', spec.summary));
+      var list = el('ul', 'cm-dialog-list');
+      (spec.items || []).forEach(function (item) {
+        var row = el('li', 'lib-confirm-item');
+        row.append(el('span', 'lib-confirm-name', item.name),
+          el('span', 'r6-meta mono lib-confirm-meta', item.meta || ''),
+          el('span', 'mono lib-confirm-size', item.size || ''));
+        list.appendChild(row);
+      });
+      body.appendChild(list);
+      if (spec.warning) body.appendChild(el('p', 'lib-confirm-warn', spec.warning));
+
+      var error = el('div', 'r6-errorbox');
+      error.hidden = true;
+      error.setAttribute('role', 'alert');
+
+      var actions = el('div', 'r6-dialog-actions');
+      var cancel = el('button', 'r6-icon', '取消');
+      cancel.type = 'button';
+      cancel.addEventListener('click', closeConfirm);
+      var submit = el('button', 'r6-button' + (spec.danger ? ' is-danger' : ''),
+        spec.confirmLabel);
+      submit.type = 'button';
+      submit.addEventListener('click', function () {
+        submit.disabled = true;
+        cancel.disabled = true;
+        Promise.resolve().then(spec.onConfirm).then(function () {
+          closeConfirm();
+        }, function (failure) {
+          submit.disabled = false;
+          cancel.disabled = false;
+          error.hidden = false;
+          error.textContent = (failure && failure.message) || String(failure);
+        });
+      });
+      actions.append(cancel, submit);
+      parts.dialog.append(head, body, error, actions);
+      parts.dialog.hidden = false;
+      submit.focus();
+    }
+
+    function closeConfirm() {
+      state.confirm = null;
+      parts.dialog.hidden = true;
+      parts.dialog.innerHTML = '';
+    }
+
     function renderTable() {
+      // The empty state is one cell spanning every column. With table-layout:fixed
+      // the first row decides the column widths, so a spanning cell silently made
+      // all seven columns equal (~53 px at 375) and the header labels broke
+      // mid-word. `.is-empty` switches the table to auto layout for that state.
+      parts.table.classList.toggle('is-empty', !state.rows.length);
+      // Keep only ticks that still point at a row on screen. This is the guard
+      // that makes "refresh must not clear my selection" safe: an item leaves the
+      // selection the moment it leaves the list, so a batch delete can never
+      // reach a file the user cannot see.
+      var visible = {};
+      state.rows.forEach(function (file) { visible[file.fileId] = true; });
+      Object.keys(state.selected).forEach(function (key) {
+        if (!visible[key]) delete state.selected[key];
+      });
+      var selectable = !state.readOnly && state.scope !== 'local';
       var head = el('thead');
       var headRow = el('tr');
+      var headCheckCell = el('th', 'lib-check');
+      var headCheck = el('input');
+      headCheck.type = 'checkbox';
+      headCheck.setAttribute('aria-label', '全选当前列表');
+      headCheck.disabled = !selectable;
+      headCheck.addEventListener('change', function () {
+        state.selected = {};
+        if (headCheck.checked) {
+          state.rows.forEach(function (file) {
+            if (file.scope === 'local') return;
+            state.selected[file.fileId] = file;
+          });
+        }
+        renderTable();
+      });
+      parts.headCheck = headCheck;
+      headCheckCell.appendChild(headCheck);
+      headRow.appendChild(headCheckCell);
       ['日志 / 路径', '存储位置', '大小', '索引 / 代次', '规则来源', '操作'].forEach(function (title) {
         headRow.appendChild(el('th', null, title));
       });
@@ -610,7 +811,7 @@
         var empty = el('tbody');
         var tr = el('tr');
         var td = el('td', 'lib-empty-cell');
-        td.colSpan = 6;
+        td.colSpan = 7;
         var offline = state.sources.filter(function (item) {
           return item.rootId === state.rootId && item.state !== 'online';
         })[0];
@@ -627,11 +828,30 @@
         tr.appendChild(td);
         empty.appendChild(tr);
         parts.table.append(empty);
+        // Nothing is visible, so nothing may stay selected.
+        state.selected = {};
+        syncBatchBar();
         return;
       }
       rows.forEach(function (file) {
         var tr = el('tr');
         if (state.favourites.indexOf(file.fileId) >= 0) tr.classList.add('is-pinned');
+        var checkCell = el('td', 'lib-check');
+        var box = el('input');
+        box.type = 'checkbox';
+        box.checked = !!state.selected[file.fileId];
+        // A local file lives in the browser; the server has nothing to recycle.
+        box.disabled = !selectable || file.scope === 'local';
+        box.title = file.scope === 'local' ? '本机文件不从服务器删除' : '选择该文件';
+        box.setAttribute('aria-label', '选择 ' + (file.displayName || file.relPath));
+        box.addEventListener('change', function () {
+          if (box.checked) state.selected[file.fileId] = file;
+          else delete state.selected[file.fileId];
+          tr.classList.toggle('is-selected', box.checked);
+          syncBatchBar();
+        });
+        checkCell.appendChild(box);
+        tr.classList.toggle('is-selected', !!state.selected[file.fileId]);
         var nameCell = el('td');
         var name = el('button', 'r6-link', file.displayName || file.relPath);
         name.type = 'button';
@@ -684,11 +904,12 @@
         }, { title: '收藏置顶（仅本机）' });
         opsWrap.appendChild(star);
         ops.appendChild(opsWrap);
-        tr.append(nameCell, rootCell, sizeCell, indexCell, ruleCell, ops);
+        tr.append(checkCell, nameCell, rootCell, sizeCell, indexCell, ruleCell, ops);
         body.appendChild(tr);
       });
       parts.table.innerHTML = '';
       parts.table.append(head, body);
+      syncBatchBar();
     }
 
     /* ---------------------------------------------------------------- actions */
@@ -743,6 +964,144 @@
           button.textContent = '删除';
         }
       }, 4000);
+    }
+
+    /* ------------------------------------------------------- batch recycling */
+    function confirmBatchDelete() {
+      var files = Object.keys(state.selected).map(function (key) { return state.selected[key]; });
+      if (!files.length) return;
+      var total = files.reduce(function (sum, file) {
+        return sum + (Number(file.size) || 0);
+      }, 0);
+      openConfirm({
+        title: '移入回收站',
+        countText: files.length + ' 个文件 · ' + bytes(total),
+        summary: '文件会移动到各自存储位置的回收站，可以恢复；索引与规则绑定保留。',
+        items: files.map(function (file) {
+          return {
+            name: file.displayName || file.relPath,
+            meta: (file.rootLabel || file.rootId || '') + ' · ' + file.relPath,
+            size: bytes(file.size)
+          };
+        }),
+        confirmLabel: '移入回收站（' + files.length + '）',
+        danger: false,
+        onConfirm: function () { return runBatchDelete(files, false); }
+      });
+    }
+
+    function runBatchDelete(files, detach) {
+      return api.post('/api/v2/library/files/batch-delete', {
+        fileIds: files.map(function (file) { return file.fileId; }),
+        detachBindings: !!detach
+      }).then(function (value) {
+        var items = value.items || [];
+        var failed = items.filter(function (item) { return !item.ok; });
+        var bound = failed.filter(function (item) { return item.code === 'binding_active'; });
+        var others = failed.filter(function (item) { return item.code !== 'binding_active'; });
+        var trashed = (value.summary || {}).trashed || 0;
+        state.selected = {};
+        renderTable();
+        if (trashed) {
+          setNotice('已' + (detach ? '解除绑定并' : '') + '移入回收站 ' + trashed + ' 个文件' +
+            (failed.length ? '；' + failed.length + ' 个未处理' : ''),
+            others.length ? 'warn' : 'ok');
+          onStatus('已移入回收站 ' + trashed + ' 个文件');
+        }
+        refresh(true);
+        if (bound.length && !detach) {
+          // Only the blocked entries are offered again; re-sending the ones that
+          // already moved would be a second delete for the same file.
+          return askDetach(bound);
+        }
+        if (others.length) {
+          setNotice('部分文件未能删除：' + uniqueMessages(others), 'warn');
+        }
+        return value;
+      });
+    }
+
+    function askDetach(failed) {
+      var files = failed.map(function (item) {
+        return state.rows.filter(function (row) { return row.fileId === item.fileId; })[0] ||
+          { fileId: item.fileId, displayName: item.fileId, relPath: item.fileId, size: 0 };
+      });
+      openConfirm({
+        title: '解除绑定并删除',
+        countText: files.length + ' 个文件仍被规则绑定',
+        summary: '这些文件被文件级或目录级规则引用。解除绑定后它们会被移入回收站，规则本身不受影响。',
+        items: files.map(function (file) {
+          return {
+            name: file.displayName || file.relPath,
+            meta: file.relPath,
+            size: bytes(file.size)
+          };
+        }),
+        confirmLabel: '解除绑定并删除（' + files.length + '）',
+        danger: true,
+        onConfirm: function () { return runBatchDelete(files, true); }
+      });
+    }
+
+    function uniqueMessages(items) {
+      var seen = [];
+      items.forEach(function (item) {
+        var text = item.message || item.code || '未知错误';
+        if (seen.indexOf(text) < 0) seen.push(text);
+      });
+      return seen.join('；');
+    }
+
+    /* --------------------------------------------------------- permanent purge */
+    function confirmTrashPurge() {
+      var items = Object.keys(state.trashSelected)
+        .map(function (key) { return state.trashSelected[key]; });
+      if (items.length) openPurgeConfirm(items);
+    }
+
+    function openPurgeConfirm(items) {
+      var total = items.reduce(function (sum, item) {
+        return sum + (Number(item.size) || 0);
+      }, 0);
+      openConfirm({
+        title: '永久删除',
+        countText: items.length + ' 项 · ' + bytes(total),
+        summary: '这些文件将从回收站销毁，同时释放它们占用的索引缓存。此操作不可恢复。',
+        items: items.map(function (item) {
+          return {
+            name: item.path,
+            meta: (item.rootId === 'legacy' ? '部署数据目录'
+              : (item.rootState || item.rootId)) + ' · 删除于 ' + relativeTime(item.deletedAt),
+            size: item.size == null ? '—' : bytes(item.size)
+          };
+        }),
+        warning: '删除后无法通过「恢复」找回；如需保留，请先恢复。',
+        confirmLabel: '永久删除（' + items.length + '）',
+        danger: true,
+        onConfirm: function () { return runTrashPurge(items); }
+      });
+    }
+
+    function runTrashPurge(items) {
+      var ids = items.map(function (item) { return item.id; });
+      // One entry uses the REST verb; several use the batch endpoint. Both answer
+      // with the same per-item shape, so the reporting below is shared.
+      var request = ids.length === 1
+        ? api.del('/api/v2/library/trash/' + encodeURIComponent(ids[0]))
+        : api.post('/api/v2/library/trash/purge', { ids: ids });
+      return request.then(function (value) {
+        var summary = value.summary || { purged: ids.length, failed: 0 };
+        state.trashSelected = {};
+        setNotice('已永久删除 ' + (summary.purged || 0) + ' 项' +
+          (summary.freedBytes ? '，释放索引缓存 ' + bytes(summary.freedBytes) : '') +
+          (summary.failed ? '；' + summary.failed + ' 项未删除' : ''),
+          summary.failed ? 'warn' : 'ok');
+        if (summary.purged) {
+          onStatus('已永久删除 ' + summary.purged + ' 项');
+          onCacheChanged();
+        }
+        return loadTrash();
+      });
     }
 
     function saveDirectoryRule(scope) {
@@ -806,19 +1165,64 @@
     }
 
     /* ------------------------------------------------------------------ trash */
+    function loadTrash() {
+      return api.get('/api/v2/library/trash').then(function (value) {
+        renderTrash(value.items || []);
+        return value;
+      }, function (error) {
+        setError(error);
+        return null;
+      });
+    }
+
     function toggleTrash() {
       state.trashOpen = !state.trashOpen;
+      // A selection from the other table must not survive the switch: the ids in
+      // it are of a different kind, and acting on them would be acting blind.
+      state.trashSelected = {};
+      state.selected = {};
       parts.trash.textContent = state.trashOpen ? '返回文件' : '回收站';
-      if (!state.trashOpen) { refresh(true); return; }
-      api.get('/api/v2/library/trash').then(function (value) {
-        renderTrash(value.items || []);
-      }, function (error) { setError(error); });
+      if (!state.trashOpen) {
+        state.trashItems = [];
+        refresh(true);
+        return;
+      }
+      parts.batch.hidden = true;
+      parts.trashBatch.hidden = true;
+      setNotice(null);
+      loadTrash().then(function (value) {
+        if (!value) return;
+        var counts = value.counts || {};
+        parts.footText.textContent = '回收站 ' + (counts.total || 0) + ' 项' +
+          (counts.blocked ? ' · ' + counts.blocked + ' 项所在位置离线' : '') +
+          ' · 永久删除会同时释放索引缓存';
+        parts.footMore.hidden = true;
+      });
     }
 
     function renderTrash(items) {
+      state.trashItems = items;
+      // Same reason as the file table: an empty recycle bin renders a single
+      // spanning cell, which would otherwise fix every column at the same width.
+      parts.table.classList.toggle('is-empty', !items.length);
       var head = el('thead');
       var headRow = el('tr');
-      ['已删除文件', '存储位置', '删除时间', '状态', '', '操作'].forEach(function (title) {
+      var headCheckCell = el('th', 'lib-check');
+      var headCheck = el('input');
+      headCheck.type = 'checkbox';
+      headCheck.setAttribute('aria-label', '全选回收站条目');
+      headCheck.disabled = !items.length;
+      headCheck.addEventListener('change', function () {
+        state.trashSelected = {};
+        if (headCheck.checked) {
+          items.forEach(function (item) { state.trashSelected[item.id] = item; });
+        }
+        renderTrash(items);
+      });
+      parts.headCheck = headCheck;
+      headCheckCell.appendChild(headCheck);
+      headRow.appendChild(headCheckCell);
+      ['已删除文件', '存储位置', '删除时间', '状态', '大小', '操作'].forEach(function (title) {
         headRow.appendChild(el('th', null, title));
       });
       head.appendChild(headRow);
@@ -826,20 +1230,36 @@
       if (!items.length) {
         var tr = el('tr');
         var td = el('td', 'lib-empty-cell');
-        td.colSpan = 6;
+        td.colSpan = 7;
         td.append(el('strong', null, '回收站是空的'),
           el('p', null, '删除的文件按存储位置分别存放，恢复时不会覆盖同名文件。'));
         tr.appendChild(td);
         body.appendChild(tr);
+        state.trashSelected = {};
       }
       items.forEach(function (item) {
         var tr = el('tr');
-        tr.append(el('td', null, item.path),
+        var checkCell = el('td', 'lib-check');
+        var box = el('input');
+        box.type = 'checkbox';
+        box.checked = !!state.trashSelected[item.id];
+        box.setAttribute('aria-label', '选择 ' + item.path);
+        box.addEventListener('change', function () {
+          if (box.checked) state.trashSelected[item.id] = item;
+          else delete state.trashSelected[item.id];
+          tr.classList.toggle('is-selected', box.checked);
+          syncTrashBar();
+        });
+        checkCell.appendChild(box);
+        tr.classList.toggle('is-selected', !!state.trashSelected[item.id]);
+        tr.append(checkCell,
+          el('td', null, item.path),
           el('td', null, item.rootId === 'legacy' ? '部署数据目录' : (item.rootState || item.rootId)),
           el('td', null, relativeTime(item.deletedAt)),
           el('td', null, item.restorable ? '可恢复' : '存储位置离线'),
           el('td', null, bytes(item.size)));
         var ops = el('td');
+        var wrap = el('div', 'r6-inline-actions');
         var button = actionButton('恢复', function () {
           button.disabled = true;
           api.post('/api/v2/library/trash/' + encodeURIComponent(item.id) + '/restore', {})
@@ -852,12 +1272,17 @@
             });
         }, { title: '恢复到原路径，同名不覆盖' });
         button.disabled = !item.restorable;
-        ops.appendChild(button);
+        wrap.appendChild(button);
+        wrap.appendChild(actionButton('永久删除', function () {
+          openPurgeConfirm([item]);
+        }, { danger: true, title: '销毁原文并释放其索引缓存，不可恢复' }));
+        ops.appendChild(wrap);
         tr.appendChild(ops);
         body.appendChild(tr);
       });
       parts.table.innerHTML = '';
       parts.table.append(head, body);
+      syncTrashBar();
     }
 
     function query(params) {

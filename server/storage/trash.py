@@ -196,6 +196,166 @@ class TrashService:
                          'digest': digest, 'detachedBindings': len(bindings)
                          if detach_bindings else 0}}
 
+    # ------------------------------------------------------------------ purge
+    def purge(self, actor: dict, *, trash_ids: list, detach_bindings: bool = False) -> dict:
+        """Destroy recycled bytes for good and release the cache they owned.
+
+        `delete()` only moves a file into the bin, so the index rows stay valid
+        and a restore keeps working. Once the operator chooses permanent removal
+        the file can never be validated again, which is why its derived layers
+        and shards are dropped in the same operation instead of being left behind
+        as index data that points at nothing.
+
+        Items are handled one at a time, and a failure on one item never rolls
+        back the others: recycled files live on different mounts, so a single
+        transaction across them would be a promise this code cannot keep.
+        """
+        items = []
+        for trash_id in trash_ids:
+            try:
+                items.append(self._purge_one(actor, trash_id, detach_bindings))
+            except StorageError as exc:
+                items.append({'id': trash_id, 'ok': False, 'code': exc.code,
+                              'message': exc.message, 'details': exc.details})
+        purged = [item for item in items if item.get('ok')]
+        return {
+            'items': items,
+            'summary': {
+                'requested': len(trash_ids),
+                'purged': len(purged),
+                'failed': len(trash_ids) - len(purged),
+                'bytes': sum(int(item.get('bytes') or 0) for item in purged),
+                'freedBytes': sum(int((item.get('cache') or {}).get('bytes') or 0)
+                                  for item in purged),
+            },
+            'irreversible': True,
+        }
+
+    def purge_one(self, actor: dict, trash_id: str, detach_bindings: bool = False) -> dict:
+        """One entry, with the failure raised rather than reported in a row.
+
+        A single DELETE names one resource, so "not found" or "still pinned" has
+        to be the response's status code. The batch verb keeps the per-item shape
+        because there the partial result *is* the answer.
+        """
+        return self._purge_one(actor, trash_id, detach_bindings)
+
+    def _purge_one(self, actor: dict, trash_id: str, detach_bindings: bool) -> dict:
+        with self.store.connect() as db:
+            entry = db.execute('SELECT * FROM trash_entries WHERE id=?', (trash_id,)).fetchone()
+            legacy = None
+            if entry is None:
+                legacy = db.execute('SELECT * FROM trash WHERE id=?', (trash_id,)).fetchone()
+        if entry is None and legacy is None:
+            raise StorageError('trash_not_found', '回收站条目不存在。')
+        from_legacy = entry is None
+        if from_legacy:
+            self.app.require_admin(actor)
+            if legacy['restored_at']:
+                raise StorageError('trash_not_purgeable', '该条目已恢复，不能永久删除。',
+                                   trashId=trash_id)
+            source = Path(self.app.config.data_dir) / TRASH_NAME / trash_id
+            root_id, rel_path = 'legacy', legacy['path']
+            with self.store.connect() as db:
+                row = db.execute("SELECT id,size,scope FROM logical_files "
+                                 "WHERE root_id='legacy' AND rel_path=?", (rel_path,)).fetchone()
+            file_id = row['id'] if row else None
+            size = row['size'] if row else None
+            scope = (row['scope'] if row else 'shared')
+        else:
+            if entry['restored_at']:
+                raise StorageError('trash_not_purgeable', '该条目已恢复，不能永久删除。',
+                                   trashId=trash_id)
+            if entry['scope'] == 'private':
+                # Administrators do not gain access to private content by being
+                # administrators; the answer is the same one a missing row gives.
+                if entry['owner'] != actor['id']:
+                    raise StorageError('trash_not_found', '回收站条目不存在。')
+            else:
+                self.app.require_admin(actor)
+            detail = json.loads(entry['detail'] or '{}')
+            recorded = detail.get('trashPath') or ''
+            if recorded:
+                source = Path(recorded)
+            else:
+                try:
+                    root = self.app.storage.guard.root(entry['root_id'])
+                    source = Path(root['path']) / TRASH_NAME / entry['id']
+                except StorageError:
+                    source = None
+            file_id, root_id, rel_path = entry['file_id'], entry['root_id'], entry['rel_path']
+            size, scope = entry['size'], entry['scope']
+
+        # The file is already out of the library, but a running job, an upload
+        # session or a pinned cursor can still be holding it. Purging underneath
+        # those would break a live reader without telling anyone why.
+        bindings: list = []
+        if file_id:
+            with self.store.connect() as db:
+                row = db.execute('SELECT * FROM logical_files WHERE id=?', (file_id,)).fetchone()
+            if row is not None:
+                refs = self.active_refs(row)
+                blocking = [reason for reason in refs['reasons']
+                            if reason['kind'] != 'binding']
+                if blocking:
+                    raise StorageError(
+                        'active_references',
+                        '该文件仍被任务、快照或读取会话引用，请稍后再永久删除。',
+                        references=blocking)
+                bindings = [reason for reason in refs['reasons']
+                            if reason['kind'] == 'binding']
+                if bindings and not detach_bindings:
+                    raise StorageError(
+                        'binding_active',
+                        '规则绑定仍指向该文件，确认后可解除绑定并永久删除。',
+                        bindings=bindings)
+
+        removed, missing = False, False
+        if source is not None:
+            try:
+                os.unlink(str(source))
+                removed = True
+            except FileNotFoundError:
+                # The row is the only thing left; saying so is more useful than
+                # refusing to clean a record whose bytes are already gone.
+                missing = True
+            except OSError as exc:
+                # Keep the row: its `detail.trashPath` still points at a file, and
+                # dropping the record would hide bytes on disk from every future
+                # repair pass.
+                raise StorageError('trash_unlink_failed',
+                                   '无法删除回收站中的文件，条目已保留。',
+                                   trashId=trash_id, errno=exc.errno)
+
+        cache = {'versions': 0, 'bytes': 0, 'freed': [], 'orphans': []}
+        if file_id:
+            from ..indexing.cache_versions import CacheError
+            try:
+                cache = self.app.cache.registry.purge_file(
+                    file_id, scope=scope, reason='trash_purge_by_%s' % actor['ip'])
+            except CacheError as exc:
+                if exc.code == 'version_pinned':
+                    raise StorageError('version_pinned', exc.message,
+                                       trashId=trash_id, **exc.details)
+                raise
+
+        with self.store.transaction() as db:
+            if file_id:
+                db.execute('DELETE FROM generations WHERE file_id=?', (file_id,))
+                db.execute('DELETE FROM logical_files WHERE id=?', (file_id,))
+            if from_legacy:
+                db.execute('DELETE FROM trash WHERE id=?', (trash_id,))
+            else:
+                db.execute('DELETE FROM trash_entries WHERE id=?', (trash_id,))
+            self.store.audit(db, actor['ip'], 'file.purge', rel_path,
+                             {'trashId': trash_id, 'rootId': root_id, 'size': size,
+                              'cacheBytes': cache.get('bytes'), 'missing': missing})
+        if bindings and detach_bindings:
+            self.app.storage.bindings.detach_path(actor, root_id=root_id, rel_path=rel_path)
+        return {'id': trash_id, 'ok': True, 'path': rel_path, 'rootId': root_id,
+                'fileId': file_id, 'bytes': int(size or 0), 'removed': removed,
+                'missing': missing, 'cache': cache, 'detachedBindings': len(bindings)}
+
     # ---------------------------------------------------------------- restore
     def restore(self, actor: dict, trash_id: str) -> dict:
         with self.store.connect() as db:

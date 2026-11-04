@@ -1,0 +1,483 @@
+{
+  "url": "http://127.0.0.1:53066",
+  "started_at": "2026-11-03T19:33:53",
+  "checks": {
+    "cache_seeded": {
+      "ok": true,
+      "detail": 6291456
+    },
+    "meter_shows_used_and_quota": {
+      "ok": true,
+      "detail": "6.0 MB / 1.00 GB"
+    },
+    "library_rows_checkable": {
+      "ok": true,
+      "detail": 6
+    },
+    "batch_bar_counts_selection": {
+      "ok": true,
+      "detail": "已选 2 项 · 合计 76 B"
+    },
+    "confirm_lists_every_file": {
+      "ok": true,
+      "detail": 2
+    },
+    "confirm_names_location_and_size": {
+      "ok": true,
+      "detail": "移入回收站2 个文件 · 76 B✕文件会移动到各自存储位置的回收站，可以恢复；索引与规则绑定保留。run-00.log部署数据目录 · logs/run-00.log38 Brun-01.log部署数据目录 · logs/run-01.log38 B取消移入回收站（2）"
+    },
+    "batch_delete_moved_two_entries": {
+      "ok": true,
+      "detail": 2
+    },
+    "trash_select_all_counts": {
+      "ok": true,
+      "detail": "已选 2 项 · 合计 76 B"
+    },
+    "purge_dialog_warns_irreversible": {
+      "ok": true,
+      "detail": "永久删除2 项 · 76 B✕这些文件将从回收站销毁，同时释放它们占用的索引缓存。此操作不可恢复。logs/run-00.log部署数据目录 · 删除于 刚刚38 Blogs/run-01.log部署数据目录 · 删除于 刚刚38 B删除后无法通过「恢复」找回；如需保留，请先恢复。取消永久删除（2）"
+    },
+    "purge_dialog_lists_entries": {
+      "ok": true,
+      "detail": 2
+    },
+    "trash_emptied": {
+      "ok": true,
+      "detail": "回收站是空的删除的文件按存储位置分别存放，恢复时不会覆盖同名文件。"
+    },
+    "purge_released_the_cache": {
+      "ok": true,
+      "detail": 0
+    },
+    "meter_follows_the_purge": {
+      "ok": true,
+      "detail": "0 B / 1.00 GB"
+    },
+    "quota_dialog_shows_layer_breakdown": {
+      "ok": true,
+      "detail": 3
+    },
+    "quota_saved": {
+      "ok": true,
+      "detail": 524288000
+    },
+    "meter_shows_new_quota": {
+      "ok": true,
+      "detail": null
+    },
+    "no_overflow_375x812": {
+      "ok": true,
+      "detail": [
+        375,
+        [
+          375,
+          812
+        ]
+      ]
+    },
+    "meter_visible_375x812": {
+      "ok": true,
+      "detail": 98
+    },
+    "controls_single_line_375x812": {
+      "ok": true,
+      "detail": [
+        {
+          "tag": "r6-file",
+          "h": 32
+        },
+        {
+          "tag": "server-trigger",
+          "h": 32
+        },
+        {
+          "tag": "theme",
+          "h": 32
+        },
+        {
+          "tag": "live-status",
+          "h": 32
+        },
+        {
+          "tag": "cache-meter",
+          "h": 32
+        },
+        {
+          "tag": "status",
+          "h": 17
+        }
+      ]
+    },
+    "table_head_single_line_375x812": {
+      "ok": true,
+      "detail": 31
+    },
+    "no_overflow_768x1024": {
+      "ok": true,
+      "detail": [
+        768,
+        [
+          768,
+          1024
+        ]
+      ]
+    },
+    "meter_visible_768x1024": {
+      "ok": true,
+      "detail": 179
+    },
+    "controls_single_line_768x1024": {
+      "ok": true,
+      "detail": [
+        {
+          "tag": "r6-file",
+          "h": 32
+        },
+        {
+          "tag": "server-trigger",
+          "h": 32
+        },
+        {
+          "tag": "theme",
+          "h": 32
+        },
+        {
+          "tag": "live-status",
+          "h": 32
+        },
+        {
+          "tag": "cache-meter",
+          "h": 32
+        },
+        {
+          "tag": "status",
+          "h": 17
+        }
+      ]
+    },
+    "table_head_single_line_768x1024": {
+      "ok": true,
+      "detail": 31
+    },
+    "quota_survives_reload": {
+      "ok": true,
+      "detail": null
+    },
+    "no_page_errors": {
+      "ok": true,
+      "detail": []
+    }
+  },
+  "states": {
+    "header_initial": {
+      "viewport": [
+        1366,
+        768
+      ],
+      "scroll_width": 1366,
+      "horizontal_overflow": false,
+      "header_height": 54,
+      "controls": [
+        {
+          "tag": "r6-file",
+          "h": 32
+        },
+        {
+          "tag": "server-trigger",
+          "h": 32
+        },
+        {
+          "tag": "theme",
+          "h": 32
+        },
+        {
+          "tag": "live-status",
+          "h": 32
+        },
+        {
+          "tag": "cache-meter",
+          "h": 32
+        },
+        {
+          "tag": "status",
+          "h": 17
+        }
+      ],
+      "tallest_control": 32,
+      "meter_text": "6.0 MB / 1.00 GB",
+      "meter_state": "ok",
+      "meter_visible": true,
+      "meter_width": 192,
+      "rows": 0,
+      "table_head_height": 0,
+      "checked": 0
+    },
+    "library_confirm": {
+      "title": "移入回收站",
+      "items": 2,
+      "text": "移入回收站2 个文件 · 76 B✕文件会移动到各自存储位置的回收站，可以恢复；索引与规则绑定保留。run-00.log部署数据目录 · logs/run-00.log38 Brun-01.log部署数据目录 · logs/run-01.log38 B取消移入回收站（2）"
+    },
+    "trash": {
+      "viewport": [
+        1366,
+        768
+      ],
+      "scroll_width": 1366,
+      "horizontal_overflow": false,
+      "header_height": 54,
+      "controls": [
+        {
+          "tag": "r6-file",
+          "h": 32
+        },
+        {
+          "tag": "server-trigger",
+          "h": 32
+        },
+        {
+          "tag": "theme",
+          "h": 32
+        },
+        {
+          "tag": "live-status",
+          "h": 32
+        },
+        {
+          "tag": "cache-meter",
+          "h": 32
+        },
+        {
+          "tag": "status",
+          "h": 17
+        }
+      ],
+      "tallest_control": 32,
+      "meter_text": "6.0 MB / 1.00 GB",
+      "meter_state": "ok",
+      "meter_visible": true,
+      "meter_width": 192,
+      "rows": 2,
+      "table_head_height": 47,
+      "checked": 2
+    },
+    "purge_confirm": {
+      "items": 2,
+      "text": "永久删除2 项 · 76 B✕这些文件将从回收站销毁，同时释放它们占用的索引缓存。此操作不可恢复。logs/run-00.log部署数据目录 · 删除于 刚刚38 Blogs/run-01.log部署数据目录 · 删除于 刚刚38 B删除后无法通过「恢复」找回；如需保留，请先恢复。取消永久删除（2）",
+      "warn": "删除后无法通过「恢复」找回；如需保留，请先恢复。"
+    },
+    "meter_after_purge": {
+      "viewport": [
+        1366,
+        768
+      ],
+      "scroll_width": 1366,
+      "horizontal_overflow": false,
+      "header_height": 54,
+      "controls": [
+        {
+          "tag": "r6-file",
+          "h": 32
+        },
+        {
+          "tag": "server-trigger",
+          "h": 32
+        },
+        {
+          "tag": "theme",
+          "h": 32
+        },
+        {
+          "tag": "live-status",
+          "h": 32
+        },
+        {
+          "tag": "cache-meter",
+          "h": 32
+        },
+        {
+          "tag": "status",
+          "h": 17
+        }
+      ],
+      "tallest_control": 32,
+      "meter_text": "0 B / 1.00 GB",
+      "meter_state": "ok",
+      "meter_visible": true,
+      "meter_width": 173,
+      "rows": 1,
+      "table_head_height": 31,
+      "checked": 0
+    },
+    "quota_dialog": {
+      "layers": 3,
+      "text": "缓存空间0 个文件有派生层✕0 B/ 1.00 GB剩余 1.00 GB。层占用版本已发布结构0 B00 B规则0 B00 B检索0 B00 B派生层由原文重建，不计入原文本身。超出限额只提示，不会中断索引任务。限额MiB256 MB512 MB1 GB2 GB不限制保存限额打开解析缓存关闭"
+    },
+    "header_375x812": {
+      "viewport": [
+        375,
+        812
+      ],
+      "scroll_width": 375,
+      "horizontal_overflow": false,
+      "header_height": 121,
+      "controls": [
+        {
+          "tag": "r6-file",
+          "h": 32
+        },
+        {
+          "tag": "server-trigger",
+          "h": 32
+        },
+        {
+          "tag": "theme",
+          "h": 32
+        },
+        {
+          "tag": "live-status",
+          "h": 32
+        },
+        {
+          "tag": "cache-meter",
+          "h": 32
+        },
+        {
+          "tag": "status",
+          "h": 17
+        }
+      ],
+      "tallest_control": 32,
+      "meter_text": "0 B / 500.0 MB",
+      "meter_state": "ok",
+      "meter_visible": true,
+      "meter_width": 98,
+      "rows": 1,
+      "table_head_height": 31,
+      "checked": 0
+    },
+    "header_768x1024": {
+      "viewport": [
+        768,
+        1024
+      ],
+      "scroll_width": 768,
+      "horizontal_overflow": false,
+      "header_height": 83,
+      "controls": [
+        {
+          "tag": "r6-file",
+          "h": 32
+        },
+        {
+          "tag": "server-trigger",
+          "h": 32
+        },
+        {
+          "tag": "theme",
+          "h": 32
+        },
+        {
+          "tag": "live-status",
+          "h": 32
+        },
+        {
+          "tag": "cache-meter",
+          "h": 32
+        },
+        {
+          "tag": "status",
+          "h": 17
+        }
+      ],
+      "tallest_control": 32,
+      "meter_text": "0 B / 500.0 MB",
+      "meter_state": "ok",
+      "meter_visible": true,
+      "meter_width": 179,
+      "rows": 1,
+      "table_head_height": 31,
+      "checked": 0
+    }
+  },
+  "screenshots": [
+    "library-batch-confirm-1366x768.png",
+    "trash-selected-1366x768.png",
+    "trash-purge-confirm-1366x768.png",
+    "cache-quota-dialog-1366x768.png",
+    "header-375x812.png",
+    "header-768x1024.png"
+  ],
+  "cached_files": [
+    "f_f9cf806781197b08",
+    "f_5116219f51e43814"
+  ],
+  "cache_before": {
+    "schema": "logbench.cache.usage/1",
+    "usedBytes": 6291456,
+    "publishedBytes": 6291456,
+    "quotaBytes": 1073741824,
+    "unlimited": false,
+    "ratio": 0.0059,
+    "overQuota": false,
+    "enforcement": "warn",
+    "files": 2,
+    "layers": {
+      "structure": {
+        "bytes": 2097152,
+        "versions": 2,
+        "publishedBytes": 2097152
+      },
+      "rules": {
+        "bytes": 2097152,
+        "versions": 2,
+        "publishedBytes": 2097152
+      },
+      "search": {
+        "bytes": 2097152,
+        "versions": 2,
+        "publishedBytes": 2097152
+      }
+    },
+    "observedAt": "2026-11-04T03:33:53Z"
+  },
+  "trash_after_delete": 2,
+  "cache_after": {
+    "schema": "logbench.cache.usage/1",
+    "usedBytes": 0,
+    "publishedBytes": 0,
+    "quotaBytes": 1073741824,
+    "unlimited": false,
+    "ratio": 0.0,
+    "overQuota": false,
+    "enforcement": "warn",
+    "files": 0,
+    "layers": {
+      "structure": {
+        "bytes": 0,
+        "versions": 0,
+        "publishedBytes": 0
+      },
+      "rules": {
+        "bytes": 0,
+        "versions": 0,
+        "publishedBytes": 0
+      },
+      "search": {
+        "bytes": 0,
+        "versions": 0,
+        "publishedBytes": 0
+      }
+    },
+    "observedAt": "2026-11-04T03:34:00Z"
+  },
+  "cache_quota_after_save": 524288000,
+  "errors": [],
+  "finished_at": "2026-11-03T19:34:03",
+  "summary": {
+    "checks": 26,
+    "failed": 0,
+    "failed_names": [],
+    "result": "PASS"
+  }
+}

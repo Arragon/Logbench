@@ -21,6 +21,7 @@ from .guard import StorageError
 ROOT_ROUTE = re.compile(r'^/api/v2/storage-roots(?:/([A-Za-z0-9_-]{1,64})(/probe)?)?$')
 FILE_ROUTE = re.compile(r'^/api/v2/library/files/([A-Za-z0-9_-]{4,64})(?:/(generations|index|content))?$')
 RESTORE_ROUTE = re.compile(r'^/api/v2/library/trash/([A-Za-z0-9_-]{1,64})/restore$')
+PURGE_ROUTE = re.compile(r'^/api/v2/library/trash/([A-Za-z0-9_-]{1,64})$')
 STATUS = {'unknown_root': 404, 'not_found': 404, 'invalid_cursor': 400,
           'invalid_path': 400, 'path_escape': 403, 'symlink_denied': 403,
           'storage_root_offline': 409, 'storage_root_disabled': 409,
@@ -31,7 +32,8 @@ STATUS = {'unknown_root': 404, 'not_found': 404, 'invalid_cursor': 400,
           'already_exists': 409, 'cross_device_trash': 409, 'trash_missing': 409,
           'trash_not_found': 404, 'trash_not_restorable': 409, 'digest_mismatch': 409,
           'invalid_root': 400, 'not_a_file': 400, 'not_a_directory': 400,
-          'sentinel_conflict': 409, 'storage_root_unauthorized': 409}
+          'sentinel_conflict': 409, 'storage_root_unauthorized': 409,
+          'trash_not_purgeable': 409, 'trash_unlink_failed': 409, 'version_pinned': 409}
 
 
 class StorageApi:
@@ -78,11 +80,34 @@ class StorageApi:
                 offset=integer(payload.get('offset', 0), '偏移', 0, 1000000))
         if path == '/api/v2/library/trash' and method in ('GET', 'HEAD'):
             return self.trash.list(actor, limit=integer(q('limit', '200'), '数量', 1, 500))
+        # `/trash/purge` is a batch verb, not an entry id, so it has to be matched
+        # before the id route below.
+        if path == '/api/v2/library/trash/purge':
+            if method != 'POST':
+                fail(405, 'METHOD_NOT_ALLOWED', '永久删除只支持 POST。')
+            return self.trash.purge(actor, trash_ids=_ids(payload, 'ids'),
+                                    detach_bindings=_flag(payload, 'detachBindings'))
         match = RESTORE_ROUTE.match(path)
         if match:
             if method != 'POST':
                 fail(405, 'METHOD_NOT_ALLOWED', '恢复只支持 POST。')
             return self.trash.restore(actor, match.group(1))
+        match = PURGE_ROUTE.match(path)
+        if match:
+            if method != 'DELETE':
+                fail(405, 'METHOD_NOT_ALLOWED', '永久删除单条只支持 DELETE。')
+            item = self.trash.purge_one(actor, match.group(1),
+                                        _flag(payload, 'detachBindings'))
+            return {'items': [item], 'irreversible': True,
+                    'summary': {'requested': 1, 'purged': 1, 'failed': 0,
+                                'bytes': item.get('bytes') or 0,
+                                'freedBytes': (item.get('cache') or {}).get('bytes') or 0}}
+        # Same reason as above: `batch-delete` matches FILE_ROUTE's id pattern.
+        if path == '/api/v2/library/files/batch-delete':
+            if method != 'POST':
+                fail(405, 'METHOD_NOT_ALLOWED', '批量删除只支持 POST。')
+            return self.batch_delete(actor, _ids(payload, 'fileIds'),
+                                     _flag(payload, 'detachBindings'))
         match = FILE_ROUTE.match(path)
         if match:
             return self.file_route(method, match.group(1), match.group(2), q, payload,
@@ -201,6 +226,34 @@ class StorageApi:
         return Response(status=status, headers=common, stream=stream,
                         length=max(0, end - start + 1))
 
+    # ----------------------------------------------------------- batch delete
+    def batch_delete(self, actor: dict, file_ids: list, detach_bindings: bool) -> dict:
+        """Move several files to their own bins, reporting every item.
+
+        Each item is independent: one file still bound to a rule must not stop
+        the other nine from being recycled. The client uses the per-item codes to
+        offer "解除绑定并删除" for exactly the entries that need it, instead of
+        re-running the whole batch.
+        """
+        items = []
+        for file_id in file_ids:
+            try:
+                result = self.trash.delete(actor, file_id=file_id,
+                                           detach_bindings=detach_bindings)
+                items.append({'fileId': file_id, 'ok': True, 'item': result['item']})
+            except StorageError as exc:
+                items.append({'fileId': file_id, 'ok': False, 'code': exc.code,
+                              'message': exc.message, 'details': exc.details})
+        moved = [item for item in items if item['ok']]
+        blocked = [item for item in items if not item['ok']
+                   and item.get('code') in ('binding_active', 'active_references')]
+        return {'items': items,
+                'summary': {'requested': len(file_ids), 'trashed': len(moved),
+                            'failed': len(file_ids) - len(moved),
+                            'blocked': len(blocked),
+                            'bindingsBlocked': sum(1 for item in blocked
+                                                   if item.get('code') == 'binding_active')}}
+
     # -------------------------------------------------------------- bindings
     def bindings_route(self, method, path, q, payload, actor):
         from ..app import fail, text
@@ -243,6 +296,28 @@ class StorageApi:
             return self.bindings.resolve(actor, root_id=root_id, rel_path=rel,
                                          personal=normalized)
         fail(404, 'NOT_FOUND', '绑定接口不存在。')
+
+
+def _ids(payload: dict, key: str) -> list:
+    """Read a bounded list of opaque ids, refusing anything that is not one."""
+    from ..app import fail
+    raw = payload.get(key)
+    if not isinstance(raw, list) or not raw:
+        fail(400, 'INVALID_INPUT', '请至少选择一项。')
+    out: list = []
+    for value in raw:
+        if not isinstance(value, str) or not re.fullmatch(r'[A-Za-z0-9_-]{1,64}', value):
+            fail(400, 'INVALID_INPUT', '条目标识无效。')
+        if value not in out:
+            out.append(value)
+    if len(out) > 200:
+        fail(400, 'INVALID_INPUT', '一次最多处理 200 项。')
+    return out
+
+
+def _flag(payload: dict, key: str) -> bool:
+    value = payload.get(key)
+    return value is True or value == 1 or value == '1' or value == 'true'
 
 
 def _layer_order():

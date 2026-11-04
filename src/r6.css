@@ -63,7 +63,13 @@
   color: #fff;
   cursor: pointer;
   font-size: 13px;
+  /* A Chinese label may break between any two characters, so a squeezed button
+   * silently becomes a vertical column of glyphs (打开/删除 rendered as 打/开).
+   * A control label is never a paragraph: let the container scroll or the row
+   * wrap instead. */
+  white-space: nowrap;
 }
+.r6-icon { white-space: nowrap; }
 .r6-button:focus-visible { outline: 2px solid var(--ud-primary); outline-offset: 2px; }
 
 .r6-status { color: var(--ud-muted); font-size: 12px; max-width: 320px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -423,6 +429,12 @@
 /* Wizard */
 .r6-dialog {
   position: fixed; inset: 0; margin: auto; width: min(760px, 94vw); max-height: 88vh;
+  /* inset:0 alone stretches an absolutely positioned box to the full viewport,
+   * which max-height then clipped at 88vh — every dialog was 88vh tall whether it
+   * held two lines or forty, and a short confirmation ended in a field of empty
+   * surface. fit-content lets the box be as tall as its content, and the auto
+   * margins still centre it. */
+  height: fit-content;
   background: var(--ud-surface); color: var(--ud-ink); border: 1px solid var(--ud-line);
   border-radius: var(--ud-radius-lg, 8px); box-shadow: 0 24px 64px rgba(16, 24, 40, .24);
   display: flex; flex-direction: column; z-index: 60; overflow: hidden;
@@ -484,19 +496,11 @@
   .r6-intake-actions { justify-content: flex-end; }
 }
 
-/* Narrow header: the reader shell predates the collection centre and overflowed at
- * 375 px because the search box, the import trigger, the server trigger, the theme
- * selector and the live status all kept their full width. Truncate the status and
- * let the action group shrink instead of pushing the page wider than the viewport. */
-@media (max-width: 600px) {
-  /* The header keeps its controls but scrolls inside its own 52 px strip instead of
-   * widening the page; on this width the reader is what matters, not the chrome. */
-  .r6-header { padding: 0 8px; gap: 8px; overflow-x: auto; overflow-y: hidden; }
-  .r6-search { min-width: 0; }
-  .r6-search input { min-width: 0; width: 100%; }
-  .r6-actions { min-width: 0; overflow: hidden; gap: 6px; }
-  .r6-status { max-width: 64px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-}
+/* Narrow header: the phone layout lives in the "narrow screens" block further
+ * down, together with the rest of the responsive shell. It used to be here, which
+ * put it *before* the 860 px block that also styles .r6-header/.r6-search — same
+ * specificity, later wins, so half of these rules never applied. */
+
 
 /* ==========================================================================
  * R6-056 · unified library and storage roots
@@ -668,12 +672,22 @@
   background: var(--ud-surface);
 }
 .lib-table { table-layout: fixed; }
-.lib-table th:nth-child(1), .lib-table td:nth-child(1) { width: 31%; }
-.lib-table th:nth-child(2), .lib-table td:nth-child(2) { width: 15%; }
-.lib-table th:nth-child(3), .lib-table td:nth-child(3) { width: 8%; }
-.lib-table th:nth-child(4), .lib-table td:nth-child(4) { width: 13%; }
-.lib-table th:nth-child(5), .lib-table td:nth-child(5) { width: 16%; }
-.lib-table th:nth-child(6), .lib-table td:nth-child(6) { width: 17%; }
+/* Column 1 is the row checkbox, sized by .lib-check below. These six are the data
+ * columns; they deliberately sum to less than 100% so the actions column absorbs
+ * the slack. With table-layout:fixed a column left at auto takes its width from
+ * the first row, so pinning every column would push the table past its container. */
+.lib-table th:nth-child(2), .lib-table td:nth-child(2) { width: 30%; }
+.lib-table th:nth-child(3), .lib-table td:nth-child(3) { width: 13%; }
+.lib-table th:nth-child(4), .lib-table td:nth-child(4) { width: 7%; }
+.lib-table th:nth-child(5), .lib-table td:nth-child(5) { width: 12%; }
+.lib-table th:nth-child(6), .lib-table td:nth-child(6) { width: 15%; }
+/* The empty state is a single colSpan cell, and under fixed layout that one cell
+ * decides every column width — seven equal 53 px columns at 375 px, with the
+ * header labels breaking mid-word. The state opts out of the grid instead, and
+ * the nth-child widths above are switched off so auto layout can size the row. */
+.lib-table.is-empty { table-layout: auto; }
+.lib-table.is-empty th:not(.lib-check), .lib-table.is-empty td:not(.lib-check) { width: auto; }
+.lib-table.is-empty th.lib-check, .lib-table.is-empty td.lib-check { width: 34px; }
 .lib-table td { font-size: var(--ud-sm); }
 .lib-table tr.is-pinned td { background: #fffdf5; }
 .lib-path {
@@ -746,8 +760,10 @@
     border-right: 0;
     border-bottom: 1px solid var(--ud-line);
   }
+  /* Index/generation and rule source are the two columns that cost the most and
+   * say the least at this width; the checkbox column shifted both indices by one. */
   .lib-table th:nth-child(5), .lib-table td:nth-child(5),
-  .lib-table th:nth-child(4), .lib-table td:nth-child(4) { display: none; }
+  .lib-table th:nth-child(6), .lib-table td:nth-child(6) { display: none; }
 }
 
 /* Two compact rows: breadcrumb/actions, then the contextual rule row. Seven
@@ -800,20 +816,50 @@
   .lib-bar-rule { padding: 6px 10px; }
   .lib-explain { display: none; }
   .r6-header { flex-wrap: wrap; height: auto; padding: 6px 10px; row-gap: 6px; }
-  .r6-search { flex: 1 1 100%; order: 3; }
-  .r6-actions { flex: 1 1 auto; justify-content: flex-end; }
+  /* The search keeps its place beside the brand and gives up width instead; the
+   * action group is what moves to its own line, because it needs 575 px and the
+   * search can survive on 320. */
+  .r6-search { flex: 1 1 320px; order: 0; }
+  /* The group wraps; it never squeezes a control. A CJK label may break between
+   * any two characters, so a shrinking flex item happily becomes one character
+   * wide: at 375 px 打开本机文件 was measured at 47 x 69 px — four lines inside a
+   * button that is meant to be 32 px tall. nowrap plus flex:0 0 auto keeps every
+   * control on one line and lets the row break instead. */
+  .r6-actions { flex: 1 1 100%; flex-wrap: wrap; justify-content: flex-end;
+    row-gap: 6px; min-width: 0; }
+  .r6-actions > * { flex: 0 0 auto; white-space: nowrap; }
+  /* The label wrapper also has to be a box, otherwise its inline line box is
+   * taller than the 32 px control it contains. */
+  .r6-file { display: inline-flex; align-items: center; }
   .r6-status { max-width: 120px; }
+}
+
+/* Phone: 375 px cannot hold six controls beside the search box, so the header
+ * takes three lines — brand + search, then the action group, which may itself
+ * break into two. The previous version kept one 52 px strip and hid the excess
+ * behind overflow:hidden, which clipped the last controls outright. */
+@media (max-width: 600px) {
+  .r6-header { padding: 6px 8px; gap: 8px; row-gap: 6px; overflow: visible; }
+  .r6-brand { flex: 0 0 auto; }
+  .r6-search { flex: 1 1 120px; }
+  .r6-search input { width: 100%; }
+  .r6-actions { flex: 1 1 100%; gap: 6px; overflow: visible; }
+  /* The status line is the first thing to give up width here; the cache meter and
+   * the two triggers keep their labels whole. */
+  .r6-status { max-width: 80px; }
 }
 
 @media (max-width: 640px) {
   .folder-pane { max-height: 30vh; }
-  /* Name, size and actions stay; the rest is available by widening or in detail. */
-  .lib-table th:nth-child(2), .lib-table td:nth-child(2),
+  /* Path and actions only: 34 px of checkbox plus three action buttons already
+   * take half the width, and the size column at 52 px was pushing 打开/删除 into
+   * two-line labels. Everything hidden here is still in the row's tooltip and in
+   * the detail panel. */
+  .lib-table th:nth-child(3), .lib-table td:nth-child(3),
   .lib-table th:nth-child(4), .lib-table td:nth-child(4),
-  .lib-table th:nth-child(5), .lib-table td:nth-child(5) { display: none; }
-  .lib-table th:nth-child(1), .lib-table td:nth-child(1) { width: 58%; }
-  .lib-table th:nth-child(3), .lib-table td:nth-child(3) { width: 14%; }
-  .lib-table th:nth-child(6), .lib-table td:nth-child(6) { width: 28%; }
+  .lib-table th:nth-child(5), .lib-table td:nth-child(5),
+  .lib-table th:nth-child(6), .lib-table td:nth-child(6) { display: none; }
+  .lib-table th:nth-child(2), .lib-table td:nth-child(2) { width: 52%; }
   .storage-table th:nth-child(2), .storage-table td:nth-child(2),
   .storage-table th:nth-child(5), .storage-table td:nth-child(5) { display: none; }
 }
@@ -1088,9 +1134,104 @@
   display: flex; flex-direction: column; }
 .cm-dialog[hidden] { display: none !important; }
 .cm-dialog-head { display: flex; align-items: baseline; gap: 8px; }
-.cm-dialog-body { display: flex; flex-direction: column; gap: 8px; max-height: 50vh; overflow: auto; }
+/* The body is the only part allowed to scroll: 0 1 auto keeps it at its natural
+ * height (so a five-item confirmation is five items tall) while 50vh still caps a
+ * two-hundred-item purge and leaves the head and the buttons on screen. */
+.cm-dialog-body { display: flex; flex-direction: column; gap: 8px;
+  flex: 0 1 auto; min-height: 0; max-height: 50vh; overflow: auto; }
 .cm-dialog-list { margin: 0; padding-left: 18px; font-size: var(--ud-sm); display: flex;
   flex-direction: column; gap: 3px; }
+
+/* ------------------------------------------------------- header cache meter */
+/* Compact by design: it sits between the event indicator and the status text, so
+ * every pixel it takes is a pixel the status line loses at 1366px. */
+.r6-cache-meter {
+  display: inline-flex; align-items: center; gap: 6px;
+  height: var(--ud-control-h, 32px); padding: 0 8px;
+  border: 1px solid var(--ud-line); border-radius: var(--ud-radius-md, 6px);
+  background: var(--ud-bg); color: var(--ud-ink); font: inherit; font-size: var(--ud-sm);
+  cursor: pointer; flex: 0 0 auto;
+}
+.r6-cache-meter:hover { border-color: var(--ud-primary); }
+.r6-cache-meter:focus-visible { outline: 2px solid var(--ud-primary); outline-offset: 1px; }
+.r6-cache-meter-label { color: var(--ud-muted); font-size: var(--ud-xs); }
+.r6-cache-meter-value {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: var(--ud-xs); white-space: nowrap; font-variant-numeric: tabular-nums;
+}
+.r6-cache-meter-track {
+  width: 34px; height: 4px; border-radius: 2px; background: var(--ud-line);
+  overflow: hidden; flex: 0 0 auto;
+}
+.r6-cache-meter-fill {
+  display: block; height: 100%; width: 0; background: var(--ud-primary);
+  transition: width .2s ease;
+}
+/* Over quota is a warning, never a block: the number turns amber and the server
+ * keeps indexing. */
+.r6-cache-meter[data-state="over"] { border-color: var(--ud-amber); background: var(--ud-amber-tint); }
+.r6-cache-meter[data-state="over"] .r6-cache-meter-fill { background: var(--ud-amber); }
+.r6-cache-meter[data-state="over"] .r6-cache-meter-value { color: var(--ud-amber); }
+.r6-cache-meter[data-state="unknown"] { opacity: .65; }
+
+.cache-quota-dialog { width: min(560px, 94vw); }
+.cache-quota-summary { display: flex; flex-direction: column; gap: 6px; }
+.cache-quota-figure { display: flex; align-items: baseline; gap: 6px; }
+.cache-quota-figure strong { font-size: var(--ud-xl); font-variant-numeric: tabular-nums; }
+.cache-quota-track { height: 6px; border-radius: 3px; background: var(--ud-line); overflow: hidden; }
+.cache-quota-fill { display: block; height: 100%; background: var(--ud-primary); }
+.cache-quota-summary [data-tone="warn"] { color: var(--ud-amber); }
+.cache-quota-layers th, .cache-quota-layers td { text-align: left; font-size: var(--ud-sm); }
+.cache-quota-layers td.mono { text-align: right; font-variant-numeric: tabular-nums; }
+.cache-quota-form {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+  padding-top: 8px; border-top: 1px solid var(--ud-line);
+}
+.cache-quota-label { display: inline-flex; align-items: center; gap: 6px; font-size: var(--ud-sm); }
+.cache-quota-label .r6-input { width: 96px; height: 28px; text-align: right; }
+.cache-quota-presets { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.cache-quota-inline { display: inline-flex; align-items: center; gap: 4px; font-size: var(--ud-sm); }
+.cache-quota-form .r6-button { margin-left: auto; }
+.cache-quota-form .r6-hint { flex: 1 1 100%; }
+
+/* ------------------------------------------------- library batch selection */
+.lib-batch {
+  border-bottom: 1px solid var(--ud-line); background: var(--ud-surface-alt);
+  min-height: 36px;
+}
+.lib-batch .r6-button { height: 26px; padding: 0 10px; font-size: var(--ud-sm); }
+.lib-table th.lib-check, .lib-table td.lib-check { width: 34px; padding-right: 0; }
+.lib-table tr.is-selected { background: var(--reader-select); }
+.r6-button.is-danger { background: var(--ud-negative); }
+.r6-button.is-danger:hover { background: #a53540; }
+
+.lib-confirm { width: min(620px, 94vw); }
+.lib-confirm-line { margin: 0; font-size: var(--ud-sm); color: var(--ud-ink-soft); }
+.lib-confirm-item {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas: "name size" "meta size"; gap: 1px 10px;
+  padding: 4px 0; border-bottom: 1px solid var(--ud-line);
+}
+.lib-confirm-item:last-child { border-bottom: 0; }
+.lib-confirm-name {
+  grid-area: name; font-size: var(--ud-sm); font-weight: 600;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.lib-confirm-meta { grid-area: meta; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lib-confirm-size { grid-area: size; align-self: center; font-size: var(--ud-sm); }
+.lib-confirm-warn {
+  margin: 0; padding: 6px 8px; font-size: var(--ud-sm); color: var(--ud-amber);
+  background: var(--ud-amber-tint); border-left: 3px solid var(--ud-amber);
+}
+
+@media (max-width: 640px) {
+  /* At 375px the unit suffix and the bar are the first things to go; the two
+   * numbers are the part the operator actually asked for. */
+  .r6-cache-meter { padding: 0 6px; gap: 4px; }
+  .r6-cache-meter-track, .r6-cache-meter-label { display: none; }
+  .r6-cache-meter-value { font-size: 10px; }
+  .cache-quota-form .r6-button { margin-left: 0; }
+}
 
 /* ------------------------------------------------------------------ runtime */
 .runtime-view { flex: 1 1 auto; display: flex; flex-direction: column; min-height: 0;
