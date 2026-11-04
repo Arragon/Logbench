@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>R6-015 租约与 fencing 验收页</title>
+<style>body{font:13px/1.6 -apple-system,system-ui,sans-serif;margin:24px;color:#1b2430;background:#f5f6f8}
+code{font-family:ui-monospace,Menlo,monospace}</style>
+</head>
+<body>
+<h1>R6-015 · 跨标签页租约</h1>
+<p>本页不自动执行；由 <code>qa/r6/leases.py</code> 开两个真实页面驱动。
+<code>secureContext=<span id="secure"></span></code>，<code>BroadcastChannel=<span id="bc"></span></code></p>
+<script src="../../src/shared/local-store.js"></script>
+<script src="../../src/shared/leases.js"></script>
+<script>
+'use strict';
+document.getElementById('secure').textContent = String(window.isSecureContext);
+document.getElementById('bc').textContent = String(typeof BroadcastChannel);
+
+let store = null;
+let client = null;
+
+async function open(namespace, reset) {
+  if (reset) {
+    await new Promise((resolve) => {
+      const request = indexedDB.deleteDatabase(LBLocalStore.DB_NAME);
+      request.onsuccess = request.onerror = request.onblocked = () => resolve();
+    });
+  }
+  store = await LBLocalStore.open(indexedDB, namespace);
+  client = LBLeases.createLeaseClient(store);
+  return true;
+}
+
+async function call(name, ...args) {
+  try {
+    const value = await client[name](...args);
+    return { ok: true, value: value === undefined ? null : value };
+  } catch (error) {
+    return { ok: false, code: error.code || 'error', message: error.message };
+  }
+}
+
+window.__lease = {
+  open,
+  acquire: (owner, ttl) => call('acquire', 'task-1', owner, ttl),
+  renew: (owner, fencing, ttl) => call('renew', 'task-1', owner, fencing, ttl),
+  release: (owner, fencing) => call('release', 'task-1', owner, fencing),
+  commit: (owner, fencing, value) => call('commit', 'task-1', owner, fencing, [{ task_id: 'payload', value }]),
+  status: () => call('status', 'task-1'),
+  readPayload: async () => {
+    const value = await store.getCheckpoint('payload');
+    return { ok: true, value };
+  },
+  dropBroadcastChannel: () => {
+    try { delete window.BroadcastChannel; } catch (error) { window.BroadcastChannel = undefined; }
+    return typeof BroadcastChannel;
+  }
+};
+window.__ready = true;
+</script>
+</body>
+</html>

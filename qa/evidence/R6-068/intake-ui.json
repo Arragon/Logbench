@@ -1,0 +1,411 @@
+{
+  "base_url": "http://127.0.0.1:50955",
+  "viewports": {
+    "1366x768": {
+      "console_errors": [],
+      "tabs": [
+        "远程日志源2",
+        "存储位置",
+        "解析缓存",
+        "运行记录"
+      ],
+      "table_box": {
+        "x": 224,
+        "y": 204,
+        "width": 1126,
+        "height": 131
+      },
+      "seed": {
+        "status": 200,
+        "item": {
+          "id": "src_de8ba3e70d6a",
+          "adapter": "http",
+          "label": "QA · 本机 HTTP 源",
+          "endpoint": "http://127.0.0.1:50955/var/log/app.log",
+          "credentialRef": null,
+          "acl": "admin",
+          "revision": 1,
+          "enabled": false,
+          "paused": false,
+          "policy": {
+            "allowedHosts": [
+              "127.0.0.1"
+            ],
+            "allowLoopback": true
+          },
+          "capabilities": {},
+          "hostPin": null,
+          "createdAt": "2026-11-03T20:21:58Z",
+          "updatedAt": "2026-11-03T20:21:58Z",
+          "mappingCount": 1,
+          "probe": null
+        },
+        "created": false,
+        "first": {
+          "status": 409,
+          "value": {
+            "error": {
+              "code": "duplicate_source",
+              "message": "同名同地址的远程源已存在。",
+              "details": {}
+            }
+          }
+        }
+      },
+      "rows": 2,
+      "row_text": "QA · 本机 HTTP 源\nhttp · http://127.0.0.1:50955/var/log/app.log\n\t1 个目录映射\t未启用\t\n已归档 0 B\n尚未采集\n\t\n查看\n暂停",
+      "drawer_shift": {
+        "before": {
+          "x": 224,
+          "y": 204,
+          "width": 1126,
+          "height": 131
+        },
+        "after": {
+          "x": 224,
+          "y": 204,
+          "width": 1126,
+          "height": 131
+        },
+        "dx": 0,
+        "dw": 0
+      },
+      "drawer_text": "QA · 本机 HTTP 源\n关闭\n当前采集链路\n文件登记：0 个 · 已归档 0 B\n滞后：0 B\n缺口：0 个（缺口不会被补成“成功”）\n最后联系：尚未采集\n\n源未启用：不会排队采集。预检通过后才允许启用。\n\n目录映射\n/var/log/\n→\nlegacy/qa/http\n定时\n连接能力\n尚未预检 · 能力未知\n\n尚未预检。\n\n归档与访问\n源文件删除：保留本地归档，不传播删除\n文件轮转：按代次归档，旧代次继续补齐\n访问范围：仅管理员\n采集身份：无凭据 · 仅引用，不显示密钥\n运行预检\n暂停\n立即扫描",
+      "disabled_row_toggles": {
+        "inspected": 1,
+        "enabled": []
+      },
+      "forged_pause": {
+        "status": 409,
+        "value": {
+          "error": {
+            "code": "source_disabled",
+            "message": "请先启用远程源。",
+            "details": {}
+          }
+        }
+      },
+      "storage_text": "存储位置由“存储位置管理”维护（R6-056）。\n\n采集源的映射目标是存储位置 ID + 子目录，不是任意路径。这里不重复实现第二套根管理页面；源详情中会显示实际目标路径。",
+      "jobs_text": "任务\t状态\t阶段\t更新时间\nj_dbc2dfc5ab8244e73018410fc85a3984\tqueued\tqueued\t2026-11-03T20:21:52+00:00",
+      "height_used": 61
+    },
+    "1920x1080": {
+      "console_errors": [],
+      "tabs": [
+        "远程日志源2",
+        "存储位置",
+        "解析缓存",
+        "运行记录"
+      ],
+      "table_box": {
+        "x": 224,
+        "y": 204,
+        "width": 1680,
+        "height": 131
+      },
+      "height_used": 131
+    },
+    "768x1024": {
+      "console_errors": [],
+      "tabs": [
+        "远程日志源2",
+        "存储位置",
+        "解析缓存",
+        "运行记录"
+      ],
+      "table_box": {
+        "x": 16,
+        "y": 322,
+        "width": 736,
+        "height": 131
+      },
+      "height_used": 131
+    },
+    "375x812": {
+      "console_errors": [],
+      "tabs": [
+        "远程日志源2",
+        "存储位置",
+        "解析缓存",
+        "运行记录"
+      ],
+      "table_box": {
+        "x": 16,
+        "y": 384,
+        "width": 343,
+        "height": 469
+      },
+      "height_used": 469
+    }
+  },
+  "checks": [
+    {
+      "name": "1366x768 页面初始化",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "1366x768 四标签存在",
+      "ok": true,
+      "detail": [
+        "远程日志源2",
+        "存储位置",
+        "解析缓存",
+        "运行记录"
+      ]
+    },
+    {
+      "name": "1366x768 表格可见",
+      "ok": true,
+      "detail": {
+        "x": 224,
+        "y": 204,
+        "width": 1126,
+        "height": 131
+      }
+    },
+    {
+      "name": "1366x768 无横向溢出",
+      "ok": true,
+      "detail": {
+        "scrollWidth": 1366,
+        "viewport": 1366
+      }
+    },
+    {
+      "name": "创建源成功",
+      "ok": true,
+      "detail": {
+        "status": 200,
+        "item": {
+          "id": "src_de8ba3e70d6a",
+          "adapter": "http",
+          "label": "QA · 本机 HTTP 源",
+          "endpoint": "http://127.0.0.1:50955/var/log/app.log",
+          "credentialRef": null,
+          "acl": "admin",
+          "revision": 1,
+          "enabled": false,
+          "paused": false,
+          "policy": {
+            "allowedHosts": [
+              "127.0.0.1"
+            ],
+            "allowLoopback": true
+          },
+          "capabilities": {},
+          "hostPin": null,
+          "createdAt": "2026-11-03T20:21:58Z",
+          "updatedAt": "2026-11-03T20:21:58Z",
+          "mappingCount": 1,
+          "probe": null
+        },
+        "created": false,
+        "first": {
+          "status": 409,
+          "value": {
+            "error": {
+              "code": "duplicate_source",
+              "message": "同名同地址的远程源已存在。",
+              "details": {}
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "源出现在列表",
+      "ok": true,
+      "detail": {
+        "rows": 2
+      }
+    },
+    {
+      "name": "未启用的源不显示完成态",
+      "ok": true,
+      "detail": "QA · 本机 HTTP 源\nhttp · http://127.0.0.1:50955/var/log/app.log\n\t1 个目录映射\t未启用\t\n已归档 0 B\n尚未采集\n\t\n查看\n暂停"
+    },
+    {
+      "name": "归档量为真实 0",
+      "ok": true,
+      "detail": "QA · 本机 HTTP 源\nhttp · http://127.0.0.1:50955/var/log/app.log\n\t1 个目录映射\t未启用\t\n已归档 0 B\n尚未采集\n\t\n查看\n暂停"
+    },
+    {
+      "name": "页面没有伪造百分比",
+      "ok": true,
+      "detail": "采集中心\n\n远程目录 → 原文归档 → 可复用索引\n\n资源设置\n添加日志源\n远程日志源\n2\n存储位置\n解析缓存\n运行记录\n全部状态\n持续追踪\n续采 / 追赶\n已暂停\n未启用\n有缺口\n快照模式\n2 个日志源 · 0 追踪中 · 0 续采中\n刷新\n日志源 / 连接\t目录 → 存储位置\t同步状态\t归档 / 滞后\t操作\n\nQA · 向导源\nhttp · http://127.0.0.1:57695/var/log/app.log\n\t2 个目录映射\t快照模式\t\n已归档 0 B\n尚未采集\n\t\n查看\n暂停\n\n\nQA · 本机 HTTP 源\nhttp · http://127.0.0.1:50955/var/log/app.log\n\t1 个目录映射\t未启用\t\n已归档 0 B\n尚未采集\n\t\n查看\n暂停"
+    },
+    {
+      "name": "详情浮层不移动表格",
+      "ok": true,
+      "detail": {
+        "before": {
+          "x": 224,
+          "y": 204,
+          "width": 1126,
+          "height": 131
+        },
+        "after": {
+          "x": 224,
+          "y": 204,
+          "width": 1126,
+          "height": 131
+        },
+        "dx": 0,
+        "dw": 0
+      }
+    },
+    {
+      "name": "详情说明能力而非承诺",
+      "ok": true,
+      "detail": "QA · 本机 HTTP 源\n关闭\n当前采集链路\n文件登记：0 个 · 已归档 0 B\n滞后：0 B\n缺口：0 个（缺口不会被补成“成功”）\n最后联系：尚未采集\n\n源未启用：不会排队采集。预检通过后才允许启用。\n\n目录映射\n/var/log/\n→\nlegacy/qa/http\n定时\n连接能力\n尚未预检 · 能力未知\n\n尚未预检。\n\n归档与访问\n源文件删除：保留本地归档，不传播删除\n文件轮转：按代次"
+    },
+    {
+      "name": "详情不显示密钥",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "Esc 关闭详情",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "种子源显示未启用",
+      "ok": true,
+      "detail": "QA · 本机 HTTP 源\nhttp · http://127.0.0.1:50955/var/log/app.log\n\t1 个目录映射\t未启用\t\n已归档 0 B\n尚未采集\n\t\n查看\n暂停"
+    },
+    {
+      "name": "未启用源的启停按钮不可用",
+      "ok": true,
+      "detail": {
+        "inspected": 1,
+        "enabled": []
+      }
+    },
+    {
+      "name": "伪造暂停请求被后端拒绝",
+      "ok": true,
+      "detail": {
+        "status": 409,
+        "value": {
+          "error": {
+            "code": "source_disabled",
+            "message": "请先启用远程源。",
+            "details": {}
+          }
+        }
+      }
+    },
+    {
+      "name": "存储位置标签不重复实现根管理",
+      "ok": true,
+      "detail": "存储位置由“存储位置管理”维护（R6-056）。\n\n采集源的映射目标是存储位置 ID + 子目录，不是任意路径。这里不重复实现第二套根管理页面；源详情中会显示实际目标路径。"
+    },
+    {
+      "name": "解析缓存标签标明归属 M8",
+      "ok": true,
+      "detail": "解析缓存与重建管理在 M8（R6-082）提供。\n\n本页只显示采集侧的原文水位；结构与检索层的版本、覆盖率与可清理项不在 M6 范围内，避免在没有真实数据时给出“全部已索引”的假状态。"
+    },
+    {
+      "name": "1920x1080 页面初始化",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "1920x1080 四标签存在",
+      "ok": true,
+      "detail": [
+        "远程日志源2",
+        "存储位置",
+        "解析缓存",
+        "运行记录"
+      ]
+    },
+    {
+      "name": "1920x1080 表格可见",
+      "ok": true,
+      "detail": {
+        "x": 224,
+        "y": 204,
+        "width": 1680,
+        "height": 131
+      }
+    },
+    {
+      "name": "1920x1080 无横向溢出",
+      "ok": true,
+      "detail": {
+        "scrollWidth": 1920,
+        "viewport": 1920
+      }
+    },
+    {
+      "name": "768x1024 页面初始化",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "768x1024 四标签存在",
+      "ok": true,
+      "detail": [
+        "远程日志源2",
+        "存储位置",
+        "解析缓存",
+        "运行记录"
+      ]
+    },
+    {
+      "name": "768x1024 表格可见",
+      "ok": true,
+      "detail": {
+        "x": 16,
+        "y": 322,
+        "width": 736,
+        "height": 131
+      }
+    },
+    {
+      "name": "768x1024 无横向溢出",
+      "ok": true,
+      "detail": {
+        "scrollWidth": 768,
+        "viewport": 768
+      }
+    },
+    {
+      "name": "375x812 页面初始化",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "375x812 四标签存在",
+      "ok": true,
+      "detail": [
+        "远程日志源2",
+        "存储位置",
+        "解析缓存",
+        "运行记录"
+      ]
+    },
+    {
+      "name": "375x812 表格可见",
+      "ok": true,
+      "detail": {
+        "x": 16,
+        "y": 384,
+        "width": 343,
+        "height": 469
+      }
+    },
+    {
+      "name": "375x812 无横向溢出",
+      "ok": true,
+      "detail": {
+        "scrollWidth": 375,
+        "viewport": 375
+      }
+    }
+  ],
+  "failures": []
+}

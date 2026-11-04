@@ -1,0 +1,170 @@
+{
+ "name": "rule_impact",
+ "started_at": "2026-11-03T13:26:39",
+ "ok": true,
+ "total": 26,
+ "failed": 0,
+ "checks": [
+  {
+   "label": "规则列表返回语义签名",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "label": "当前规则的影响预览可用",
+   "ok": true,
+   "detail": "actual=200 expected=200"
+  },
+  {
+   "label": "当前规则不产生任何重建",
+   "ok": true,
+   "detail": "actual=0 expected=0"
+  },
+  {
+   "label": "已建索引文件计入可见范围",
+   "ok": true,
+   "detail": "actual=2 expected=2"
+  },
+  {
+   "label": "只改颜色/形状/名称影响 0 个文件",
+   "ok": true,
+   "detail": "actual=0 expected=0"
+  },
+  {
+   "label": "改异常影响规则层",
+   "ok": true,
+   "detail": "actual=2 expected=2"
+  },
+  {
+   "label": "改异常影响检索层",
+   "ok": true,
+   "detail": "actual=2 expected=2"
+  },
+  {
+   "label": "改异常不影响结构层",
+   "ok": true,
+   "detail": "actual=0 expected=0"
+  },
+  {
+   "label": "试跑返回 200",
+   "ok": true,
+   "detail": "actual=200 expected=200"
+  },
+  {
+   "label": "试跑真实分帧出记录",
+   "ok": true,
+   "detail": 10
+  },
+  {
+   "label": "试跑给出字段与命中证据",
+   "ok": true,
+   "detail": [
+    [
+     "GLOBAL_Delay",
+     "3000ns energy: 9.430 converged: false"
+    ]
+   ]
+  },
+  {
+   "label": "过期修订号被拒绝",
+   "ok": true,
+   "detail": "actual=409 expected=409"
+  },
+  {
+   "label": "冲突码正确",
+   "ok": true,
+   "detail": "actual='revision_conflict' expected='revision_conflict'"
+  },
+  {
+   "label": "应用成功",
+   "ok": true,
+   "detail": "actual=200 expected=200"
+  },
+  {
+   "label": "修订号 +1",
+   "ok": true,
+   "detail": "actual=2 expected=2"
+  },
+  {
+   "label": "排队的重建任务数等于受影响文件数",
+   "ok": true,
+   "detail": 2
+  },
+  {
+   "label": "应用后结构层签名不变（未重新分帧）",
+   "ok": true,
+   "detail": "actual='sig1-6f0728e98143f04fff032a4db828a78d' expected='sig1-6f0728e98143f04fff032a4db828a78d'"
+  },
+  {
+   "label": "重建后同一规则不再需要重建",
+   "ok": true,
+   "detail": "actual=0 expected=0"
+  },
+  {
+   "label": "规则页渲染出提取规则表",
+   "ok": true,
+   "detail": 1
+  },
+  {
+   "label": "规则页包含提取/异常/节点/试跑/影响五个分区",
+   "ok": true,
+   "detail": "actual=5 expected=5"
+  },
+  {
+   "label": "未预览时保存并应用不可用",
+   "ok": true,
+   "detail": "actual=True expected=True"
+  },
+  {
+   "label": "影响面板显示可见/受影响计数",
+   "ok": true,
+   "detail": [
+    "2",
+    "2",
+    "0",
+    "0",
+    "0",
+    "0"
+   ]
+  },
+  {
+   "label": "预览后受影响文件为 0（与 API 一致）",
+   "ok": true,
+   "detail": "actual='0' expected='0'"
+  },
+  {
+   "label": "预览后保存并应用可用",
+   "ok": true,
+   "detail": "actual=False expected=False"
+  },
+  {
+   "label": "试跑分区渲染出证据卡片",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "label": "页面无脚本错误",
+   "ok": true,
+   "detail": []
+  }
+ ],
+ "baseline": {
+  "visible": 2,
+  "indexed": 2,
+  "affected": 0,
+  "rules_affected": 0,
+  "search_affected": 0,
+  "not_indexed": 0,
+  "already_current": 2
+ },
+ "impact": {
+  "visible": 2,
+  "indexed": 2,
+  "affected": 2,
+  "rules_affected": 2,
+  "search_affected": 2,
+  "not_indexed": 0,
+  "already_current": 0
+ },
+ "applied": 2
+}

@@ -1,0 +1,28 @@
+{
+  "ok": true,
+  "idempotent_part": {
+    "status": 200,
+    "idempotent": true,
+    "bytes_done": 4194304
+  },
+  "bad_digest": {
+    "status": 400,
+    "code": "digest_mismatch"
+  },
+  "missing_after_first_part": [
+    2
+  ],
+  "bytes_done_after_resume": 6291739,
+  "expected_bytes": 6291739,
+  "seal": {
+    "file_id": "f_84b7629c2b26d842",
+    "job_id": "j_940d6cf30781c1d4b046691fbb96099a"
+  },
+  "seal_retry": {
+    "file_id": "f_84b7629c2b26d842",
+    "job_id": "j_940d6cf30781c1d4b046691fbb96099a",
+    "accepted": false,
+    "index_state": "framing"
+  },
+  "seconds": 0.07
+}

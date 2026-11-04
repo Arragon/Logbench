@@ -1,0 +1,71 @@
+{
+  "state": "PASS",
+  "cases": [
+    {
+      "case": "locked-file",
+      "state": "retry",
+      "retry_at": true,
+      "passed": true
+    },
+    {
+      "case": "list-failure",
+      "codes": [
+        "transport_error"
+      ],
+      "passed": true
+    },
+    {
+      "case": "recovery-after-error",
+      "state": "archived",
+      "passed": true
+    },
+    {
+      "case": "hostkey_changed",
+      "state": "stopped",
+      "retry_at": null,
+      "needs_human": true,
+      "passed": true
+    },
+    {
+      "case": "auth_failed",
+      "state": "stopped",
+      "retry_at": null,
+      "needs_human": true,
+      "passed": true
+    },
+    {
+      "case": "permission_denied",
+      "state": "stopped",
+      "retry_at": null,
+      "needs_human": true,
+      "passed": true
+    },
+    {
+      "case": "storage-low",
+      "paused": true,
+      "policy": {
+        "allowedHosts": [
+          "127.0.0.1"
+        ],
+        "allowLoopback": true,
+        "waitingStorage": "legacy",
+        "waitingReason": "below_low_watermark",
+        "pausedBy": "storage"
+      },
+      "paused_sources": 1,
+      "reads_ok": true,
+      "passed": true
+    },
+    {
+      "case": "storage-recovered",
+      "paused": false,
+      "policy": {
+        "allowedHosts": [
+          "127.0.0.1"
+        ],
+        "allowLoopback": true
+      },
+      "passed": true
+    }
+  ]
+}

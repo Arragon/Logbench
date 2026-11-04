@@ -1,0 +1,108 @@
+{
+ "name": "global_time",
+ "started_at": "2026-11-03T13:25:33",
+ "ok": true,
+ "total": 14,
+ "failed": 0,
+ "checks": [
+  {
+   "label": "时间入口不独占一行（工具条 ≤ 44px）",
+   "ok": true,
+   "detail": 40
+  },
+  {
+   "label": "树中同时列出本机与服务器来源",
+   "ok": true,
+   "detail": 6
+  },
+  {
+   "label": "选择目录后文件数为 2",
+   "ok": true,
+   "detail": "已选 2 个文件"
+  },
+  {
+   "label": "取消单个文件后为 1 个文件且标注部分选择",
+   "ok": true,
+   "detail": "已选 1 个文件（含部分选择目录 2）"
+  },
+  {
+   "label": "合法范围使“应用范围”可用",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "label": "应用后阅读区渲染出记录",
+   "ok": true,
+   "detail": 10
+  },
+  {
+   "label": "计数文案给出条数与完成度",
+   "ok": true,
+   "detail": "共 10 条"
+  },
+  {
+   "label": "范围状态包含来源计数",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "label": "起点晚于终点时给出错误并禁用应用",
+   "ok": true,
+   "detail": "开始时间不能晚于结束时间。"
+  },
+  {
+   "label": "取消不改变当前结果",
+   "ok": true,
+   "detail": "actual=10 expected=10"
+  },
+  {
+   "label": "视角已保存到本机（含目录选择与时间）",
+   "ok": true,
+   "detail": {
+    "recent": [
+     {
+      "label": "2026-05-01 09:59:00 → 2026-05-01 10:01:00",
+      "from_text": "2026-05-01T09:59:00Z",
+      "to_text": "2026-05-01T10:01:00Z"
+     }
+    ],
+    "views": [
+     {
+      "id": "view-mw175nba-hblz",
+      "name": "联调视角",
+      "include": [
+       "root:shared"
+      ],
+      "exclude": [],
+      "range": {
+       "from_text": "2026-05-01T09:59:00Z",
+       "to_text": "2026-05-01T10:01:00Z"
+      },
+      "search": {
+       "text": "",
+       "flags": {}
+      },
+      "saved_at": "2026-11-03T21:25:31.846Z"
+     }
+    ]
+   }
+  },
+  {
+   "label": "刷新后恢复视角并重新解析出 2 个文件",
+   "ok": true,
+   "detail": "已选 2 个文件"
+  },
+  {
+   "label": "恢复后的范围同样产生记录",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "label": "页面无脚本错误",
+   "ok": true,
+   "detail": []
+  }
+ ],
+ "toolbar_height": 40,
+ "saved_views": 1
+}

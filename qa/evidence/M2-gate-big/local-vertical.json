@@ -1,0 +1,373 @@
+{
+ "url": "http://192.168.1.3:51565",
+ "started_at": "2026-11-03T09:56:44",
+ "phases": {
+  "import_5x20": {
+   "panel_visible_ms": 0.6,
+   "register_ms": 0.6,
+   "files": 5,
+   "first_readable_ms": 2162.1,
+   "total_s": 6.54,
+   "records": 651658,
+   "files_indexed": 5,
+   "files_failed": 0
+  },
+  "search": {
+   "runs": 30,
+   "latency_ms": {
+    "n": 30,
+    "p50": 0.1,
+    "p95": 340.9,
+    "max": 884.4,
+    "min": 0
+   },
+   "by_label": {
+    "high": {
+     "n": 4,
+     "latency_ms": {
+      "n": 4,
+      "p50": 0.1,
+      "p95": 884.4,
+      "max": 884.4,
+      "min": 0
+     },
+     "relations": {
+      "exact": 4
+     }
+    },
+    "high2": {
+     "n": 4,
+     "latency_ms": {
+      "n": 4,
+      "p50": 0.2,
+      "p95": 313.2,
+      "max": 313.2,
+      "min": 0.1
+     },
+     "relations": {
+      "exact": 4
+     }
+    },
+    "low": {
+     "n": 4,
+     "latency_ms": {
+      "n": 4,
+      "p50": 0.1,
+      "p95": 308.1,
+      "max": 308.1,
+      "min": 0
+     },
+     "relations": {
+      "exact": 4
+     }
+    },
+    "zero": {
+     "n": 3,
+     "latency_ms": {
+      "n": 3,
+      "p50": 0.2,
+      "p95": 340.9,
+      "max": 340.9,
+      "min": 0.1
+     },
+     "relations": {
+      "exact": 3
+     }
+    },
+    "cjk2": {
+     "n": 3,
+     "latency_ms": {
+      "n": 3,
+      "p50": 0.1,
+      "p95": 304.7,
+      "max": 304.7,
+      "min": 0
+     },
+     "relations": {
+      "exact": 3
+     }
+    },
+    "cjk1": {
+     "n": 3,
+     "latency_ms": {
+      "n": 3,
+      "p50": 0.1,
+      "p95": 333.5,
+      "max": 333.5,
+      "min": 0
+     },
+     "relations": {
+      "exact": 3
+     }
+    },
+    "whole": {
+     "n": 3,
+     "latency_ms": {
+      "n": 3,
+      "p50": 0.1,
+      "p95": 308.5,
+      "max": 308.5,
+      "min": 0.1
+     },
+     "relations": {
+      "exact": 3
+     }
+    },
+    "crossline": {
+     "n": 3,
+     "latency_ms": {
+      "n": 3,
+      "p50": 0.1,
+      "p95": 335.7,
+      "max": 335.7,
+      "min": 0
+     },
+     "relations": {
+      "exact": 3
+     }
+    },
+    "literal_pct": {
+     "n": 3,
+     "latency_ms": {
+      "n": 3,
+      "p50": 0.1,
+      "p95": 308.5,
+      "max": 308.5,
+      "min": 0
+     },
+     "relations": {
+      "exact": 3
+     }
+    }
+   },
+   "zero_reported_without_full_scan": []
+  },
+  "reader": {
+   "jump": {
+    "rows": 98,
+    "reader": {
+     "x": 208,
+     "y": 92,
+     "w": 1158,
+     "h": 486
+    },
+    "timeline": {
+     "x": 208,
+     "y": 578,
+     "w": 1158,
+     "h": 190
+    },
+    "first_ordinal": "39960",
+    "first_top": 8,
+    "probe": {
+     "ordinal": "39997",
+     "top": 8
+    },
+    "scroll_top": 1120000
+   },
+   "drawer_open": {
+    "reader": {
+     "x": 208,
+     "y": 92,
+     "w": 1158,
+     "h": 486
+    },
+    "timeline": {
+     "x": 208,
+     "y": 578,
+     "w": 1158,
+     "h": 190
+    },
+    "drawer": {
+     "x": 906,
+     "y": 0,
+     "w": 460,
+     "h": 768
+    },
+    "first_ordinal": "39997",
+    "first_top": 8,
+    "scroll_top": 1120000,
+    "rows": 98
+   },
+   "reader_delta": {
+    "x": 0,
+    "w": 0,
+    "h": 0
+   },
+   "timeline_delta": {
+    "x": 0,
+    "w": 0
+   },
+   "anchor_shift_px": 0,
+   "anchor_same_record": true,
+   "anchor_ordinal": "39997"
+  },
+  "themes": {
+   "ink": {
+    "theme": "ink",
+    "ink": "rgb(0, 0, 0)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "row_visible": true,
+    "screenshot": "theme-ink.png"
+   },
+   "paper": {
+    "theme": "paper",
+    "ink": "rgb(0, 0, 0)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "row_visible": true,
+    "screenshot": "theme-paper.png"
+   },
+   "graphite": {
+    "theme": "graphite",
+    "ink": "rgb(0, 0, 0)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "row_visible": true,
+    "screenshot": "theme-graphite.png"
+   },
+   "nord": {
+    "theme": "nord",
+    "ink": "rgb(0, 0, 0)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "row_visible": true,
+    "screenshot": "theme-nord.png"
+   }
+  },
+  "import_10x100": {
+   "total_s": 54.46,
+   "files": 10,
+   "phases": [
+    {
+     "phase": "indexed",
+     "records": 130359,
+     "error": null
+    },
+    {
+     "phase": "indexed",
+     "records": 130334,
+     "error": null
+    },
+    {
+     "phase": "indexed",
+     "records": 130314,
+     "error": null
+    },
+    {
+     "phase": "indexed",
+     "records": 130356,
+     "error": null
+    },
+    {
+     "phase": "indexed",
+     "records": 130295,
+     "error": null
+    },
+    {
+     "phase": "indexed",
+     "records": 646596,
+     "error": null
+    },
+    {
+     "phase": "indexed",
+     "records": 646492,
+     "error": null
+    },
+    {
+     "phase": "indexed",
+     "records": 646554,
+     "error": null
+    },
+    {
+     "phase": "indexed",
+     "records": 646621,
+     "error": null
+    },
+    {
+     "phase": "indexed",
+     "records": 646538,
+     "error": null
+    },
+    {
+     "phase": "indexed",
+     "records": 646511,
+     "error": null
+    },
+    {
+     "phase": "indexed",
+     "records": 646587,
+     "error": null
+    },
+    {
+     "phase": "indexed",
+     "records": 646657,
+     "error": null
+    },
+    {
+     "phase": "indexed",
+     "records": 646427,
+     "error": null
+    },
+    {
+     "phase": "indexed",
+     "records": 646551,
+     "error": null
+    }
+   ]
+  },
+  "reload": {
+   "files": 15,
+   "theme": "nord",
+   "page_size": "5000",
+   "tasks": 0
+  }
+ },
+ "targets": {
+  "select_feedback_100ms": {
+   "target": 100,
+   "actual": 0.6,
+   "met": true
+  },
+  "first_batch_3000ms": {
+   "target": 3000,
+   "actual": 2162.1,
+   "met": true
+  },
+  "search_p95_1800ms": {
+   "target": 1800,
+   "actual": 340.9,
+   "met": true
+  },
+  "dom_under_300": {
+   "target": 300,
+   "actual": 98,
+   "met": true
+  },
+  "drawer_no_layout_shift": {
+   "target": 0,
+   "actual": {
+    "x": 0,
+    "w": 0,
+    "h": 0
+   },
+   "met": true
+  },
+  "anchor_within_2px": {
+   "target": 2,
+   "actual": 0,
+   "met": true
+  },
+  "reload_reuses_index": {
+   "target": 5,
+   "actual": 15,
+   "met": true
+  },
+  "no_false_zero": {
+   "target": 0,
+   "actual": 0,
+   "met": true
+  }
+ },
+ "secure_context": false,
+ "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+ "hardware_concurrency": 12,
+ "page_errors": []
+}

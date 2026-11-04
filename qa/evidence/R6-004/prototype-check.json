@@ -1,0 +1,742 @@
+{
+ "schema": "logbench.prototype-check/1",
+ "prototype": "docs/prototypes/r6-rev2.html",
+ "generated_at": "2026-11-02T23:20:08",
+ "states": {
+  "idle": {
+   "viewport": {
+    "w": 1366,
+    "h": 768
+   },
+   "toolbarRows": 1,
+   "toolbar": {
+    "x": 208,
+    "y": 52,
+    "w": 1158,
+    "h": 44
+   },
+   "timeline": {
+    "x": 208,
+    "y": 96,
+    "w": 1158,
+    "h": 34
+   },
+   "table": {
+    "x": 208,
+    "y": 130,
+    "w": 818,
+    "h": 580
+   },
+   "foot": {
+    "x": 208,
+    "y": 710,
+    "w": 1158,
+    "h": 32
+   },
+   "status": {
+    "x": 208,
+    "y": 742,
+    "w": 1158,
+    "h": 26
+   },
+   "overlayVisible": false,
+   "overlayHeight": 0,
+   "scrollWidth": 1366,
+   "innerWidth": 1366,
+   "rows": 10,
+   "resultHead": null,
+   "activeElement": "BODY"
+  },
+  "open-choice": {
+   "viewport": {
+    "w": 1366,
+    "h": 768
+   },
+   "toolbarRows": 1,
+   "toolbar": {
+    "x": 208,
+    "y": 52,
+    "w": 1158,
+    "h": 44
+   },
+   "timeline": {
+    "x": 208,
+    "y": 96,
+    "w": 1158,
+    "h": 34
+   },
+   "table": {
+    "x": 208,
+    "y": 130,
+    "w": 818,
+    "h": 580
+   },
+   "foot": {
+    "x": 208,
+    "y": 710,
+    "w": 1158,
+    "h": 32
+   },
+   "status": {
+    "x": 208,
+    "y": 742,
+    "w": 1158,
+    "h": 26
+   },
+   "overlayVisible": true,
+   "overlayHeight": 383,
+   "scrollWidth": 1366,
+   "innerWidth": 1366,
+   "rows": 10,
+   "resultHead": null,
+   "activeElement": "INPUT"
+  },
+  "reading": {
+   "viewport": {
+    "w": 1366,
+    "h": 768
+   },
+   "toolbarRows": 1,
+   "toolbar": {
+    "x": 208,
+    "y": 52,
+    "w": 1158,
+    "h": 44
+   },
+   "timeline": {
+    "x": 208,
+    "y": 96,
+    "w": 1158,
+    "h": 34
+   },
+   "table": {
+    "x": 208,
+    "y": 130,
+    "w": 818,
+    "h": 580
+   },
+   "foot": {
+    "x": 208,
+    "y": 710,
+    "w": 1158,
+    "h": 32
+   },
+   "status": {
+    "x": 208,
+    "y": 742,
+    "w": 1158,
+    "h": 26
+   },
+   "overlayVisible": true,
+   "overlayHeight": 451,
+   "scrollWidth": 1366,
+   "innerWidth": 1366,
+   "rows": 10,
+   "resultHead": null,
+   "activeElement": "BUTTON"
+  },
+  "queued": {
+   "viewport": {
+    "w": 1366,
+    "h": 768
+   },
+   "toolbarRows": 1,
+   "toolbar": {
+    "x": 208,
+    "y": 52,
+    "w": 1158,
+    "h": 44
+   },
+   "timeline": {
+    "x": 208,
+    "y": 96,
+    "w": 1158,
+    "h": 34
+   },
+   "table": {
+    "x": 208,
+    "y": 130,
+    "w": 818,
+    "h": 580
+   },
+   "foot": {
+    "x": 208,
+    "y": 710,
+    "w": 1158,
+    "h": 32
+   },
+   "status": {
+    "x": 208,
+    "y": 742,
+    "w": 1158,
+    "h": 26
+   },
+   "overlayVisible": true,
+   "overlayHeight": 353,
+   "scrollWidth": 1366,
+   "innerWidth": 1366,
+   "rows": 10,
+   "resultHead": null,
+   "activeElement": "BUTTON"
+  },
+  "partial": {
+   "viewport": {
+    "w": 1366,
+    "h": 768
+   },
+   "toolbarRows": 1,
+   "toolbar": {
+    "x": 208,
+    "y": 52,
+    "w": 1158,
+    "h": 44
+   },
+   "timeline": {
+    "x": 208,
+    "y": 96,
+    "w": 1158,
+    "h": 34
+   },
+   "table": {
+    "x": 208,
+    "y": 130,
+    "w": 818,
+    "h": 580
+   },
+   "foot": {
+    "x": 208,
+    "y": 710,
+    "w": 1158,
+    "h": 32
+   },
+   "status": {
+    "x": 208,
+    "y": 742,
+    "w": 1158,
+    "h": 26
+   },
+   "overlayVisible": true,
+   "overlayHeight": 333,
+   "scrollWidth": 1366,
+   "innerWidth": 1366,
+   "rows": 10,
+   "resultHead": null,
+   "activeElement": "BUTTON"
+  },
+  "quota": {
+   "viewport": {
+    "w": 1366,
+    "h": 768
+   },
+   "toolbarRows": 1,
+   "toolbar": {
+    "x": 208,
+    "y": 52,
+    "w": 1158,
+    "h": 44
+   },
+   "timeline": {
+    "x": 208,
+    "y": 96,
+    "w": 1158,
+    "h": 34
+   },
+   "table": {
+    "x": 208,
+    "y": 130,
+    "w": 818,
+    "h": 580
+   },
+   "foot": {
+    "x": 208,
+    "y": 710,
+    "w": 1158,
+    "h": 32
+   },
+   "status": {
+    "x": 208,
+    "y": 742,
+    "w": 1158,
+    "h": 26
+   },
+   "overlayVisible": true,
+   "overlayHeight": 259,
+   "scrollWidth": 1366,
+   "innerWidth": 1366,
+   "rows": 10,
+   "resultHead": null,
+   "activeElement": "BUTTON"
+  },
+  "search-exact": {
+   "viewport": {
+    "w": 1366,
+    "h": 768
+   },
+   "toolbarRows": 1,
+   "toolbar": {
+    "x": 208,
+    "y": 52,
+    "w": 1158,
+    "h": 44
+   },
+   "timeline": {
+    "x": 208,
+    "y": 96,
+    "w": 1158,
+    "h": 34
+   },
+   "table": {
+    "x": 208,
+    "y": 130,
+    "w": 818,
+    "h": 580
+   },
+   "foot": {
+    "x": 208,
+    "y": 710,
+    "w": 1158,
+    "h": 32
+   },
+   "status": {
+    "x": 208,
+    "y": 742,
+    "w": 1158,
+    "h": 26
+   },
+   "overlayVisible": false,
+   "overlayHeight": 0,
+   "scrollWidth": 1366,
+   "innerWidth": 1366,
+   "rows": 10,
+   "resultHead": "精确 243 已扫描 100%（130,295 / 130,295 条）",
+   "activeElement": "BODY"
+  },
+  "search-partial": {
+   "viewport": {
+    "w": 1366,
+    "h": 768
+   },
+   "toolbarRows": 1,
+   "toolbar": {
+    "x": 208,
+    "y": 52,
+    "w": 1158,
+    "h": 44
+   },
+   "timeline": {
+    "x": 208,
+    "y": 96,
+    "w": 1158,
+    "h": 34
+   },
+   "table": {
+    "x": 208,
+    "y": 130,
+    "w": 818,
+    "h": 580
+   },
+   "foot": {
+    "x": 208,
+    "y": 710,
+    "w": 1158,
+    "h": 32
+   },
+   "status": {
+    "x": 208,
+    "y": 742,
+    "w": 1158,
+    "h": 26
+   },
+   "overlayVisible": false,
+   "overlayHeight": 0,
+   "scrollWidth": 1366,
+   "innerWidth": 1366,
+   "rows": 10,
+   "resultHead": "至少 61 条 预算 1800 ms 用尽，已扫描 34%，可继续 继续扫描",
+   "activeElement": "BODY"
+  },
+  "search-unknown": {
+   "viewport": {
+    "w": 1366,
+    "h": 768
+   },
+   "toolbarRows": 1,
+   "toolbar": {
+    "x": 208,
+    "y": 52,
+    "w": 1158,
+    "h": 44
+   },
+   "timeline": {
+    "x": 208,
+    "y": 96,
+    "w": 1158,
+    "h": 34
+   },
+   "table": {
+    "x": 208,
+    "y": 130,
+    "w": 818,
+    "h": 580
+   },
+   "foot": {
+    "x": 208,
+    "y": 710,
+    "w": 1158,
+    "h": 32
+   },
+   "status": {
+    "x": 208,
+    "y": 742,
+    "w": 1158,
+    "h": 26
+   },
+   "overlayVisible": false,
+   "overlayHeight": 0,
+   "scrollWidth": 1366,
+   "innerWidth": 1366,
+   "rows": 10,
+   "resultHead": "计数未知 正在扫描，暂不显示具体条数",
+   "activeElement": "BODY"
+  },
+  "upload-offset": {
+   "viewport": {
+    "w": 1366,
+    "h": 768
+   },
+   "toolbarRows": 1,
+   "toolbar": {
+    "x": 208,
+    "y": 52,
+    "w": 1158,
+    "h": 44
+   },
+   "timeline": {
+    "x": 208,
+    "y": 96,
+    "w": 1158,
+    "h": 34
+   },
+   "table": {
+    "x": 208,
+    "y": 130,
+    "w": 818,
+    "h": 580
+   },
+   "foot": {
+    "x": 208,
+    "y": 710,
+    "w": 1158,
+    "h": 32
+   },
+   "status": {
+    "x": 208,
+    "y": 742,
+    "w": 1158,
+    "h": 26
+   },
+   "overlayVisible": true,
+   "overlayHeight": 329,
+   "scrollWidth": 1366,
+   "innerWidth": 1366,
+   "rows": 10,
+   "resultHead": null,
+   "activeElement": "BUTTON"
+  },
+  "upload-uploaded": {
+   "viewport": {
+    "w": 1366,
+    "h": 768
+   },
+   "toolbarRows": 1,
+   "toolbar": {
+    "x": 208,
+    "y": 52,
+    "w": 1158,
+    "h": 44
+   },
+   "timeline": {
+    "x": 208,
+    "y": 96,
+    "w": 1158,
+    "h": 34
+   },
+   "table": {
+    "x": 208,
+    "y": 130,
+    "w": 818,
+    "h": 580
+   },
+   "foot": {
+    "x": 208,
+    "y": 710,
+    "w": 1158,
+    "h": 32
+   },
+   "status": {
+    "x": 208,
+    "y": 742,
+    "w": 1158,
+    "h": 26
+   },
+   "overlayVisible": true,
+   "overlayHeight": 329,
+   "scrollWidth": 1366,
+   "innerWidth": 1366,
+   "rows": 10,
+   "resultHead": null,
+   "activeElement": "BUTTON"
+  },
+  "library-private": {
+   "viewport": {
+    "w": 1366,
+    "h": 768
+   },
+   "toolbarRows": 1,
+   "toolbar": {
+    "x": 208,
+    "y": 52,
+    "w": 1158,
+    "h": 44
+   },
+   "timeline": {
+    "x": 208,
+    "y": 96,
+    "w": 1158,
+    "h": 34
+   },
+   "table": {
+    "x": 208,
+    "y": 130,
+    "w": 818,
+    "h": 580
+   },
+   "foot": {
+    "x": 208,
+    "y": 710,
+    "w": 1158,
+    "h": 32
+   },
+   "status": {
+    "x": 208,
+    "y": 742,
+    "w": 1158,
+    "h": 26
+   },
+   "overlayVisible": true,
+   "overlayHeight": 309,
+   "scrollWidth": 1366,
+   "innerWidth": 1366,
+   "rows": 10,
+   "resultHead": null,
+   "activeElement": "BUTTON"
+  },
+  "narrow-375": {
+   "viewport": {
+    "w": 375,
+    "h": 812
+   },
+   "toolbarRows": 1,
+   "toolbar": {
+    "x": 0,
+    "y": 52,
+    "w": 424,
+    "h": 44
+   },
+   "timeline": {
+    "x": 0,
+    "y": 96,
+    "w": 424,
+    "h": 34
+   },
+   "table": {
+    "x": 0,
+    "y": 130,
+    "w": 424,
+    "h": 624
+   },
+   "foot": {
+    "x": 0,
+    "y": 754,
+    "w": 424,
+    "h": 32
+   },
+   "status": {
+    "x": 0,
+    "y": 786,
+    "w": 424,
+    "h": 26
+   },
+   "overlayVisible": false,
+   "overlayHeight": 0,
+   "scrollWidth": 375,
+   "innerWidth": 375,
+   "rows": 10,
+   "resultHead": null,
+   "activeElement": "BODY"
+  },
+  "narrow-375-reading": {
+   "viewport": {
+    "w": 375,
+    "h": 812
+   },
+   "toolbarRows": 1,
+   "toolbar": {
+    "x": 0,
+    "y": 52,
+    "w": 424,
+    "h": 44
+   },
+   "timeline": {
+    "x": 0,
+    "y": 96,
+    "w": 424,
+    "h": 34
+   },
+   "table": {
+    "x": 0,
+    "y": 130,
+    "w": 424,
+    "h": 624
+   },
+   "foot": {
+    "x": 0,
+    "y": 754,
+    "w": 424,
+    "h": 32
+   },
+   "status": {
+    "x": 0,
+    "y": 786,
+    "w": 424,
+    "h": 26
+   },
+   "overlayVisible": true,
+   "overlayHeight": 487,
+   "scrollWidth": 375,
+   "innerWidth": 375,
+   "rows": 10,
+   "resultHead": null,
+   "activeElement": "BUTTON"
+  }
+ },
+ "checks": [
+  {
+   "name": "toolbar stays one row",
+   "ok": true,
+   "detail": "rows=1"
+  },
+  {
+   "name": "data area keeps >= 60% of viewport",
+   "ok": true,
+   "detail": "ratio=0.755"
+  },
+  {
+   "name": "no horizontal overflow",
+   "ok": true,
+   "detail": "scrollWidth=1366 innerWidth=1366"
+  },
+  {
+   "name": "table renders deterministic rows",
+   "ok": true,
+   "detail": "rows=10"
+  },
+  {
+   "name": "partial result states a floor, not a count",
+   "ok": true,
+   "detail": "至少 61 条 预算 1800 ms 用尽，已扫描 34%，可继续 继续扫描"
+  },
+  {
+   "name": "partial result offers resume",
+   "ok": true,
+   "detail": "resume button present"
+  },
+  {
+   "name": "exact result states coverage",
+   "ok": true,
+   "detail": "精确 243 已扫描 100%（130,295 / 130,295 条）"
+  },
+  {
+   "name": "unknown result withholds a number",
+   "ok": true,
+   "detail": "计数未知 正在扫描，暂不显示具体条数"
+  },
+  {
+   "name": "uploaded shows 未索引 instead of searchable",
+   "ok": true,
+   "detail": "私有上传 · 1.0 GiB 已上传，未索引 上传 校验 索引  上传完成不等于可以搜索。此刻正确显示是「已上传 · 索引排队中」，而不是「可检索」。  已确认偏移 1073741824 B 分片大小 8388608 B 校验方式 sha2"
+  },
+  {
+   "name": "keyboard reaches open, search and tasks in order",
+   "ok": true,
+   "detail": "['', '', '', '', 'open', 'q', 'level', 'tasks', 'views']"
+  },
+  {
+   "name": "Enter opens the choice dialog",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Escape closes and restores focus to the selector",
+   "ok": true,
+   "detail": "closed=True focus=state"
+  },
+  {
+   "name": "narrow: no horizontal overflow",
+   "ok": true,
+   "detail": "scrollWidth=375 innerWidth=375"
+  },
+  {
+   "name": "narrow: single toolbar row",
+   "ok": true,
+   "detail": "rows=1"
+  },
+  {
+   "name": "narrow: overlay fits the viewport",
+   "ok": true,
+   "detail": "panel=487 viewport=812"
+  }
+ ],
+ "screenshots": [
+  "desktop-idle.png",
+  "desktop-open-choice.png",
+  "desktop-reading.png",
+  "desktop-queued.png",
+  "desktop-partial.png",
+  "desktop-quota.png",
+  "desktop-search-exact.png",
+  "desktop-search-partial.png",
+  "desktop-search-unknown.png",
+  "desktop-upload-offset.png",
+  "desktop-upload-uploaded.png",
+  "desktop-library-private.png",
+  "narrow-375-idle.png",
+  "narrow-375-reading.png"
+ ],
+ "state_list": [
+  "idle",
+  "open-choice",
+  "reading",
+  "queued",
+  "partial",
+  "quota",
+  "search-exact",
+  "search-partial",
+  "search-unknown",
+  "upload-offset",
+  "upload-uploaded",
+  "library-private"
+ ],
+ "keyboard_order": [
+  "",
+  "",
+  "",
+  "",
+  "open",
+  "q",
+  "level",
+  "tasks",
+  "views"
+ ],
+ "failures": []
+}

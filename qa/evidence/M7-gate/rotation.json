@@ -1,0 +1,98 @@
+{
+  "state": "PASS",
+  "cases": [
+    {
+      "case": "append",
+      "expected": "append",
+      "observed": "append",
+      "report_bytes": 8,
+      "files": 1,
+      "passed": true
+    },
+    {
+      "case": "rename-rotation",
+      "expected": "rewritten",
+      "observed": "rewritten",
+      "report_bytes": 31,
+      "files": 2,
+      "passed": true,
+      "old_file_bytes": 24,
+      "new_generation": 2
+    },
+    {
+      "case": "truncate",
+      "expected": "truncated",
+      "observed": "truncated",
+      "report_bytes": 3,
+      "files": 2,
+      "gap_state": "unknown_length",
+      "generation": 3,
+      "passed": true
+    },
+    {
+      "case": "regrow-after-truncate",
+      "expected": "append",
+      "observed": "append",
+      "report_bytes": 11,
+      "files": 2,
+      "passed": true
+    },
+    {
+      "case": "same-size-replace",
+      "expected": "replaced",
+      "observed": "replaced",
+      "report_bytes": 14,
+      "files": 2,
+      "passed": true
+    },
+    {
+      "case": "copytruncate",
+      "expected": "truncated",
+      "observed": "truncated",
+      "report_bytes": 22,
+      "files": 3,
+      "passed": true
+    },
+    {
+      "case": "rapid-delete",
+      "expected": null,
+      "observed": "disappeared",
+      "report_bytes": 0,
+      "files": 3,
+      "passed": true,
+      "state": "disappeared",
+      "archive_retained": true
+    },
+    {
+      "case": "compressed-rotation",
+      "expected": "compressed-snapshot",
+      "observed": [
+        [
+          "/app.log",
+          "unchanged"
+        ],
+        [
+          "/app.log.1",
+          "unchanged"
+        ],
+        [
+          "/app.log.2",
+          "unchanged"
+        ],
+        [
+          "/app.log.3.gz",
+          "compressed-snapshot"
+        ]
+      ],
+      "passed": true
+    },
+    {
+      "case": "ambiguous-identity",
+      "observed": "replaced",
+      "reason": "same-size-different-prefix",
+      "confidence": "strong",
+      "passed": true
+    }
+  ],
+  "protocol": "local directory (gate adapter); SFTP/SMB/SCP blocked"
+}

@@ -1,0 +1,62 @@
+{
+ "schema": "logbench.idb-store-evidence/1",
+ "generated_at": "2026-11-03T00:16:16",
+ "base_url": "http://192.168.1.3:60681",
+ "note": "在真实 Chrome 中以普通 HTTP 打开，验证 IndexedDB 基线路径。",
+ "browser": "http://192.168.1.3:60681",
+ "secure_context": false,
+ "checks": [
+  {
+   "name": "水位不合法时拒绝分阶段",
+   "ok": true,
+   "detail": "problems=indexed_records exceeds framed_lines code=invalid_plan"
+  },
+  {
+   "name": "暂存未发布时不可见",
+   "ok": true,
+   "detail": "readPublished=null"
+  },
+  {
+   "name": "发布指针指向第 1 代",
+   "ok": true,
+   "detail": "published=1 previous=null"
+  },
+  {
+   "name": "未提交的第 2 代不影响当前指针",
+   "ok": true,
+   "detail": "generation=1"
+  },
+  {
+   "name": "发布第 2 代后指针切换",
+   "ok": true,
+   "detail": "now=2 previous=1"
+  },
+  {
+   "name": "水位随代次更新",
+   "ok": true,
+   "detail": "{\"raw_bytes\":4096,\"framed_lines\":120,\"indexed_records\":7}"
+  },
+  {
+   "name": "回收只删可再生层",
+   "ok": true,
+   "detail": "pruned=[1] raw=\"原文不应被缓存回收删除\""
+  },
+  {
+   "name": "工作区记录保留",
+   "ok": true,
+   "detail": "generations=[2]"
+  },
+  {
+   "name": "记录改版后旧派生被替换",
+   "ok": true,
+   "detail": "r3=[{\"record_id\":\"r3\",\"version\":2,\"replaced\":true}] 其余=6"
+  },
+  {
+   "name": "重开后指针仍在",
+   "ok": true,
+   "detail": "generation=2"
+  }
+ ],
+ "counts": {},
+ "ok": true
+}

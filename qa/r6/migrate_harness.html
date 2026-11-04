@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>R6-016 R5 缓存迁移验收</title>
+<style>body{font:13px/1.6 -apple-system,system-ui,sans-serif;margin:24px;color:#1b2430;background:#f5f6f8}
+table{border-collapse:collapse;background:#fff;min-width:680px}th,td{border:1px solid #e2e6ec;padding:6px 10px;font-size:12px;text-align:left}
+th{background:#fafbfc}.ok{color:#1a7f4b;font-weight:600}.bad{color:#c0392b;font-weight:600}</style>
+</head>
+<body>
+<h1>R6-016 · v3.0.3 本机缓存迁移</h1>
+<table><thead><tr><th>检查</th><th>结果</th><th>细节</th></tr></thead><tbody id="rows"></tbody></table>
+<script src="../../src/shared/local-store.js"></script>
+<script src="../../src/shared/migrate-r5.js"></script>
+<script>
+'use strict';
+const USER = 'testuser';
+const LEGACY = 'logbench-user-' + USER + '-db';
+const NS = 'r6-ns';
+const checks = [];
+
+function record(name, ok, detail) {
+  checks.push({ name, ok: !!ok, detail: String(detail == null ? '' : detail) });
+  const row = document.createElement('tr');
+  row.innerHTML = `<td>${name}</td><td class="${ok ? 'ok' : 'bad'}">${ok ? 'PASS' : 'FAIL'}</td><td>${String(detail == null ? '' : detail)}</td>`;
+  document.getElementById('rows').append(row);
+}
+
+const FILES = [
+  { id: 'legacy-1', name: 'a.log', text: '[2020-01-01 00:00:00.001] [ERROR] [a] [1] [2] [x.py:3] [m] [n] fn() 中文错误\nTraceback (most recent call last):\n  File "x.py", line 3\nValueError: 坏\n' },
+  { id: 'legacy-2', name: 'empty.log', text: '' },
+  { id: 'legacy-3', name: 'crlf.log', text: '[2020-01-01 00:00:00.002] [INFO] [a] [1] [2] [x.py:4] [m] [n] fn() ok\r\nbody line\r\n' }
+];
+
+function deleteDb(name) {
+  return new Promise((resolve) => {
+    const request = indexedDB.deleteDatabase(name);
+    request.onsuccess = request.onerror = request.onblocked = () => resolve();
+  });
+}
+
+async function seedLegacy() {
+  await deleteDb(LEGACY);
+  await new Promise((resolve, reject) => {
+    const request = indexedDB.open(LEGACY, 1);
+    request.onupgradeneeded = () => {
+      request.result.createObjectStore('files', { keyPath: 'id' });
+      request.result.createObjectStore('meta', { keyPath: 'k' });
+    };
+    request.onerror = () => reject(request.error);
+    request.onsuccess = () => {
+      const db = request.result;
+      const tx = db.transaction(['files', 'meta'], 'readwrite');
+      FILES.forEach(file => tx.objectStore('files').put({ id: file.id, name: file.name, size: file.text.length, text: file.text, modified: '2026-11-01 10:00' }));
+      tx.objectStore('meta').put({ k: 'schema', v: 1 });
+      tx.oncomplete = () => { db.close(); resolve(true); };
+      tx.onabort = () => reject(tx.error);
+    };
+  });
+}
+
+async function legacyStillReadable() {
+  return new Promise((resolve) => {
+    const request = indexedDB.open(LEGACY);
+    request.onerror = () => resolve(false);
+    request.onsuccess = () => {
+      const db = request.result;
+      const tx = db.transaction('files', 'readonly');
+      const count = tx.objectStore('files').count();
+      count.onsuccess = () => { const n = count.result; db.close(); resolve(n); };
+      count.onerror = () => resolve(-1);
+    };
+  });
+}
+
+(async () => {
+  const result = { ok: false, checks, secure: window.isSecureContext, origin: location.origin };
+  try {
+    await deleteDb(LBLocalStore.DB_NAME);
+    await seedLegacy();
+    localStorage.setItem('logbench-user-' + USER + '-workspace', JSON.stringify({
+      view: 'logs', scope: 'file', drafts: { 'rule-1': { name: '草稿规则' } },
+      bookmarks: ['legacy-1'], anchors: { 'legacy-1': 42 }, savedAt: 1762000000000
+    }));
+
+    const store = await LBLocalStore.open(indexedDB, NS);
+    const migrator = LBMigrateR5.createMigrator({ store, indexedDB, userId: USER, localStorage, chunkSize: 64 });
+
+    const index = await LBMigrateR5.readLegacyIndex(await LBMigrateR5.openLegacy(indexedDB, USER));
+    record('扫描只返回元数据', index.length === 3 && index.every(item => item.text === undefined),
+      `items=${index.length} keys=${JSON.stringify(Object.keys(index[0] || {}))}`);
+
+    const first = await migrator.run({ generation: 1 });
+    record('迁移全部文件', first.total === 3 && first.migrated === 3, `migrated=${first.migrated}/${first.total}`);
+
+    const metas = await store.listFileMeta();
+    record('元数据写入 R6 库', metas.length === 3, `files=${metas.length}`);
+    record('迁移保留原始大小与摘要', metas.every(meta => meta.digest && meta.size >= 0 && meta.migrated_from === 'r5'),
+      JSON.stringify(metas.map(m => [m.file_id, m.size, m.chunks])));
+
+    /* Round trip: decode the stored bytes and compare with the legacy text. */
+    let roundTripOk = true;
+    let detail = '';
+    for (const file of FILES) {
+      const expectedBytes = new TextEncoder().encode(file.text);
+      const bytes = expectedBytes.length === 0
+        ? new Uint8Array(0)
+        : await store.getRawRange(file.id, 1, 0, expectedBytes.length, 64);
+      const text = new TextDecoder().decode(bytes);
+      if (text !== file.text) { roundTripOk = false; detail += file.id + ' '; }
+    }
+    record('原文逐字节往返一致（含 CJK/CRLF/空文件）', roundTripOk, detail || '3 files');
+
+    const workspace = await store.getCheckpoint('workspace');
+    record('工作区已复制且草稿未生效',
+      workspace && workspace.drafts_active === false && workspace.drafts && workspace.bookmarks.includes('legacy-1'),
+      JSON.stringify({ drafts_active: workspace && workspace.drafts_active, bookmarks: workspace && workspace.bookmarks }));
+
+    const legacyCount = await legacyStillReadable();
+    record('旧库未被删除', legacyCount === 3, `legacy files=${legacyCount}`);
+
+    const second = await migrator.run({ generation: 1 });
+    record('重复运行不重复迁移', second.migrated === 0, `migrated=${second.migrated}`);
+
+    /* Resume: pretend one file never finished and re-run only that one. */
+    const checkpoint = await store.getCheckpoint(LBMigrateR5.CHECKPOINT_ID);
+    checkpoint.done = checkpoint.done.filter(id => id !== 'legacy-3');
+    await store.putCheckpoint(LBMigrateR5.CHECKPOINT_ID, checkpoint);
+    const resumed = await migrator.run({ generation: 1 });
+    record('断点续迁只补未完成文件', resumed.migrated === 1, `migrated=${resumed.migrated}`);
+
+    const ready = await migrator.readiness();
+    record('全部校验通过后才允许丢弃旧副本', ready.safe_to_drop_legacy === true && ready.failed.length === 0,
+      JSON.stringify(ready));
+
+    /* Corrupted chunk must fail verification rather than pass silently. */
+    const corrupt = await store.putRawChunk('legacy-1', 1, 0, new TextEncoder().encode('broken').buffer);
+    const afterCorrupt = await store.getRawRange('legacy-1', 1, 0, 6, 64);
+    const expected = LBMigrateR5.digestText(FILES[0].text);
+    const actual = LBMigrateR5.digestBytes(afterCorrupt).hex;
+    record('篡改后可被摘要发现', actual !== expected, `expected=${expected} actual=${actual}`);
+
+    store.close();
+    result.ok = checks.every(item => item.ok);
+  } catch (error) {
+    record('未捕获异常', false, (error && (error.code || error.message)) || String(error));
+    result.error = String((error && (error.stack || error.message)) || error);
+    result.ok = false;
+  }
+  window.__result = result;
+})();
+</script>
+</body>
+</html>

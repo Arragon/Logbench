@@ -1,0 +1,86 @@
+{
+ "name": "compare_windows",
+ "started_at": "2026-11-03T13:26:13",
+ "ok": true,
+ "total": 12,
+ "failed": 0,
+ "checks": [
+  {
+   "label": "两个文件生成两个 pane",
+   "ok": true,
+   "detail": "actual=2 expected=2"
+  },
+  {
+   "label": "两个 pane 行数一致（按同一时点矩阵铺开）",
+   "ok": true,
+   "detail": [
+    7,
+    7
+   ]
+  },
+  {
+   "label": "缺失时点渲染为空槽而不是前值填充",
+   "ok": true,
+   "detail": 4
+  },
+  {
+   "label": "同一时间戳的两条记录占用两行",
+   "ok": true,
+   "detail": 2
+  },
+  {
+   "label": "工具条显示对齐时间锚点",
+   "ok": true,
+   "detail": "2026-05-01 09:59:00.000"
+  },
+  {
+   "label": "同步开启时两个 pane 落在同一时点行",
+   "ok": true,
+   "detail": "actual=84 expected=84"
+  },
+  {
+   "label": "同步后锚点跟随滚动位置变化",
+   "ok": true,
+   "detail": "2026-05-01 10:00:15.000"
+  },
+  {
+   "label": "关闭同步后另一 pane 不跟随",
+   "ok": true,
+   "detail": [
+    0,
+    84
+   ]
+  },
+  {
+   "label": "切换 2×2 布局后网格为两列",
+   "ok": true,
+   "detail": "actual=2 expected=2"
+  },
+  {
+   "label": "布局写入个人设置",
+   "ok": true,
+   "detail": {
+    "compare_layout": "grid"
+   }
+  },
+  {
+   "label": "768px 下页面无整体横向溢出",
+   "ok": true,
+   "detail": 0
+  },
+  {
+   "label": "页面无脚本错误",
+   "ok": true,
+   "detail": []
+  }
+ ],
+ "rows_per_pane": [
+  7,
+  7
+ ],
+ "empty_rows": 4,
+ "offsets": [
+  84,
+  84
+ ]
+}

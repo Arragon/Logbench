@@ -1,0 +1,153 @@
+{
+ "name": "mixed_scope",
+ "started_at": "2026-11-03T13:24:59",
+ "ok": true,
+ "total": 15,
+ "failed": 0,
+ "checks": [
+  {
+   "label": "本机文件已通过真实文件输入导入",
+   "ok": true,
+   "detail": 1
+  },
+  {
+   "label": "服务端文件已建立索引",
+   "ok": true,
+   "detail": "f_255d6496f82b4f91"
+  },
+  {
+   "label": "混合查询没有报错",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "label": "合并结果同时包含两个来源",
+   "ok": true,
+   "detail": "actual={'server', 'local'} expected={'server', 'local'}"
+  },
+  {
+   "label": "合并结果包含只存在于本机的记录",
+   "ok": true,
+   "detail": [
+    "boot ok energy: 1",
+    "local-only marker LOCALFILE-XYZZY",
+    "rpc_success: False err_code: 0x1",
+    "tick 10 iteration: 10",
+    "same ms iteration: 11",
+    "local error LOCALFILE-XYZZY"
+   ]
+  },
+  {
+   "label": "结果按时间升序",
+   "ok": true,
+   "detail": "actual=['2026-05-01 10:00:00.000000', '2026-05-01 10:00:02.000000', '2026-05-01 10:00:05.000000', '2026-05-01 10:00:10.000000', '2026-05-01 10:00:10.000000', '2026-05-01 10:00:12.000000', '2026-05-01 10:00:20.000000'] expected=['2026-05-01 10:00:00.000000', '2026-05-01 10:00:02.000000', '2026-05-01 10:00:05.000000', '2026-05-01 10:00:10.000000', '2026-05-01 10:00:10.000000', '2026-05-01 10:00:12.000000', '2026-05-01 10:00:20.000000'] sample=['2026-05-01 10:00:00.000000', '2026-05-01 10:00:02.000000', '2026-05-01 10:00:05.000000', '2026-05-01 10:00:10.000000', '2026-05-01 10:00:10.000000', '2026-05-01 10:00:12.000000']"
+  },
+  {
+   "label": "相同时间点保留两条重复记录",
+   "ok": true,
+   "detail": "actual=2 expected=2 sample=[('2026-05-01 10:00:00.000000', 'server'), ('2026-05-01 10:00:02.000000', 'local'), ('2026-05-01 10:00:05.000000', 'server'), ('2026-05-01 10:00:10.000000', 'server'), ('2026-05-01 10:00:10.000000', 'server'), ('2026-05-01 10:00:12.000000', 'local'), ('2026-05-01 10:00:20.000000', 'server')]"
+  },
+  {
+   "label": "全部子查询完成时 order_final 为 true",
+   "ok": true,
+   "detail": "actual=True expected=True"
+  },
+  {
+   "label": "计数关系为 exact",
+   "ok": true,
+   "detail": "actual='exact' expected='exact'"
+  },
+  {
+   "label": "纯本机范围不发起服务端查询",
+   "ok": true,
+   "detail": "actual=0 expected=0"
+  },
+  {
+   "label": "纯本机范围没有新增 /api/v2/queries 请求",
+   "ok": true,
+   "detail": "actual=0 expected=0"
+  },
+  {
+   "label": "纯本机范围仍返回记录",
+   "ok": true,
+   "detail": 2
+  },
+  {
+   "label": "离开页面的请求不含本机文件名或原文",
+   "ok": true,
+   "detail": []
+  },
+  {
+   "label": "服务端查询只针对服务端文件",
+   "ok": true,
+   "detail": [
+    "{\"file_id\":\"f_255d6496f82b4f91\",\"flags\":{},\"time_range\":{\"from_ns\":\"1777629540000000000\",\"to_ns\":\"1777629660000000000\"},\"match_all\":true,\"limit\":200}"
+   ]
+  },
+  {
+   "label": "页面无脚本错误",
+   "ok": true,
+   "detail": []
+  }
+ ],
+ "rows": [
+  {
+   "source": "server",
+   "file_id": "f_255d6496f82b4f91",
+   "ordinal": 0,
+   "ts": "2026-05-01 10:00:00.000000",
+   "level": "INFO",
+   "message": "boot ok energy: 1"
+  },
+  {
+   "source": "local",
+   "file_id": "local-browser-only.log-271-1793741098847",
+   "ordinal": 0,
+   "ts": "2026-05-01 10:00:02.000000",
+   "level": "INFO",
+   "message": "local-only marker LOCALFILE-XYZZY"
+  },
+  {
+   "source": "server",
+   "file_id": "f_255d6496f82b4f91",
+   "ordinal": 1,
+   "ts": "2026-05-01 10:00:05.000000",
+   "level": "ERROR",
+   "message": "rpc_success: False err_code: 0x1"
+  },
+  {
+   "source": "server",
+   "file_id": "f_255d6496f82b4f91",
+   "ordinal": 2,
+   "ts": "2026-05-01 10:00:10.000000",
+   "level": "INFO",
+   "message": "tick 10 iteration: 10"
+  },
+  {
+   "source": "server",
+   "file_id": "f_255d6496f82b4f91",
+   "ordinal": 3,
+   "ts": "2026-05-01 10:00:10.000000",
+   "level": "WARNING",
+   "message": "same ms iteration: 11"
+  },
+  {
+   "source": "local",
+   "file_id": "local-browser-only.log-271-1793741098847",
+   "ordinal": 1,
+   "ts": "2026-05-01 10:00:12.000000",
+   "level": "ERROR",
+   "message": "local error LOCALFILE-XYZZY"
+  },
+  {
+   "source": "server",
+   "file_id": "f_255d6496f82b4f91",
+   "ordinal": 4,
+   "ts": "2026-05-01 10:00:20.000000",
+   "level": "INFO",
+   "message": "finish iteration: 20"
+  }
+ ],
+ "server_queries": 1,
+ "marker": "LOCALFILE-XYZZY"
+}

@@ -1,0 +1,85 @@
+{
+ "format": "logbench.backup/1",
+ "schema": "logbench.r6/1",
+ "namespace": "backup-src",
+ "created_at": "2026-11-03T08:20:52.512Z",
+ "files": [
+  {
+   "file_id": "b1",
+   "name": "one.log",
+   "size": 151,
+   "digest": "8464e9b2302c5c1c",
+   "generation": 1,
+   "provisional": false,
+   "reason": null,
+   "in_trash": false
+  },
+  {
+   "file_id": "b2",
+   "name": "two.log",
+   "size": 81,
+   "digest": "4aba87cb60185428",
+   "generation": 1,
+   "provisional": false,
+   "reason": null,
+   "in_trash": false
+  }
+ ],
+ "volumes": [
+  {
+   "index": 0,
+   "bytes": 64,
+   "parts": [
+    {
+     "file_id": "b1",
+     "from": 0,
+     "to": 64
+    }
+   ],
+   "digest": "cd9ec2dca91dacfb"
+  },
+  {
+   "index": 1,
+   "bytes": 64,
+   "parts": [
+    {
+     "file_id": "b1",
+     "from": 64,
+     "to": 128
+    }
+   ],
+   "digest": "3f057a5ad20bd979"
+  },
+  {
+   "index": 2,
+   "bytes": 64,
+   "parts": [
+    {
+     "file_id": "b1",
+     "from": 128,
+     "to": 151
+    },
+    {
+     "file_id": "b2",
+     "from": 0,
+     "to": 41
+    }
+   ],
+   "digest": "4a0a4b640746adfc"
+  },
+  {
+   "index": 3,
+   "bytes": 40,
+   "parts": [
+    {
+     "file_id": "b2",
+     "from": 41,
+     "to": 81
+    }
+   ],
+   "digest": "761f14e2cbe27b74"
+  }
+ ],
+ "drafts_active": false,
+ "note": "清单不含日志正文、凭据或完整搜索词。"
+}

@@ -1,0 +1,14 @@
+{
+  "state": "PASS",
+  "cases": [
+    {
+      "case": "no-subscriber-progress",
+      "subscribers": 0,
+      "first_bytes": 4,
+      "second_bytes": 10,
+      "contiguous": 14,
+      "passed": true
+    }
+  ],
+  "note": "采集由服务端调度驱动；浏览器只是订阅者"
+}

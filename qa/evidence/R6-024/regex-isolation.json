@@ -1,0 +1,65 @@
+{
+ "url": "http://192.168.1.3:64226",
+ "started_at": "2026-11-03T09:48:01",
+ "checks": [
+  {
+   "label": "危险正则被终止",
+   "ok": true,
+   "detail": "state=partial killed=true"
+  },
+  {
+   "label": "终止发生在保护时限附近",
+   "ok": true,
+   "detail": "802ms"
+  },
+  {
+   "label": "执行 Worker 真的被 terminate",
+   "ok": true,
+   "detail": "terminate 调用 1 次"
+  },
+  {
+   "label": "主线程未被冻结",
+   "ok": true,
+   "detail": "最大定时器间隔 22ms，40 次心跳"
+  },
+  {
+   "label": "被终止的范围不算精确零",
+   "ok": true,
+   "detail": "coverage={\"complete\":false,\"reason\":\"terminated\",\"scanned_records\":0,\"unscanned_records\":60}"
+  },
+  {
+   "label": "正常正则结果与本地一致",
+   "ok": true,
+   "detail": "matched=60 expected=60"
+  },
+  {
+   "label": "正常扫描覆盖完整",
+   "ok": true,
+   "detail": "{\"complete\":true,\"reason\":null}"
+  },
+  {
+   "label": "零长匹配被拒绝",
+   "ok": true,
+   "detail": "state=failed code=empty_match"
+  },
+  {
+   "label": "终止后为新任务创建新 Worker",
+   "ok": true,
+   "detail": "创建 10 个，终止 1 个"
+  }
+ ],
+ "ok": true,
+ "workers_created": 10,
+ "workers_terminated": 1,
+ "max_timer_gap_ms": 22,
+ "hostile_elapsed_ms": 802,
+ "supervisor": {
+  "spawned": 10,
+  "terminated": 1,
+  "slices": 10,
+  "budget_pauses": 0,
+  "rejected": 1
+ },
+ "page_errors": [],
+ "secure_context": false
+}

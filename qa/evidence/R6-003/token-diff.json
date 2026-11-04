@@ -1,0 +1,306 @@
+{
+  "schema": "logbench.r6.token-diff/1",
+  "kit": {
+    "path": "unify-design/assets/ui-kit/tokens.json",
+    "name": "unify-design",
+    "version": "1.0.1"
+  },
+  "r5": {
+    "path": "src/style.css",
+    "block": ".ud-app"
+  },
+  "summary": {
+    "expected": 47,
+    "matched": 47,
+    "mismatched": 0,
+    "missing": 0,
+    "r5_only": 0
+  },
+  "mismatched": [],
+  "missing": [],
+  "r5_only": [],
+  "rows": [
+    {
+      "token": "--ud-bg",
+      "kit": "#f4f6f9",
+      "r5": "#f4f6f9",
+      "status": "match"
+    },
+    {
+      "token": "--ud-surface",
+      "kit": "#ffffff",
+      "r5": "#ffffff",
+      "status": "match"
+    },
+    {
+      "token": "--ud-surface-alt",
+      "kit": "#f8fafc",
+      "r5": "#f8fafc",
+      "status": "match"
+    },
+    {
+      "token": "--ud-surface-strong",
+      "kit": "#f0f4fa",
+      "r5": "#f0f4fa",
+      "status": "match"
+    },
+    {
+      "token": "--ud-ink",
+      "kit": "#162238",
+      "r5": "#162238",
+      "status": "match"
+    },
+    {
+      "token": "--ud-ink-soft",
+      "kit": "#3d4b60",
+      "r5": "#3d4b60",
+      "status": "match"
+    },
+    {
+      "token": "--ud-muted",
+      "kit": "#65748a",
+      "r5": "#65748a",
+      "status": "match"
+    },
+    {
+      "token": "--ud-subtle",
+      "kit": "#8793a5",
+      "r5": "#8793a5",
+      "status": "match"
+    },
+    {
+      "token": "--ud-line",
+      "kit": "#e2e7ef",
+      "r5": "#e2e7ef",
+      "status": "match"
+    },
+    {
+      "token": "--ud-line-strong",
+      "kit": "#cdd6e2",
+      "r5": "#cdd6e2",
+      "status": "match"
+    },
+    {
+      "token": "--ud-control",
+      "kit": "#bbc7d6",
+      "r5": "#bbc7d6",
+      "status": "match"
+    },
+    {
+      "token": "--ud-primary",
+      "kit": "#2563eb",
+      "r5": "#2563eb",
+      "status": "match"
+    },
+    {
+      "token": "--ud-primary-hover",
+      "kit": "#1d4ed8",
+      "r5": "#1d4ed8",
+      "status": "match"
+    },
+    {
+      "token": "--ud-primary-ink",
+      "kit": "#1d4ed8",
+      "r5": "#1d4ed8",
+      "status": "match"
+    },
+    {
+      "token": "--ud-primary-tint",
+      "kit": "#edf4ff",
+      "r5": "#edf4ff",
+      "status": "match"
+    },
+    {
+      "token": "--ud-positive",
+      "kit": "#16835b",
+      "r5": "#16835b",
+      "status": "match"
+    },
+    {
+      "token": "--ud-positive-tint",
+      "kit": "#e9f7ef",
+      "r5": "#e9f7ef",
+      "status": "match"
+    },
+    {
+      "token": "--ud-negative",
+      "kit": "#bc3f4a",
+      "r5": "#bc3f4a",
+      "status": "match"
+    },
+    {
+      "token": "--ud-negative-tint",
+      "kit": "#fdf0f1",
+      "r5": "#fdf0f1",
+      "status": "match"
+    },
+    {
+      "token": "--ud-amber",
+      "kit": "#b8741b",
+      "r5": "#b8741b",
+      "status": "match"
+    },
+    {
+      "token": "--ud-amber-tint",
+      "kit": "#fff5e8",
+      "r5": "#fff5e8",
+      "status": "match"
+    },
+    {
+      "token": "--ud-purple",
+      "kit": "#7658b8",
+      "r5": "#7658b8",
+      "status": "match"
+    },
+    {
+      "token": "--ud-purple-tint",
+      "kit": "#f3effe",
+      "r5": "#f3effe",
+      "status": "match"
+    },
+    {
+      "token": "--ud-sky",
+      "kit": "#347aa6",
+      "r5": "#347aa6",
+      "status": "match"
+    },
+    {
+      "token": "--ud-sky-tint",
+      "kit": "#eaf6fc",
+      "r5": "#eaf6fc",
+      "status": "match"
+    },
+    {
+      "token": "--ud-focus",
+      "kit": "0 0 0 3px #93b7fa77",
+      "r5": "0 0 0 3px #93b7fa77",
+      "status": "match"
+    },
+    {
+      "token": "--ud-shadow-sm",
+      "kit": "0 1px 2px #172c4f08",
+      "r5": "0 1px 2px #172c4f08",
+      "status": "match"
+    },
+    {
+      "token": "--ud-shadow-pop",
+      "kit": "0 10px 30px #1424411c",
+      "r5": "0 10px 30px #1424411c",
+      "status": "match"
+    },
+    {
+      "token": "--ud-shadow-modal",
+      "kit": "0 18px 65px #14244136",
+      "r5": "0 18px 65px #14244136",
+      "status": "match"
+    },
+    {
+      "token": "--ud-font",
+      "kit": "-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei','Noto Sans CJK SC',sans-serif",
+      "r5": "-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei','Noto Sans CJK SC',sans-serif",
+      "status": "match"
+    },
+    {
+      "token": "--ud-mono",
+      "kit": "ui-monospace,'Cascadia Code','Cascadia Mono',Consolas,'SFMono-Regular','Noto Sans Mono CJK SC',monospace",
+      "r5": "ui-monospace,'Cascadia Code','Cascadia Mono',Consolas,'SFMono-Regular','Noto Sans Mono CJK SC',monospace",
+      "status": "match"
+    },
+    {
+      "token": "--ud-xs",
+      "kit": "11px",
+      "r5": "11px",
+      "status": "match"
+    },
+    {
+      "token": "--ud-sm",
+      "kit": "12px",
+      "r5": "12px",
+      "status": "match"
+    },
+    {
+      "token": "--ud-md",
+      "kit": "13px",
+      "r5": "13px",
+      "status": "match"
+    },
+    {
+      "token": "--ud-lg",
+      "kit": "15px",
+      "r5": "15px",
+      "status": "match"
+    },
+    {
+      "token": "--ud-xl",
+      "kit": "20px",
+      "r5": "20px",
+      "status": "match"
+    },
+    {
+      "token": "--ud-radius-xs",
+      "kit": "4px",
+      "r5": "4px",
+      "status": "match"
+    },
+    {
+      "token": "--ud-radius",
+      "kit": "6px",
+      "r5": "6px",
+      "status": "match"
+    },
+    {
+      "token": "--ud-radius-lg",
+      "kit": "9px",
+      "r5": "9px",
+      "status": "match"
+    },
+    {
+      "token": "--ud-radius-xl",
+      "kit": "12px",
+      "r5": "12px",
+      "status": "match"
+    },
+    {
+      "token": "--ud-topbar-h",
+      "kit": "54px",
+      "r5": "54px",
+      "status": "match"
+    },
+    {
+      "token": "--ud-sidebar-w",
+      "kit": "234px",
+      "r5": "234px",
+      "status": "match"
+    },
+    {
+      "token": "--ud-tabbar-h",
+      "kit": "40px",
+      "r5": "40px",
+      "status": "match"
+    },
+    {
+      "token": "--ud-control-h",
+      "kit": "34px",
+      "r5": "34px",
+      "status": "match"
+    },
+    {
+      "token": "--ud-table-row-h",
+      "kit": "40px",
+      "r5": "40px",
+      "status": "match"
+    },
+    {
+      "token": "--ud-speed",
+      "kit": "160ms",
+      "r5": "160ms",
+      "status": "match"
+    },
+    {
+      "token": "--ud-ease",
+      "kit": "cubic-bezier(.2,0,0,1)",
+      "r5": "cubic-bezier(.2,0,0,1)",
+      "status": "match"
+    }
+  ]
+}

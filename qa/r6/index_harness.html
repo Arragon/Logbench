@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>R6-014 派生索引发布验收</title>
+<style>
+  body{font:13px/1.6 -apple-system,"PingFang SC",system-ui,sans-serif;margin:24px;color:#1b2430;background:#f5f6f8}
+  h1{font-size:16px;margin:0 0 12px}
+  table{border-collapse:collapse;background:#fff;min-width:680px}
+  th,td{border:1px solid #e2e6ec;padding:6px 10px;text-align:left;font-size:12px}
+  th{background:#fafbfc}
+  .ok{color:#1a7f4b;font-weight:600}
+  .bad{color:#c0392b;font-weight:600}
+  code{font-family:ui-monospace,Menlo,monospace}
+</style>
+</head>
+<body>
+<h1>R6-014 · 分阶段发布、指针切换与只删可再生层</h1>
+<p>在 <code id="origin"></code> 打开，<code>isSecureContext=<span id="secure"></span></code>。</p>
+<table><thead><tr><th>检查</th><th>结果</th><th>细节</th></tr></thead><tbody id="rows"></tbody></table>
+<script src="../../src/shared/local-store.js"></script>
+<script src="../../src/shared/index-store.js"></script>
+<script>
+'use strict';
+const NS = 'index-ns';
+const checks = [];
+
+function record(name, ok, detail) {
+  checks.push({ name, ok: !!ok, detail: String(detail == null ? '' : detail) });
+  const row = document.createElement('tr');
+  row.innerHTML = `<td>${name}</td><td class="${ok ? 'ok' : 'bad'}">${ok ? 'PASS' : 'FAIL'}</td><td>${String(detail == null ? '' : detail)}</td>`;
+  document.getElementById('rows').append(row);
+}
+
+function plan(generation, records, extras) {
+  return Object.assign({
+    file_id: 'f1',
+    generation,
+    size: 4096,
+    signatures: { structure: 'aaaa1111', extract: 'bbbb2222', search: 'cccc3333' },
+    watermark: { raw_bytes: 4096, framed_lines: 120, indexed_records: records },
+    record_blocks: [{ block_no: 0, records: Array.from({ length: records }, (_, i) => ({ record_id: 'r' + i, version: 1 })) }],
+    rule_blocks: [{ block_no: 0, records: [] }],
+    search_blocks: [{ block_no: 0, records: [] }]
+  }, extras || {});
+}
+
+async function deleteDatabase() {
+  await new Promise((resolve) => {
+    const request = indexedDB.deleteDatabase(LBLocalStore.DB_NAME);
+    request.onsuccess = request.onerror = request.onblocked = () => resolve();
+  });
+}
+
+(async () => {
+  document.getElementById('origin').textContent = location.origin;
+  document.getElementById('secure').textContent = String(window.isSecureContext);
+  const result = { ok: false, checks, secure: window.isSecureContext, origin: location.origin };
+  try {
+    await deleteDatabase();
+    const store = await LBLocalStore.open(indexedDB, NS);
+    const indexer = LBIndexStore.createIndexer(store);
+
+    /* 1. invalid plan is refused before anything is written */
+    const bad = plan(1, 200);
+    const verdict = LBIndexStore.validatePlan(bad);
+    let badCode = null;
+    try { await indexer.stage(bad); } catch (error) { badCode = error.code; }
+    record('水位不合法时拒绝分阶段', !verdict.ok && badCode === 'invalid_plan',
+      `problems=${verdict.problems.join('|')} code=${badCode}`);
+
+    /* 2. stage generation 1 then publish */
+    await indexer.stage(plan(1, 5));
+    const beforePublish = await indexer.readPublished('f1');
+    record('暂存未发布时不可见', beforePublish === null, `readPublished=${JSON.stringify(beforePublish)}`);
+    const first = await indexer.publish(plan(1, 5));
+    record('发布指针指向第 1 代', first.published_generation === 1 && first.previous_generation === null,
+      `published=${first.published_generation} previous=${first.previous_generation}`);
+
+    /* 3. raw chunk survives pruning and is not part of derived layers */
+    const bytes = new TextEncoder().encode('原文不应被缓存回收删除');
+    await store.putRawChunk('f1', 1, 0, bytes.buffer);
+
+    /* 4. stage generation 2 but do not publish: readers still see gen 1 */
+    await indexer.stage(plan(2, 7));
+    const stillOld = await indexer.readPublished('f1');
+    record('未提交的第 2 代不影响当前指针', stillOld.generation === 1, `generation=${stillOld.generation}`);
+
+    /* 5. publish generation 2 flips the pointer atomically */
+    const second = await indexer.publish(plan(2, 7));
+    const afterFlip = await indexer.readPublished('f1');
+    record('发布第 2 代后指针切换', afterFlip.generation === 2 && second.previous_generation === 1,
+      `now=${afterFlip.generation} previous=${second.previous_generation}`);
+    record('水位随代次更新', afterFlip.watermark.indexed_records === 7, JSON.stringify(afterFlip.watermark));
+
+    /* 6. prune removes generation 1 derived layers but keeps raw bytes */
+    const pruned = await indexer.prune('f1', []);
+    const raw = await store.getRawRange('f1', 1, 0, bytes.length, 1024);
+    const rawText = new TextDecoder().decode(raw);
+    record('回收只删可再生层', pruned.pruned.indexOf(1) !== -1 && rawText === '原文不应被缓存回收删除',
+      `pruned=${JSON.stringify(pruned.pruned)} raw="${rawText}"`);
+    const workspace = await indexer.readWorkspace('f1');
+    record('工作区记录保留', workspace && workspace.published_generation === 2,
+      `generations=${JSON.stringify(workspace.generations)}`);
+
+    /* 7. a superseded record revision is replaced inside its block */
+    await indexer.replaceRecord('f1', 2, 'record_blocks', 0, 'r3', 2);
+    const db = store.database;
+    const block = await new Promise((resolve, reject) => {
+      const tx = db.transaction('record_blocks', 'readonly');
+      const request = tx.objectStore('record_blocks').get([NS, 'f1', 2, 0]);
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+    const replaced = block.records.filter(item => item.record_id === 'r3');
+    const others = block.records.filter(item => item.record_id !== 'r3');
+    record('记录改版后旧派生被替换', replaced.length === 1 && replaced[0].version === 2 && replaced[0].replaced === true,
+      `r3=${JSON.stringify(replaced)} 其余=${others.length}`);
+
+    /* 8. reopening keeps the published pointer (persistence) */
+    store.close();
+    const again = await LBLocalStore.open(indexedDB, NS);
+    const persisted = await LBIndexStore.createIndexer(again).readPublished('f1');
+    record('重开后指针仍在', persisted && persisted.generation === 2, `generation=${persisted && persisted.generation}`);
+    again.close();
+
+    result.ok = checks.every(item => item.ok);
+  } catch (error) {
+    record('未捕获异常', false, (error && (error.code || error.message)) || String(error));
+    result.error = String((error && (error.stack || error.message)) || error);
+    result.ok = false;
+  }
+  window.__result = result;
+})();
+</script>
+</body>
+</html>

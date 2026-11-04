@@ -1,0 +1,91 @@
+{
+  "file": "/var/folders/_t/c66q7css0195p3yktsz3h3jc0000gn/T/r6-large-fixture-jsgrmz27/big.log",
+  "bytes": 16777260,
+  "chunk_mb": 4.0,
+  "cold": {
+    "seconds": 6.55,
+    "records": 81592,
+    "bytes": 8388630,
+    "chunks": 9,
+    "shard": "/var/folders/_t/c66q7css0195p3yktsz3h3jc0000gn/T/r6-large-5khux4fx/index/f_9399c5263163d9cd/g1-p7447c192707b.sqlite3",
+    "checkpoint": {
+      "bytes": 8388630,
+      "eof": false,
+      "framer": {
+        "current": {
+          "body": [],
+          "body_lines": [],
+          "bytes": {
+            "end": 8388533,
+            "start": 8388428
+          },
+          "dataset_id": "large-1",
+          "fn": "f",
+          "has_trace": false,
+          "level": "WARNING",
+          "lines": {
+            "first": 81721,
+            "last": 81721
+          },
+          "logger": "cache",
+          "message": "key=16 size=44779",
+          "ordinal": 81592,
+          "pid": "1",
+          "provisional": false,
+          "published_provisional": false,
+          "raw": [
+            "[2024-05-01 22:39:53.593] [WARNING] [cache] [1] [3] [cache.py:294] [evict] [carol] f() key=16 size=44779"
+          ],
+          "record_id": "large-1-81592",
+          "src": "cache.py",
+          "src_line": 294,
+          "tid": "3",
+          "trace_chain_pending": false,
+          "trace_complete": false,
+          "ts": "2024-05-01 22:39:53.593",
+          "version": 1
+        },
+        "dataset_id": "large-1",
+        "line_no": 81721,
+        "line_start": 8388533,
+        "ordinal": 81593,
+        "pending": "WzIwMjQtMDUtMDEgMjI6Mzk6NTQuNTk0XSBbSU5GT10gW3dvcmtlcl0gWzJdIFs0XSBbam9iLnB5OjI5NV0gW3J1bl0gW2FsaWNlXSBmKCkgc3RlcD0xNyB2YWx1ZT00NA==",
+        "position": 8388630,
+        "provisional_versions": {},
+        "schema": "logbench.framer-checkpoint/1",
+        "stats": {
+          "bytes": 8388630,
+          "lines": 0,
+          "provisional": 0,
+          "records": 81593,
+          "unparsed": 0
+        }
+      },
+      "lines": 81721,
+      "records": 81592
+    },
+    "mb_per_s": 1.22
+  },
+  "rss_mb": 462.0,
+  "resume": {
+    "seconds": 6.51,
+    "restarted_from": 8388630,
+    "records": 163151,
+    "shard": "/var/folders/_t/c66q7css0195p3yktsz3h3jc0000gn/T/r6-large-5khux4fx/index/f_9399c5263163d9cd/g1-p7447c192707b.sqlite3",
+    "identical": true,
+    "no_duplicates": true
+  },
+  "clean": {
+    "records": 163151,
+    "shard": "/var/folders/_t/c66q7css0195p3yktsz3h3jc0000gn/T/r6-large-5khux4fx/index-clean/f_9399c5263163d9cd/g1-p7447c192707b.sqlite3"
+  },
+  "ok": true,
+  "node_stats": {
+    "spawned": 1,
+    "killed": 0,
+    "restarted": 0,
+    "requests": 38,
+    "payload_bytes": 111848284
+  },
+  "digest": "f7c93740799f7c03581bae6fbf6896842089a0864963b2c3eaa5c22244e6bd11"
+}

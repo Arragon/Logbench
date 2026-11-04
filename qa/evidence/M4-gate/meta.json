@@ -1,0 +1,11 @@
+{
+  "python": "3.9.11",
+  "platform": "macOS-27.0.1-arm64-arm-64bit",
+  "base": "http://127.0.0.1:63535",
+  "calls": 217,
+  "bytes": 388597,
+  "size_mb": 6,
+  "started": "2026-11-03 12:32:12",
+  "total": 116.6,
+  "skip_ui": false
+}

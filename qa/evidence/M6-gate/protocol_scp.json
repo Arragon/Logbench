@@ -1,0 +1,21 @@
+{
+  "kind": "scp",
+  "startedAt": "2026-11-03T20:24:44Z",
+  "steps": [],
+  "result": "BLOCKED",
+  "blockedReason": "未提供可实连端点（--endpoint）。本机没有受控 scp 服务。",
+  "adapter": {
+    "adapter": "scp",
+    "label": "传统 SCP（快照）",
+    "available": true,
+    "reason": null,
+    "missingTools": [],
+    "requirements": [
+      "scp"
+    ],
+    "notes": [
+      "传统 SCP 只能整文件快照，不提供目录发现与范围续采。"
+    ]
+  },
+  "finishedAt": "2026-11-03T20:24:44Z"
+}

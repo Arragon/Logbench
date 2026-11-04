@@ -1,0 +1,34 @@
+{
+  "ok": true,
+  "cases": {
+    "node_crash": {
+      "ok": true,
+      "killed": {
+        "at": null,
+        "pid": 23620,
+        "returncode": -9
+      },
+      "partial_records": 3069,
+      "resume_from": 393216,
+      "records": 2000,
+      "replayed_equal": true
+    },
+    "stale_fencing": {
+      "ok": true,
+      "result": "stale_fencing",
+      "first": 1,
+      "second": 2
+    },
+    "sqlite_failure": {
+      "ok": true,
+      "raised": "ProgrammingError",
+      "note": "a failed batch commits neither records nor watermark"
+    },
+    "post_publish_kill": {
+      "ok": true,
+      "versions": [],
+      "note": "publication commits the pointer before the caller can be killed"
+    }
+  },
+  "seconds": 1.48
+}

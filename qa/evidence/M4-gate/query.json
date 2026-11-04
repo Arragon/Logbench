@@ -1,0 +1,56 @@
+{
+  "ok": true,
+  "query_id": "q-de0f0c22dd6139df",
+  "state": "done",
+  "count": {
+    "matched": 48470,
+    "returned": 48470,
+    "relation": "exact"
+  },
+  "coverage": {
+    "scanned_bytes": "6291739",
+    "total_bytes": "6291739",
+    "complete": true,
+    "evaluated_bytes": "6291739",
+    "scanned_records": 48479,
+    "mode": "postings"
+  },
+  "plan": "postings",
+  "paged": 100,
+  "export": {
+    "status": 200,
+    "lines": 5,
+    "rows_header": "5",
+    "truncated": "true"
+  },
+  "narrow": {
+    "query_id": "q-3fea6daf7b5c98cc",
+    "text": "private-upload-failure",
+    "count": {
+      "matched": 9,
+      "returned": 9,
+      "relation": "exact"
+    },
+    "plan": "postings",
+    "hit_ordinals": [
+      5000,
+      10001,
+      15002,
+      20003,
+      25004
+    ],
+    "sample": {
+      "ordinal": 5000,
+      "level": "ERROR",
+      "message": "Traceback (most recent call last):",
+      "lines": {
+        "first": 5001,
+        "last": 5003
+      },
+      "text_has_term": true,
+      "text_bytes": 82
+    },
+    "ok": true
+  },
+  "seconds": 1.93
+}

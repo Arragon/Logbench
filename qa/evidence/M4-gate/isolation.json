@@ -1,0 +1,33 @@
+{
+  "ok": true,
+  "checks": [
+    {
+      "target": "/api/v2/files/f_854b7bb1f4429d2b",
+      "status": 404,
+      "code": "NOT_FOUND"
+    },
+    {
+      "target": "/api/v2/files/f_854b7bb1f4429d2b/records",
+      "status": 404,
+      "code": "NOT_FOUND"
+    },
+    {
+      "target": "/api/v2/records/f_854b7bb1f4429d2b:0",
+      "status": 404,
+      "code": "NOT_FOUND"
+    },
+    {
+      "target": "/api/v2/queries/q-de0f0c22dd6139df",
+      "status": 404,
+      "code": "unknown_query"
+    },
+    {
+      "target": "/api/v2/queries/q-de0f0c22dd6139df/export",
+      "status": 404,
+      "code": "unknown_query"
+    }
+  ],
+  "peer": "10.9.9.9",
+  "note": "身份由 socket 对端推导；同一进程无法portably 绑定两个源地址，故用 handle() 传入另一个对端",
+  "seconds": 0.01
+}

@@ -1,0 +1,64 @@
+{
+ "schema": "logbench.lease-evidence/1",
+ "generated_at": "2026-11-03T00:21:34",
+ "url": "http://192.168.1.3:62627/qa/r6/lease_harness.html",
+ "secure_context": false,
+ "checks": [
+  {
+   "name": "A 获得租约并拿到 fencing=1",
+   "ok": true,
+   "detail": "{'ok': True, 'value': {'owner': 'A', 'fencing': 1, 'expires_at': 1793694098494}}"
+  },
+  {
+   "name": "B 被拒绝（lease_held）",
+   "ok": true,
+   "detail": "{'ok': False, 'code': 'lease_held', 'message': '另一个页面正在写入该任务'}"
+  },
+  {
+   "name": "A 用自己的 token 提交成功",
+   "ok": true,
+   "detail": "{'ok': True, 'value': {'committed': 1, 'fencing': 1}}"
+  },
+  {
+   "name": "A 释放后 B 接手，fencing 递增到 2",
+   "ok": true,
+   "detail": "{'ok': True, 'value': {'owner': 'B', 'fencing': 2, 'expires_at': 1793694098498}}"
+  },
+  {
+   "name": "旧 token 提交被拒（stale_fencing）",
+   "ok": true,
+   "detail": "{'ok': False, 'code': 'stale_fencing', 'message': '写入者已被接管，本次提交被拒绝'}"
+  },
+  {
+   "name": "旧 token 续租被拒",
+   "ok": true,
+   "detail": "{'ok': False, 'code': 'stale_fencing', 'message': '租约已失效或被接管'}"
+  },
+  {
+   "name": "旧 token 的写入没有落地",
+   "ok": true,
+   "detail": "{'ok': True, 'value': 'from-A'}"
+  },
+  {
+   "name": "新持有者提交成功",
+   "ok": true,
+   "detail": "{'ok': True, 'value': {'committed': 1, 'fencing': 2}}"
+  },
+  {
+   "name": "新写入生效",
+   "ok": true,
+   "detail": "{'ok': True, 'value': 'from-B'}"
+  },
+  {
+   "name": "租约过期后可被接管",
+   "ok": true,
+   "detail": "expiring={'ok': True, 'value': {'owner': 'A', 'fencing': 3, 'expires_at': 1793694093703}} taken={'ok': True, 'value': {'owner': 'B', 'fencing': 4, 'expires_at': 1793694099015}}"
+  },
+  {
+   "name": "无 BroadcastChannel 仍可正确获取",
+   "ok": true,
+   "detail": "BroadcastChannel=undefined fencing=5"
+  }
+ ],
+ "ok": true
+}

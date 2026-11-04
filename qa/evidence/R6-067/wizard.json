@@ -1,0 +1,149 @@
+{
+  "base_url": "http://127.0.0.1:50955",
+  "file_url": "http://127.0.0.1:57695/var/log/app.log",
+  "checks": [
+    {
+      "name": "四个协议都列出",
+      "ok": true,
+      "detail": [
+        {
+          "text": "SSH / SFTP",
+          "disabled": false
+        },
+        {
+          "text": "SMB 2/3",
+          "disabled": false
+        },
+        {
+          "text": "HTTP(S)",
+          "disabled": false
+        },
+        {
+          "text": "传统 SCP（快照）",
+          "disabled": false
+        }
+      ]
+    },
+    {
+      "name": "缺少 rclone 时 SFTP 标注不可用",
+      "ok": true,
+      "detail": {
+        "text": "SSH / SFTP",
+        "disabled": false
+      }
+    },
+    {
+      "name": "进入目录映射步骤",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "重复目标被拒绝并说明",
+      "ok": true,
+      "detail": "目标子目录重复；两个映射不能写入同一位置。"
+    },
+    {
+      "name": "错误定位到目标字段",
+      "ok": true,
+      "detail": "mapping-target-1"
+    },
+    {
+      "name": "未确认追加约定时持续追踪不可用",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "降级原因可见",
+      "ok": true,
+      "detail": "HTTP 持续追踪需要源端提供代次/不可变前缀约定；未确认前只开放稳定快照。"
+    },
+    {
+      "name": "确认后可启用持续追踪",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "预检通过",
+      "ok": true,
+      "detail": "预检通过\n配置修订 1\n指纹 b120fcc201\nstat\n读取到远端长度与验证器。\nrange\nRange 返回 206 且 Content-Range 与请求一致。\nappend\n未声明不可变前缀/代次约定，仅开放稳定快照读取。\ndiscovery\n未配置清单/目录索引，仅支持显式文件。"
+    },
+    {
+      "name": "预检绑定配置修订",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "启用后向导关闭",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "源出现在采集中心",
+      "ok": true,
+      "detail": "日志源 / 连接\t目录 → 存储位置\t同步状态\t归档 / 滞后\t操作\n\nQA · 向导源\nhttp · http://127.0.0.1:57695/var/log/app.log\n\t2 个目录映射\t快照模式\t\n已归档 0 B\n尚未采集\n\t\n查看\n暂停"
+    },
+    {
+      "name": "启用状态可见",
+      "ok": true,
+      "detail": "日志源 / 连接\t目录 → 存储位置\t同步状态\t归档 / 滞后\t操作\n\nQA · 向导源\nhttp · http://127.0.0.1:57695/var/log/app.log\n\t2 个目录映射\t快照模式\t\n已归档 0 B\n尚未采集\n\t\n查看\n暂停"
+    },
+    {
+      "name": "重新打开保留草稿",
+      "ok": true,
+      "detail": "QA · 向导源"
+    },
+    {
+      "name": "Esc 关闭向导",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "窄屏向导在视口内",
+      "ok": true,
+      "detail": {
+        "x": 11.25,
+        "y": 48.71875,
+        "width": 352.5,
+        "height": 714.546875
+      }
+    },
+    {
+      "name": "无脚本错误",
+      "ok": true,
+      "detail": []
+    }
+  ],
+  "failures": [],
+  "chips": [
+    {
+      "text": "SSH / SFTP",
+      "disabled": false
+    },
+    {
+      "text": "SMB 2/3",
+      "disabled": false
+    },
+    {
+      "text": "HTTP(S)",
+      "disabled": false
+    },
+    {
+      "text": "传统 SCP（快照）",
+      "disabled": false
+    }
+  ],
+  "step2_visible": true,
+  "overlap_error": "目标子目录重复；两个映射不能写入同一位置。",
+  "follow_disabled_before_confirm": true,
+  "follow_reason": "HTTP 持续追踪需要源端提供代次/不可变前缀约定；未确认前只开放稳定快照。",
+  "probe_text": "预检通过\n配置修订 1\n指纹 b120fcc201\nstat\n读取到远端长度与验证器。\nrange\nRange 返回 206 且 Content-Range 与请求一致。\nappend\n未声明不可变前缀/代次约定，仅开放稳定快照读取。\ndiscovery\n未配置清单/目录索引，仅支持显式文件。",
+  "table_text": "日志源 / 连接\t目录 → 存储位置\t同步状态\t归档 / 滞后\t操作\n\nQA · 向导源\nhttp · http://127.0.0.1:57695/var/log/app.log\n\t2 个目录映射\t快照模式\t\n已归档 0 B\n尚未采集\n\t\n查看\n暂停",
+  "draft_name": "QA · 向导源",
+  "narrow_dialog": {
+    "x": 11.25,
+    "y": 48.71875,
+    "width": 352.5,
+    "height": 714.546875
+  },
+  "console_errors": []
+}

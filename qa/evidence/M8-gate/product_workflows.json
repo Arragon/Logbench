@@ -1,0 +1,165 @@
+{
+ "name": "product_workflows",
+ "started_at": "2026-11-03T13:28:57",
+ "ok": true,
+ "total": 20,
+ "failed": 0,
+ "checks": [
+  {
+   "label": "R5：本机文件通过真实文件输入导入",
+   "ok": true,
+   "detail": 1
+  },
+  {
+   "label": "R5：打开文件后渲染出记录行",
+   "ok": true,
+   "detail": 2
+  },
+  {
+   "label": "R5：时间线渲染出节点",
+   "ok": true,
+   "detail": 1
+  },
+  {
+   "label": "R5：搜索命中并只对可见行高亮",
+   "ok": true,
+   "detail": 2
+  },
+  {
+   "label": "R5：悬浮详情显示记录内容与证据",
+   "ok": true,
+   "detail": "时间2026-05-01 10:00:02.000000行1–1版本1local-only marker LOCALFI"
+  },
+  {
+   "label": "M8：混合范围渲染记录",
+   "ok": true,
+   "detail": 10
+  },
+  {
+   "label": "M8：范围计数声明完成度而不是伪精确",
+   "ok": true,
+   "detail": "共 10 条"
+  },
+  {
+   "label": "M8：无权限文件不产生精确计数（unknown/at_least，绝不是 exact）",
+   "ok": true,
+   "detail": {
+    "relation": "unknown",
+    "matched": 0
+   }
+  },
+  {
+   "label": "M8：失败文件在 coverage 中指名",
+   "ok": true,
+   "detail": [
+    {
+     "file_id": "f_ffffffffffffffff",
+     "source": "server",
+     "code": "not_found",
+     "message": "文件不存在。"
+    }
+   ]
+  },
+  {
+   "label": "M8：时间对比为两个 pane",
+   "ok": true,
+   "detail": "actual=2 expected=2"
+  },
+  {
+   "label": "M8：对比出现空槽（缺记录不补前值）",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "label": "M8：规则页在管理员身份下可用",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "label": "M8：解析缓存页在管理员身份下可用",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "label": "M8：运行页在管理员身份下可用",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "label": "M8：非管理员读取运行状态被拒绝",
+   "ok": true,
+   "detail": "actual=403 expected=403"
+  },
+  {
+   "label": "M8：非管理员预览规则影响被拒绝",
+   "ok": true,
+   "detail": "actual=403 expected=403"
+  },
+  {
+   "label": "M8：网络请求不含本机文件名或原文",
+   "ok": true,
+   "detail": []
+  },
+  {
+   "label": "M8：页面无（非预期）脚本错误",
+   "ok": true,
+   "detail": []
+  },
+  {
+   "label": "Gate 汇总了 6 个 M8 子脚本结果",
+   "ok": true,
+   "detail": []
+  },
+  {
+   "label": "所有子脚本通过",
+   "ok": true,
+   "detail": {
+    "mixed_scope": true,
+    "global_time": true,
+    "compare_windows": true,
+    "rule_impact": true,
+    "cache_manager": true,
+    "runtime_ui": true
+   }
+  }
+ ],
+ "sub_reports": {
+  "mixed_scope": {
+   "ok": true,
+   "total": 15,
+   "failed": 0,
+   "source": "evidence/M8-mixed_scope/mixed_scope.json"
+  },
+  "global_time": {
+   "ok": true,
+   "total": 14,
+   "failed": 0,
+   "source": "evidence/M8-global_time/global_time.json"
+  },
+  "compare_windows": {
+   "ok": true,
+   "total": 12,
+   "failed": 0,
+   "source": "evidence/M8-compare_windows/compare_windows.json"
+  },
+  "rule_impact": {
+   "ok": true,
+   "total": 26,
+   "failed": 0,
+   "source": "evidence/M8-rule_impact/rule_impact.json"
+  },
+  "cache_manager": {
+   "ok": true,
+   "total": 23,
+   "failed": 0,
+   "source": "evidence/M8-cache_manager/cache_manager.json"
+  },
+  "runtime_ui": {
+   "ok": true,
+   "total": 29,
+   "failed": 0,
+   "source": "evidence/M8-runtime_ui/runtime_ui.json"
+  }
+ },
+ "missing": []
+}

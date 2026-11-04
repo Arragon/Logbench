@@ -1,0 +1,43 @@
+{
+  "state": "PASS",
+  "cases": [
+    {
+      "case": "stream-handshake",
+      "status": 200,
+      "frames": 3,
+      "ids": [
+        1,
+        2,
+        3
+      ],
+      "monotonic": true,
+      "bodies_leaked": 0,
+      "passed": true
+    },
+    {
+      "case": "expired-replay",
+      "status": 200,
+      "resync_required": true,
+      "reason": true,
+      "passed": true
+    },
+    {
+      "case": "poll-equals-stream",
+      "polled": [
+        4,
+        5
+      ],
+      "streamed": [
+        4,
+        5
+      ],
+      "passed": true
+    },
+    {
+      "case": "scope-filter",
+      "member_events": 0,
+      "passed": true
+    }
+  ],
+  "note": "真实 socket；HTTP 传输，不涉及 WSGI 代理缓冲"
+}

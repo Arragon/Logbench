@@ -1,0 +1,13 @@
+{
+  "ok": true,
+  "panel_hidden_initially": true,
+  "panel_visible_after_click": true,
+  "opt_in_unchecked": true,
+  "file_input_disabled_before_opt_in": true,
+  "file_input_enabled_after_opt_in": true,
+  "status_text": "已就绪，可打开服务端视图",
+  "rows_rendered": 200,
+  "view_label": "服务端 · f_a64ca7492df51efd",
+  "page_errors": [],
+  "seconds": 76.92
+}

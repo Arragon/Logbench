@@ -1,0 +1,123 @@
+{
+ "schema": "logbench.search-baseline/1",
+ "generated_at": "2026-11-02T23:17:48",
+ "base_url": "http://127.0.0.1:50902",
+ "corpus": {
+  "files": 5,
+  "bytes": 104858077,
+  "mib": 100.0,
+  "names_redacted": true
+ },
+ "environment": {
+  "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+  "hardware_concurrency": 12,
+  "device_memory_gb": 16,
+  "secure_context": true,
+  "indexeddb": true,
+  "opfs": true,
+  "cache_state": "cold (fresh browser profile per run)"
+ },
+ "import": {
+  "wall_ms": 10374,
+  "bytes": 104858077,
+  "mib_per_second": 9.64,
+  "decode_ms": 0,
+  "clone_ms": 0,
+  "clone_calls": 0,
+  "stringify_ms": 0.3,
+  "stringify_chars": 21193,
+  "worker_created": 10,
+  "long_task_count": 13,
+  "long_task_max_ms": 288,
+  "records": 130295,
+  "mounted_rows": 25,
+  "scroll_height": 34030,
+  "status": "服务已连接 · 管理员 已保存到本机 文件不上传 · 原始时间不转换时区 LogBench 3.0.3",
+  "timeout_notice": false
+ },
+ "searches": [
+  {
+   "label": "zero",
+   "query": {
+    "length": 22,
+    "tokens": 1
+   },
+   "typing_ms": 407,
+   "search_ms": 1757,
+   "wall_ms": 2163,
+   "clone_ms": 0,
+   "post_ms": 273.4,
+   "post_records": 130295,
+   "post_chars_estimate": 5231344,
+   "clone_calls": 0,
+   "stringify_ms": 0.0,
+   "stringify_chars": 32880,
+   "worker_created": 1,
+   "long_task_max_ms": 310,
+   "records_before": 130295,
+   "records_after": 0,
+   "mounted_rows": 0,
+   "status": "服务已连接 · 管理员 已保存到本机 文件不上传 · 原始时间不转换时区 LogBench 3.0.3",
+   "timeout_notice": false,
+   "within_1800ms": true
+  },
+  {
+   "label": "multi",
+   "query": {
+    "length": 6,
+    "tokens": 1
+   },
+   "typing_ms": 110,
+   "search_ms": 1645,
+   "wall_ms": 1755,
+   "clone_ms": 0,
+   "post_ms": 247.8,
+   "post_records": 130295,
+   "post_chars_estimate": 5231345,
+   "clone_calls": 0,
+   "stringify_ms": 0.2,
+   "stringify_chars": 32784,
+   "worker_created": 1,
+   "long_task_max_ms": 310,
+   "records_before": 0,
+   "records_after": 18484,
+   "mounted_rows": 25,
+   "status": "服务已连接 · 管理员 已保存到本机 文件不上传 · 原始时间不转换时区 LogBench 3.0.3",
+   "timeout_notice": false,
+   "within_1800ms": true
+  },
+  {
+   "label": "few",
+   "query": {
+    "length": 22,
+    "tokens": 2
+   },
+   "typing_ms": 400,
+   "search_ms": 1643,
+   "wall_ms": 2043,
+   "clone_ms": 0,
+   "post_ms": 247.6,
+   "post_records": 130295,
+   "post_chars_estimate": 5231344,
+   "clone_calls": 0,
+   "stringify_ms": 0.3,
+   "stringify_chars": 32883,
+   "worker_created": 1,
+   "long_task_max_ms": 310,
+   "records_before": 18484,
+   "records_after": 26,
+   "mounted_rows": 11,
+   "status": "服务已连接 · 管理员 已保存到本机 文件不上传 · 原始时间不转换时区 LogBench 3.0.3",
+   "timeout_notice": false,
+   "within_1800ms": true
+  }
+ ],
+ "targets": {
+  "ordinary_search_budget_ms": 1800,
+  "note": "目标值来自 R5 的硬超时；实测值单列，不用于证明达标。"
+ },
+ "notes": [
+  "本报告不含文件名、日志原文或完整搜索词。",
+  "clone/stringify/decode 为浏览器内包装真实调用的累计耗时。"
+ ]
+}

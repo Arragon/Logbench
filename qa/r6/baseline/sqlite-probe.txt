@@ -1,0 +1,10 @@
+{
+ "python": "3.9.11",
+ "sqlite_version": "3.38.1",
+ "fts5": 1,
+ "fts3": 1,
+ "json_valid": 1,
+ "default_journal": "delete",
+ "trigram": "ok",
+ "wal_pragma": "wal"
+}

@@ -1,0 +1,21 @@
+{
+  "state": "BLOCKED",
+  "protocols": {
+    "sftp": {
+      "state": "BLOCKED",
+      "returncode": 3,
+      "stdout": ",\n  \"steps\": [],\n  \"result\": \"BLOCKED\",\n  \"blockedReason\": \"缺少运行组件：rclone\",\n  \"adapter\": {\n    \"adapter\": \"sftp\",\n    \"label\": \"SSH / SFTP\",\n    \"available\": false,\n    \"reason\": \"tool_missing\",\n    \"missingTools\": [\n      \"rclone\"\n    ],\n    \"requirements\": [\n      \"rclone\"\n    ],\n    \"notes\": [\n      \"SFTP 通常没有可靠 inode；持续追加需源端声明前缀不变，否则回退稳定快照。\"\n    ]\n  },\n  \"finishedAt\": \"2026-11-03T20:57:27Z\"\n}\n"
+    },
+    "smb": {
+      "state": "BLOCKED",
+      "returncode": 3,
+      "stdout": "7Z\",\n  \"steps\": [],\n  \"result\": \"BLOCKED\",\n  \"blockedReason\": \"缺少运行组件：rclone\",\n  \"adapter\": {\n    \"adapter\": \"smb\",\n    \"label\": \"SMB 2/3\",\n    \"available\": false,\n    \"reason\": \"tool_missing\",\n    \"missingTools\": [\n      \"rclone\"\n    ],\n    \"requirements\": [\n      \"rclone\"\n    ],\n    \"notes\": [\n      \"SMB 读取需在每次重连后复核 identity/长度/边界；共享锁可能是暂时性的。\"\n    ]\n  },\n  \"finishedAt\": \"2026-11-03T20:57:27Z\"\n}\n"
+    },
+    "scp": {
+      "state": "BLOCKED",
+      "returncode": 3,
+      "stdout": "t\": \"2026-11-03T20:57:27Z\",\n  \"steps\": [],\n  \"result\": \"BLOCKED\",\n  \"blockedReason\": \"未提供可实连端点（--endpoint）。本机没有受控 scp 服务。\",\n  \"adapter\": {\n    \"adapter\": \"scp\",\n    \"label\": \"传统 SCP（快照）\",\n    \"available\": true,\n    \"reason\": null,\n    \"missingTools\": [],\n    \"requirements\": [\n      \"scp\"\n    ],\n    \"notes\": [\n      \"传统 SCP 只能整文件快照，不提供目录发现与范围续采。\"\n    ]\n  },\n  \"finishedAt\": \"2026-11-03T20:57:27Z\"\n}\n"
+    }
+  },
+  "reason": "B-007：本机无 rclone / SFTP / SMB / legacy SCP 端点；不以 mock 抵扣"
+}

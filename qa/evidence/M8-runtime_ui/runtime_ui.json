@@ -1,0 +1,215 @@
+{
+ "name": "runtime_ui",
+ "started_at": "2026-11-03T13:27:44",
+ "ok": true,
+ "total": 29,
+ "failed": 0,
+ "checks": [
+  {
+   "label": "运行状态接口可用",
+   "ok": true,
+   "detail": "actual=200 expected=200"
+  },
+  {
+   "label": "解析池已启动并报告真实进程数",
+   "ok": true,
+   "detail": 1
+  },
+  {
+   "label": "报告主机资源（RSS/磁盘）",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "label": "未请求 probe 时磁盘延迟为 null 而不是 0",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "label": "任务列表带来源与文件",
+   "ok": true,
+   "detail": "psg-a.log"
+  },
+  {
+   "label": "查询指标为空时报告 null 而不是 0",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "label": "查询结果缓存如实标注未实现",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "label": "预算保存成功",
+   "ok": true,
+   "detail": "actual=200 expected=200"
+  },
+  {
+   "label": "服务端确认解析池进程数变化",
+   "ok": true,
+   "detail": "actual=2 expected=2"
+  },
+  {
+   "label": "再次读取确实是新进程数",
+   "ok": true,
+   "detail": "actual=2 expected=2"
+  },
+  {
+   "label": "查询槽位保存成功",
+   "ok": true,
+   "detail": "actual=200 expected=200"
+  },
+  {
+   "label": "查询闸门槽位即时变化",
+   "ok": true,
+   "detail": "actual=3 expected=3"
+  },
+  {
+   "label": "过期修订号被拒绝",
+   "ok": true,
+   "detail": "actual=409 expected=409"
+  },
+  {
+   "label": "超出总预算被拒绝",
+   "ok": true,
+   "detail": "actual=400 expected=400"
+  },
+  {
+   "label": "拒绝原因明确",
+   "ok": true,
+   "detail": "actual='invalid_budget' expected='invalid_budget'"
+  },
+  {
+   "label": "诊断导出可用",
+   "ok": true,
+   "detail": "actual=200 expected=200"
+  },
+  {
+   "label": "诊断不含文件名",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "label": "诊断不含数据目录路径",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "label": "诊断声明脱敏范围",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "label": "运行页显示队列/积压/查询指标",
+   "ok": true,
+   "detail": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "未采样",
+    "未采样"
+   ]
+  },
+  {
+   "label": "任务表渲染出任务行",
+   "ok": true,
+   "detail": 2
+  },
+  {
+   "label": "预算表单包含 13 个字段",
+   "ok": true,
+   "detail": "actual=13 expected=13"
+  },
+  {
+   "label": "每个字段标注生效范围",
+   "ok": true,
+   "detail": [
+    "即时",
+    "即时",
+    "即时",
+    "下个任务",
+    "下个任务",
+    "下个任务",
+    "即时",
+    "即时",
+    "下个任务",
+    "下个任务",
+    "下个任务",
+    "需重启",
+    "需重启"
+   ]
+  },
+  {
+   "label": "至少一个字段标注需重启（不假装全部即时）",
+   "ok": true,
+   "detail": [
+    "即时",
+    "即时",
+    "即时",
+    "下个任务",
+    "下个任务",
+    "下个任务",
+    "即时",
+    "即时",
+    "下个任务",
+    "下个任务",
+    "下个任务",
+    "需重启",
+    "需重启"
+   ]
+  },
+  {
+   "label": "保存前显示更改摘要",
+   "ok": true,
+   "detail": "将要修改 1 项query_slots：3 → 4（即时）"
+  },
+  {
+   "label": "保存后显示服务端确认的生效结果",
+   "ok": true,
+   "detail": "服务端确认的生效结果（修订 3）解析池：2 个进程（目标 2，启动 0，停止 0）查询并发：4 个槽位，当前运行 0上传上限：全局 4，每身份 2mem_soft_bytes 需重启后生效hot_cache_bytes 需重启后生效"
+  },
+  {
+   "label": "页面保存确实改变了服务端槽位",
+   "ok": true,
+   "detail": "actual=4 expected=4"
+  },
+  {
+   "label": "审计记录包含修改前后值",
+   "ok": true,
+   "detail": {
+    "parse_slots": 2,
+    "query_slots": 4,
+    "upload_slots": 4,
+    "total_cpu": 8,
+    "transfer_connections": 4,
+    "per_host_connections": 2,
+    "per_principal_uploads": 2,
+    "per_principal_queries": 1,
+    "history_slots": 2,
+    "mem_soft_bytes": 17179869184,
+    "hot_cache_bytes": 4294967296,
+    "interactive_reserve": 1,
+    "writer_slots": 4
+   }
+  },
+  {
+   "label": "页面无脚本错误",
+   "ok": true,
+   "detail": []
+  }
+ ],
+ "workers_after": {
+  "workers": 2,
+  "wanted": 2,
+  "spawned": 1,
+  "stopped": 0,
+  "busy": []
+ },
+ "query_slots": {
+  "slots": 4,
+  "active": 0,
+  "waiting": 0
+ }
+}

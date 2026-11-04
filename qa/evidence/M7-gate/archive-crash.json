@@ -1,0 +1,73 @@
+{
+  "state": "PASS",
+  "cases": [
+    {
+      "case": "first-pass",
+      "committed": 14,
+      "hash": "de6f1412e3a9b59258fc7b448c1f556d0512fc89ad1c11a9f1c3211a2071a89f",
+      "passed": true
+    },
+    {
+      "case": "before-commit",
+      "killed": true,
+      "returncode": -9,
+      "watermark_before_recover": 14,
+      "watermark_after_recover": 14,
+      "recovery": {
+        "dropped": [],
+        "contiguous": 14,
+        "trimmed": 7
+      },
+      "verify_ok": true,
+      "stderr": "",
+      "passed": true
+    },
+    {
+      "case": "after-commit",
+      "killed": true,
+      "returncode": -9,
+      "watermark_before_recover": 28,
+      "watermark_after_recover": 28,
+      "recovery": {
+        "dropped": [],
+        "contiguous": 28,
+        "trimmed": 0
+      },
+      "verify_ok": true,
+      "stderr": "",
+      "passed": true
+    },
+    {
+      "case": "after-index",
+      "killed": true,
+      "returncode": -9,
+      "watermark_before_recover": 35,
+      "watermark_after_recover": 35,
+      "recovery": {
+        "dropped": [],
+        "contiguous": 35,
+        "trimmed": 0
+      },
+      "verify_ok": true,
+      "stderr": "",
+      "passed": true,
+      "resync": {
+        "state": "current",
+        "mode": "incremental",
+        "newRecords": null,
+        "records": 5,
+        "bytesRead": null
+      },
+      "no_reparse": true
+    }
+  ],
+  "archive": {
+    "file_id": "f_e6a2e85ea4cc9098",
+    "generation": 1,
+    "intervals": 4,
+    "interval_bytes": 35,
+    "archive_bytes": 35,
+    "events": 1,
+    "final_hash": "3f30af8edd5f3500d6e6b554c5a486c20aec61296e6b92f5bc65fb61ed2b7c17"
+  }
+}

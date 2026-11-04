@@ -1,0 +1,58 @@
+{
+ "schema": "logbench.backup-evidence/1",
+ "generated_at": "2026-11-03T00:20:49",
+ "secure_context": false,
+ "checks": [
+  {
+   "name": "构建清单并封卷",
+   "ok": true,
+   "detail": "volumes=4 bytes=64,64,64,40"
+  },
+  {
+   "name": "每卷不超过 64 MiB",
+   "ok": true,
+   "detail": "cap=64MiB"
+  },
+  {
+   "name": "备份文件已落盘",
+   "ok": true,
+   "detail": "4 volumes, 232 bytes"
+  },
+  {
+   "name": "按清单规划恢复",
+   "ok": true,
+   "detail": "required=4"
+  },
+  {
+   "name": "逐卷校验通过",
+   "ok": true,
+   "detail": "ok,ok,ok,ok"
+  },
+  {
+   "name": "篡改卷被拒绝",
+   "ok": true,
+   "detail": "volume_digest_mismatch"
+  },
+  {
+   "name": "校验失败时不发布",
+   "ok": true,
+   "detail": "volume_digest_mismatch"
+  },
+  {
+   "name": "恢复到 staging 代次后切换",
+   "ok": true,
+   "detail": "generation=7"
+  },
+  {
+   "name": "恢复后摘要与清单一致",
+   "ok": true,
+   "detail": "b1:ok b2:ok"
+  },
+  {
+   "name": "恢复后正文可读且含中文",
+   "ok": true,
+   "detail": "[2020-01-01 00:00:00.001"
+  }
+ ],
+ "ok": true
+}

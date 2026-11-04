@@ -1,0 +1,52 @@
+{
+  "ok": true,
+  "worker_counts_identical": true,
+  "fixtures": {
+    "lanes-1": {
+      "edge_cases.log": {
+        "records": 10,
+        "digest": "e08887af865116c5cd8980850fcda8ef105c82839c1306e83ce6d4ea1e1c1309",
+        "expected": 10
+      },
+      "no_trailing_newline.log": {
+        "records": 2,
+        "digest": "c123b6b20c575c0c0aff10b61df431fbb5ca939e22faa7a5a827aac63996b0dc",
+        "expected": 2
+      },
+      "traceback_chain.log": {
+        "records": 6,
+        "digest": "1afd251758b195bb1c11845d7c55b642c35f71c2999499f87170b0a596ed578c",
+        "expected": 6
+      },
+      "unicode_crlf_bom.log": {
+        "records": 3,
+        "digest": "65c54f805550e70a1e3a2eec93783aa589087a97d280ab783736019eab964e44",
+        "expected": 3
+      }
+    },
+    "lanes-4": {
+      "edge_cases.log": {
+        "records": 10,
+        "digest": "e08887af865116c5cd8980850fcda8ef105c82839c1306e83ce6d4ea1e1c1309",
+        "expected": 10
+      },
+      "no_trailing_newline.log": {
+        "records": 2,
+        "digest": "c123b6b20c575c0c0aff10b61df431fbb5ca939e22faa7a5a827aac63996b0dc",
+        "expected": 2
+      },
+      "traceback_chain.log": {
+        "records": 6,
+        "digest": "1afd251758b195bb1c11845d7c55b642c35f71c2999499f87170b0a596ed578c",
+        "expected": 6
+      },
+      "unicode_crlf_bom.log": {
+        "records": 3,
+        "digest": "65c54f805550e70a1e3a2eec93783aa589087a97d280ab783736019eab964e44",
+        "expected": 3
+      }
+    }
+  },
+  "compare": "counts vs tests/fixtures/r6/golden/expected.json",
+  "seconds": 0.11
+}

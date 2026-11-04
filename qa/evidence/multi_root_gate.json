@@ -1,0 +1,161 @@
+{
+  "started_at": "2026-11-03T12:48:53",
+  "items": [
+    {
+      "item": "1. legacy 与两个部署目录外根并存，同名文件不覆盖",
+      "result": "PASS",
+      "detail": {
+        "roots": 3,
+        "same_path_rows": 2,
+        "distinct_ids": 2,
+        "sizes": [
+          164,
+          287
+        ]
+      },
+      "evidence": []
+    },
+    {
+      "item": "1b. 规则 ID 与 legacy 绑定映射保持不变",
+      "result": "PASS",
+      "detail": {
+        "rules": [
+          "cpqpsgx-default"
+        ],
+        "default_binding": {
+          "scope": "default",
+          "path": "",
+          "ruleId": "cpqpsgx-default",
+          "revision": 1,
+          "rootId": "legacy"
+        }
+      },
+      "evidence": []
+    },
+    {
+      "item": "2a. 越根路径、符号链接被拒绝，读取仍正常",
+      "result": "PASS",
+      "detail": {
+        "traversal_status": 400,
+        "symlink_hidden": true
+      },
+      "evidence": []
+    },
+    {
+      "item": "2b. 挂载掉线后停止写入，登记与元数据保留（非空库）",
+      "result": "PASS",
+      "detail": {
+        "write_status": 409,
+        "reason": "sentinel_missing",
+        "rows_kept": 1
+      },
+      "evidence": []
+    },
+    {
+      "item": "2c. 不同盘重挂被识别为 volume_changed 并拒绝写入（注入身份）",
+      "result": "PASS",
+      "detail": {
+        "status": 409
+      },
+      "evidence": []
+    },
+    {
+      "item": "2d. 真实卸载 / 换盘挂载的内核行为",
+      "result": "BLOCKED",
+      "detail": "本机没有可安全卸载的独立挂载点；本项需在目标机执行，未验证。",
+      "evidence": []
+    },
+    {
+      "item": "3a. 数百文件按需分页浏览，全程未读取原文",
+      "result": "PASS",
+      "detail": {
+        "files": 320,
+        "page": 50,
+        "pages": 7,
+        "rows": 322,
+        "seconds": 0.883,
+        "content_opens": 0
+      },
+      "evidence": []
+    },
+    {
+      "item": "3b. 私有范围与物理路径不向普通身份泄露",
+      "result": "PASS",
+      "detail": {
+        "private_items": 0,
+        "root_table": 403,
+        "path_leak": false
+      },
+      "evidence": []
+    },
+    {
+      "item": "4. 映射默认可用，个人覆盖优先并可恢复继承，解释链完整",
+      "result": "PASS",
+      "detail": {
+        "mapping": "mapping_default",
+        "personal": "personal_directory",
+        "after_clear": "mapping_default"
+      },
+      "evidence": []
+    },
+    {
+      "item": "5a. 活动引用阻止删除；同名冲突不覆盖；恢复后字节一致",
+      "result": "PASS",
+      "detail": {
+        "blocked": "active_references",
+        "conflict": "already_exists",
+        "digest_kept": true
+      },
+      "evidence": []
+    },
+    {
+      "item": "5b. 移动中崩溃可由回收清单修复，原文不丢",
+      "result": "PASS",
+      "detail": {
+        "repaired": [
+          {
+            "id": "t-gate-crash",
+            "state": "trashed"
+          }
+        ],
+        "restore": 200
+      },
+      "evidence": []
+    },
+    {
+      "item": "6. 文件库 / 存储位置页面的视觉与键盘证据",
+      "result": "PASS",
+      "detail": {
+        "checks": 19,
+        "screenshots": [
+          "library-1366x768.png",
+          "storage-1366x768.png",
+          "library-offline-1366x768.png",
+          "library-1024x768.png",
+          "library-768x1024.png",
+          "library-375x812.png"
+        ],
+        "viewports": [
+          "size_1024x768",
+          "size_768x1024",
+          "size_375x812"
+        ]
+      },
+      "evidence": [
+        "qa/evidence/R6-056/library-storage.json"
+      ]
+    }
+  ],
+  "environment": {
+    "python": "3.9.11",
+    "platform": "darwin",
+    "filesystem_root": "/var/folders/_t/c66q7css0195p3yktsz3h3jc0000gn/T/lb-m5-gate-8kqn9wbs"
+  },
+  "summary": {
+    "pass": 11,
+    "fail": 0,
+    "blocked": 1
+  },
+  "verdict": "PARTIAL",
+  "finished_at": "2026-11-03T12:48:56"
+}

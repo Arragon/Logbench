@@ -1,0 +1,67 @@
+{
+ "schema": "logbench.idb-store-evidence/1",
+ "generated_at": "2026-11-03T00:21:26",
+ "base_url": "http://192.168.1.3:62601",
+ "note": "在真实 Chrome 中以普通 HTTP 打开，验证 IndexedDB 基线路径。",
+ "browser": "http://192.168.1.3:62601",
+ "secure_context": false,
+ "checks": [
+  {
+   "name": "扫描只返回元数据",
+   "ok": true,
+   "detail": "items=3 keys=[\"legacy_id\",\"name\",\"size\",\"saved_size\",\"modified\"]"
+  },
+  {
+   "name": "迁移全部文件",
+   "ok": true,
+   "detail": "migrated=3/3"
+  },
+  {
+   "name": "元数据写入 R6 库",
+   "ok": true,
+   "detail": "files=3"
+  },
+  {
+   "name": "迁移保留原始大小与摘要",
+   "ok": true,
+   "detail": "[[\"legacy-1\",154,3],[\"legacy-2\",0,0],[\"legacy-3\",82,2]]"
+  },
+  {
+   "name": "原文逐字节往返一致（含 CJK/CRLF/空文件）",
+   "ok": true,
+   "detail": "3 files"
+  },
+  {
+   "name": "工作区已复制且草稿未生效",
+   "ok": true,
+   "detail": "{\"drafts_active\":false,\"bookmarks\":[\"legacy-1\"]}"
+  },
+  {
+   "name": "旧库未被删除",
+   "ok": true,
+   "detail": "legacy files=3"
+  },
+  {
+   "name": "重复运行不重复迁移",
+   "ok": true,
+   "detail": "migrated=0"
+  },
+  {
+   "name": "断点续迁只补未完成文件",
+   "ok": true,
+   "detail": "migrated=1"
+  },
+  {
+   "name": "全部校验通过后才允许丢弃旧副本",
+   "ok": true,
+   "detail": "{\"done\":[\"legacy-1\",\"legacy-2\",\"legacy-3\"],\"failed\":[],\"safe_to_drop_legacy\":true}"
+  },
+  {
+   "name": "篡改后可被摘要发现",
+   "ok": true,
+   "detail": "expected=916f0dd204d54817 actual=12d9cd36bc708d52"
+  }
+ ],
+ "counts": {},
+ "ok": true
+}

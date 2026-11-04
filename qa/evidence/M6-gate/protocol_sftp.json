@@ -1,0 +1,23 @@
+{
+  "kind": "sftp",
+  "startedAt": "2026-11-03T20:24:44Z",
+  "steps": [],
+  "result": "BLOCKED",
+  "blockedReason": "缺少运行组件：rclone",
+  "adapter": {
+    "adapter": "sftp",
+    "label": "SSH / SFTP",
+    "available": false,
+    "reason": "tool_missing",
+    "missingTools": [
+      "rclone"
+    ],
+    "requirements": [
+      "rclone"
+    ],
+    "notes": [
+      "SFTP 通常没有可靠 inode；持续追加需源端声明前缀不变，否则回退稳定快照。"
+    ]
+  },
+  "finishedAt": "2026-11-03T20:24:44Z"
+}

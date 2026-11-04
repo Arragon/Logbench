@@ -1,0 +1,145 @@
+{
+ "name": "cache_manager",
+ "started_at": "2026-11-03T13:27:10",
+ "ok": true,
+ "total": 23,
+ "failed": 0,
+ "checks": [
+  {
+   "label": "缓存列表可用",
+   "ok": true,
+   "detail": "actual=200 expected=200"
+  },
+  {
+   "label": "两个文件都出现在列表中",
+   "ok": true,
+   "detail": "actual=2 expected=2"
+  },
+  {
+   "label": "结构/规则/检索三层均已完成",
+   "ok": true,
+   "detail": "actual=['complete', 'complete', 'complete'] expected=['complete', 'complete', 'complete']"
+  },
+  {
+   "label": "索引分片大小已测量",
+   "ok": true,
+   "detail": 139264
+  },
+  {
+   "label": "可清理层只包含派生层",
+   "ok": true,
+   "detail": "actual=['rules', 'search'] expected=['rules', 'search']"
+  },
+  {
+   "label": "重建请求被接受",
+   "ok": true,
+   "detail": "actual=200 expected=200"
+  },
+  {
+   "label": "重建后三层仍为完成",
+   "ok": true,
+   "detail": "actual=['complete', 'complete', 'complete'] expected=['complete', 'complete', 'complete']"
+  },
+  {
+   "label": "清理返回 200",
+   "ok": true,
+   "detail": "actual=200 expected=200"
+  },
+  {
+   "label": "清理了两层",
+   "ok": true,
+   "detail": "actual=2 expected=2"
+  },
+  {
+   "label": "清理声明保留原文",
+   "ok": true,
+   "detail": "actual=True expected=True"
+  },
+  {
+   "label": "原文逐字节未变",
+   "ok": true,
+   "detail": "actual='1a1908ad284f4428ea3ffd1d530b867fbb53ccbf7a4fca9181f179e1653dfe13' expected='1a1908ad284f4428ea3ffd1d530b867fbb53ccbf7a4fca9181f179e1653dfe13'"
+  },
+  {
+   "label": "结构层仍在（没有连带清掉）",
+   "ok": true,
+   "detail": "actual='complete' expected='complete'"
+  },
+  {
+   "label": "规则层变为待重建/未建",
+   "ok": true,
+   "detail": "pending"
+  },
+  {
+   "label": "覆盖退回到结构层",
+   "ok": true,
+   "detail": "actual='structure' expected='structure'"
+  },
+  {
+   "label": "原文层不可通过清理删除",
+   "ok": true,
+   "detail": "actual=400 expected=400"
+  },
+  {
+   "label": "拒绝码明确",
+   "ok": true,
+   "detail": "actual='raw_not_purgeable' expected='raw_not_purgeable'"
+  },
+  {
+   "label": "缓存页渲染出文件行",
+   "ok": true,
+   "detail": 2
+  },
+  {
+   "label": "每行展示三层的状态徽标",
+   "ok": true,
+   "detail": [
+    "结构完成",
+    "规则未建",
+    "检索未建",
+    "结构完成",
+    "规则完成",
+    "检索完成"
+   ]
+  },
+  {
+   "label": "状态用文字而不是仅颜色表达",
+   "ok": true,
+   "detail": [
+    "结构完成",
+    "规则未建",
+    "检索未建",
+    "结构完成",
+    "规则完成",
+    "检索完成"
+   ]
+  },
+  {
+   "label": "展开后可看到分层依据",
+   "ok": true,
+   "detail": 3
+  },
+  {
+   "label": "重建确认对话框说明复用结构层",
+   "ok": true,
+   "detail": "重建解析缓存1 个文件psg-a.log · 规则 + 检索重建复用结构层：不会重新分帧原文；新版本完成前，当前版本继续可读。取消开始重建"
+  },
+  {
+   "label": "界面重建确实创建了索引任务",
+   "ok": true,
+   "detail": [
+    "index",
+    "index",
+    "index",
+    "index"
+   ]
+  },
+  {
+   "label": "页面无脚本错误",
+   "ok": true,
+   "detail": []
+  }
+ ],
+ "file": "psg-a.log",
+ "digest_unchanged": true
+}

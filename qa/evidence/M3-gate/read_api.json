@@ -1,0 +1,18 @@
+{
+  "ok": true,
+  "raw_matches_disk": true,
+  "giant_body": {
+    "truncated": true,
+    "total": 6002,
+    "returned": 1383,
+    "next": 1383,
+    "note": "served by cursor, not silently clipped"
+  },
+  "foreign_status": 404,
+  "timeline": {
+    "nodes": 1,
+    "relation": "exact",
+    "coverage": "complete"
+  },
+  "seconds": 0.13
+}

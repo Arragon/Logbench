@@ -1,0 +1,274 @@
+{
+  "url": "http://127.0.0.1:58286",
+  "started_at": "2026-11-03T12:45:57",
+  "checks": {
+    "nav_compact": {
+      "ok": true,
+      "detail": [
+        {
+          "label": "日志",
+          "view": "logs",
+          "hidden": false
+        },
+        {
+          "label": "文件库",
+          "view": "files",
+          "hidden": false
+        },
+        {
+          "label": "采集中心",
+          "view": "intake",
+          "hidden": false
+        },
+        {
+          "label": "存储位置",
+          "view": "storage",
+          "hidden": false
+        }
+      ]
+    },
+    "tree_lazy_top_level": {
+      "ok": true,
+      "detail": [
+        "logs"
+      ]
+    },
+    "directory_rows_bounded": {
+      "ok": true,
+      "detail": 100
+    },
+    "directory_total_counted": {
+      "ok": true,
+      "detail": "共 180 项 · 浏览不读取原文加载更多"
+    },
+    "no_horizontal_overflow": {
+      "ok": true,
+      "detail": [
+        1366,
+        [
+          1366,
+          768
+        ]
+      ]
+    },
+    "table_has_height": {
+      "ok": true,
+      "detail": 604
+    },
+    "last_row_reachable": {
+      "ok": true,
+      "detail": {
+        "lastTop": 689,
+        "boxBottom": 735,
+        "visible": true
+      }
+    },
+    "rule_explained": {
+      "ok": true,
+      "detail": "目录规则按「我的文件 → 我的目录 → 共享文件 → 共享目录 → 映射默认 → 服务默认」继承"
+    },
+    "storage_lists_roots": {
+      "ok": true,
+      "detail": 3
+    },
+    "dialog_focus_and_escape": {
+      "ok": true,
+      "detail": {
+        "focused": "storage-root-label",
+        "closed": true
+      }
+    },
+    "offline_not_empty": {
+      "ok": true,
+      "detail": {
+        "note": "存储位置「部署数据目录」当前离线（sentinel_missing）。已保留登记与文件元数据，恢复挂载后可继续。",
+        "empty": "",
+        "dot": [
+          "online",
+          "offline"
+        ]
+      }
+    },
+    "remount_recovers_root": {
+      "ok": true,
+      "detail": "online"
+    },
+    "no_overflow_1024x768": {
+      "ok": true,
+      "detail": [
+        1024,
+        1024
+      ]
+    },
+    "table_height_1024x768": {
+      "ok": true,
+      "detail": 541
+    },
+    "no_overflow_768x1024": {
+      "ok": true,
+      "detail": [
+        768,
+        768
+      ]
+    },
+    "table_height_768x1024": {
+      "ok": true,
+      "detail": 470
+    },
+    "no_overflow_375x812": {
+      "ok": true,
+      "detail": [
+        375,
+        375
+      ]
+    },
+    "table_height_375x812": {
+      "ok": true,
+      "detail": 162
+    },
+    "no_page_errors": {
+      "ok": true,
+      "detail": []
+    }
+  },
+  "states": {
+    "library_initial": {
+      "viewport": [
+        1366,
+        768
+      ],
+      "scroll_width": 1366,
+      "body_scroll_width": 1366,
+      "horizontal_overflow": false,
+      "table_scroll_height": 640,
+      "table_scroll_overflow": 0,
+      "rows_rendered": 1,
+      "nav_items": 4,
+      "toolbar_rows": 1,
+      "header_height": 54
+    },
+    "library_directory": {
+      "viewport": [
+        1366,
+        768
+      ],
+      "scroll_width": 1366,
+      "body_scroll_width": 1366,
+      "horizontal_overflow": false,
+      "table_scroll_height": 604,
+      "table_scroll_overflow": 4125,
+      "rows_rendered": 100,
+      "nav_items": 4,
+      "toolbar_rows": 1,
+      "header_height": 54
+    },
+    "last_row": {
+      "lastTop": 689,
+      "boxBottom": 735,
+      "visible": true
+    },
+    "rule_controls": {
+      "selectDisabled": false,
+      "explain": "目录规则按「我的文件 → 我的目录 → 共享文件 → 共享目录 → 映射默认 → 服务默认」继承"
+    },
+    "storage_rows": [
+      "私有上传区root-088837/private/var/folders/_t/c66q7css0195p3yktsz3h3jc0000gn/T/lb-m5-ui-c6n_zgcq/physical/private文件系统：unknown在线私有原文可用 198 GiB配额 不限0 个文件0 个已索引 · —探测设置",
+      "归档盘root-cb35c0/private/var/folders/_t/c66q7css0195p3yktsz3h3jc0000gn/T/lb-m5-ui-c6n_zgcq/physical/archive文件系统：unknown在线共享原文可用 198 GiB配额 不限0 个文件0 个已索引 · —探测设置",
+      "部署数据目录legacy/private/var/folders/_t/c66q7css0195p3yktsz3h3jc0000gn/T/lb-m5-ui-c6n_zgcq/deploy/data文件系统：unknown在线共享原文可用 198 GiB配额 不限180 个文件0 个已索引 · 6.9 KiB探测设置"
+    ],
+    "offline": {
+      "note": "存储位置「部署数据目录」当前离线（sentinel_missing）。已保留登记与文件元数据，恢复挂载后可继续。",
+      "empty": "",
+      "dot": [
+        "online",
+        "offline"
+      ]
+    },
+    "size_1024x768": {
+      "viewport": [
+        1024,
+        768
+      ],
+      "scroll_width": 1024,
+      "body_scroll_width": 1024,
+      "horizontal_overflow": false,
+      "table_scroll_height": 541,
+      "table_scroll_overflow": 6005,
+      "rows_rendered": 100,
+      "nav_items": 4,
+      "toolbar_rows": 1,
+      "header_height": 54
+    },
+    "size_768x1024": {
+      "viewport": [
+        768,
+        1024
+      ],
+      "scroll_width": 768,
+      "body_scroll_width": 768,
+      "horizontal_overflow": false,
+      "table_scroll_height": 470,
+      "table_scroll_overflow": 4259,
+      "rows_rendered": 100,
+      "nav_items": 4,
+      "toolbar_rows": 1,
+      "header_height": 83
+    },
+    "size_375x812": {
+      "viewport": [
+        375,
+        812
+      ],
+      "scroll_width": 375,
+      "body_scroll_width": 375,
+      "horizontal_overflow": false,
+      "table_scroll_height": 162,
+      "table_scroll_overflow": 3967,
+      "rows_rendered": 100,
+      "nav_items": 4,
+      "toolbar_rows": 1,
+      "header_height": 106
+    }
+  },
+  "screenshots": [
+    "library-1366x768.png",
+    "storage-1366x768.png",
+    "library-offline-1366x768.png",
+    "library-1024x768.png",
+    "library-768x1024.png",
+    "library-375x812.png"
+  ],
+  "roots": [
+    "root-cb35c0",
+    "root-088837"
+  ],
+  "nav": [
+    {
+      "label": "日志",
+      "view": "logs",
+      "hidden": false
+    },
+    {
+      "label": "文件库",
+      "view": "files",
+      "hidden": false
+    },
+    {
+      "label": "采集中心",
+      "view": "intake",
+      "hidden": false
+    },
+    {
+      "label": "存储位置",
+      "view": "storage",
+      "hidden": false
+    }
+  ],
+  "page_errors": [],
+  "finished_at": "2026-11-03T12:46:09",
+  "mount_offline": {
+    "result": "simulated",
+    "detail": "sentinel 缺失触发离线判定；真实卸载/换盘挂载需在目标机执行，本机未验证。"
+  },
+  "passed": true
+}

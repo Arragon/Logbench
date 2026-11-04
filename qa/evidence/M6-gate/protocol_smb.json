@@ -1,0 +1,23 @@
+{
+  "kind": "smb",
+  "startedAt": "2026-11-03T20:24:44Z",
+  "steps": [],
+  "result": "BLOCKED",
+  "blockedReason": "缺少运行组件：rclone",
+  "adapter": {
+    "adapter": "smb",
+    "label": "SMB 2/3",
+    "available": false,
+    "reason": "tool_missing",
+    "missingTools": [
+      "rclone"
+    ],
+    "requirements": [
+      "rclone"
+    ],
+    "notes": [
+      "SMB 读取需在每次重连后复核 identity/长度/边界；共享锁可能是暂时性的。"
+    ]
+  },
+  "finishedAt": "2026-11-03T20:24:44Z"
+}

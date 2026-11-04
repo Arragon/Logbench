@@ -1,0 +1,171 @@
+{
+  "url": "http://127.0.0.1:60249",
+  "fixture": {
+    "lines": 4000,
+    "bytes": 226890
+  },
+  "checks": [
+    {
+      "name": "SSE 建流成功，界面写明“实时”",
+      "ok": true,
+      "detail": {
+        "mode": "live",
+        "label": "实时",
+        "connect_ms": 1.4
+      }
+    },
+    {
+      "name": "本机文件已打开并有可滚动记录",
+      "ok": true,
+      "detail": {
+        "fileId": "local-live-follow.log-226890-1767225600000",
+        "total": 4000
+      }
+    },
+    {
+      "name": "服务端事件经真实 SSE 到达页面",
+      "ok": true,
+      "detail": {
+        "ms": 2.5
+      }
+    },
+    {
+      "name": "跟随模式打开时不出常驻横幅",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "上滚后新记录进徽标而不是拉回底部",
+      "ok": true,
+      "detail": {
+        "hidden": false,
+        "text": "有 3 条新记录 · 跳到最新",
+        "count": "3"
+      }
+    },
+    {
+      "name": "上滚期间阅读位置不变",
+      "ok": true,
+      "detail": {
+        "before": 0,
+        "after": 0
+      }
+    },
+    {
+      "name": "点击徽标回到最新已索引位置",
+      "ok": true,
+      "detail": {
+        "hidden": true,
+        "atBottom": true
+      }
+    },
+    {
+      "name": "重连回放不重复应用同一事件",
+      "ok": true,
+      "detail": {
+        "applied_before": 4,
+        "applied_after": 4,
+        "duplicates": 4,
+        "mode": "live"
+      }
+    },
+    {
+      "name": "重连后仍在实时模式",
+      "ok": true,
+      "detail": "live"
+    },
+    {
+      "name": "375px 不出现横向溢出",
+      "ok": true,
+      "detail": {
+        "overflow_px": 0
+      }
+    },
+    {
+      "name": "关闭页面后订阅被释放（最长一个心跳周期）",
+      "ok": true,
+      "detail": {
+        "while_open": 2,
+        "after_close": 0,
+        "release_seconds": 19.21
+      }
+    },
+    {
+      "name": "关闭页面后服务端仍可继续发布（采集不受浏览器影响）",
+      "ok": true,
+      "detail": 5
+    },
+    {
+      "name": "没有 EventSource 时降级为“轮询”并写明",
+      "ok": true,
+      "detail": {
+        "mode": "polling",
+        "label": "轮询",
+        "delivered": true
+      }
+    },
+    {
+      "name": "轮询同样收到事件（同一应用路径）",
+      "ok": true,
+      "detail": {
+        "mode": "polling",
+        "label": "轮询",
+        "delivered": true
+      }
+    },
+    {
+      "name": "页面无未捕获异常",
+      "ok": true,
+      "detail": []
+    }
+  ],
+  "failures": [],
+  "latency_ms": [
+    2.5
+  ],
+  "started_at": "2026-11-03T12:49:35",
+  "stream": {
+    "mode": "live",
+    "label": "实时",
+    "connect_ms": 1.4
+  },
+  "badge": {
+    "hidden": false,
+    "text": "有 3 条新记录 · 跳到最新",
+    "count": "3"
+  },
+  "anchor": {
+    "before": 0,
+    "after": 0
+  },
+  "seek": {
+    "hidden": true,
+    "atBottom": true
+  },
+  "reconnect": {
+    "applied_before": 4,
+    "applied_after": 4,
+    "duplicates": 4,
+    "mode": "live"
+  },
+  "narrow": {
+    "overflow_px": 0
+  },
+  "subscribers_while_open": 2,
+  "subscribers_after_close": 0,
+  "release_seconds": 19.21,
+  "polling": {
+    "mode": "polling",
+    "label": "轮询",
+    "delivered": true
+  },
+  "page_errors": [],
+  "latency_summary": {
+    "n": 1,
+    "p50": 2.5,
+    "max": 2.5,
+    "note": "事件发布到客户端应用的时间，含浏览器事件循环与一次 IPC；不是目标值，是实测值"
+  },
+  "finished_at": "2026-11-03T12:50:26",
+  "passed": true
+}

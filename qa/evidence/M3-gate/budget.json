@@ -1,0 +1,23 @@
+{
+  "ok": true,
+  "health_p50_ms": 1.29,
+  "health_p95_ms": 3.5,
+  "samples": 163,
+  "errors": [],
+  "pool": {
+    "spawned": 1,
+    "killed": 0,
+    "restarted": 0,
+    "requests": 774,
+    "payload_bytes": 67157616
+  },
+  "budget": {
+    "parse_slots": 4,
+    "as_dict": null
+  },
+  "memory": {
+    "self_peak_mb": 412.1,
+    "children_peak_mb": 204.5
+  },
+  "seconds": 6.74
+}

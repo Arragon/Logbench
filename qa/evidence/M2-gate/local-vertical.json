@@ -1,0 +1,300 @@
+{
+ "url": "http://192.168.1.3:54603",
+ "started_at": "2026-11-03T10:04:54",
+ "phases": {
+  "import_5x20": {
+   "panel_visible_ms": 0.7,
+   "register_ms": 0.7,
+   "files": 5,
+   "first_readable_ms": 2380.9,
+   "total_s": 7.05,
+   "records": 651658,
+   "files_indexed": 5,
+   "files_failed": 0
+  },
+  "search": {
+   "runs": 30,
+   "latency_ms": {
+    "n": 30,
+    "p50": 0.2,
+    "p95": 425.7,
+    "max": 890.4,
+    "min": 0
+   },
+   "by_label": {
+    "high": {
+     "n": 4,
+     "latency_ms": {
+      "n": 4,
+      "p50": 0.2,
+      "p95": 890.4,
+      "max": 890.4,
+      "min": 0.1
+     },
+     "relations": {
+      "exact": 4
+     }
+    },
+    "high2": {
+     "n": 4,
+     "latency_ms": {
+      "n": 4,
+      "p50": 0.2,
+      "p95": 367.6,
+      "max": 367.6,
+      "min": 0.1
+     },
+     "relations": {
+      "exact": 4
+     }
+    },
+    "low": {
+     "n": 4,
+     "latency_ms": {
+      "n": 4,
+      "p50": 0.2,
+      "p95": 425.7,
+      "max": 425.7,
+      "min": 0.1
+     },
+     "relations": {
+      "exact": 4
+     }
+    },
+    "zero": {
+     "n": 3,
+     "latency_ms": {
+      "n": 3,
+      "p50": 0.2,
+      "p95": 418.1,
+      "max": 418.1,
+      "min": 0.1
+     },
+     "relations": {
+      "exact": 3
+     }
+    },
+    "cjk2": {
+     "n": 3,
+     "latency_ms": {
+      "n": 3,
+      "p50": 0.3,
+      "p95": 308.2,
+      "max": 308.2,
+      "min": 0.1
+     },
+     "relations": {
+      "exact": 3
+     }
+    },
+    "cjk1": {
+     "n": 3,
+     "latency_ms": {
+      "n": 3,
+      "p50": 0.1,
+      "p95": 329.5,
+      "max": 329.5,
+      "min": 0
+     },
+     "relations": {
+      "exact": 3
+     }
+    },
+    "whole": {
+     "n": 3,
+     "latency_ms": {
+      "n": 3,
+      "p50": 0.1,
+      "p95": 305.1,
+      "max": 305.1,
+      "min": 0
+     },
+     "relations": {
+      "exact": 3
+     }
+    },
+    "crossline": {
+     "n": 3,
+     "latency_ms": {
+      "n": 3,
+      "p50": 0.1,
+      "p95": 364.5,
+      "max": 364.5,
+      "min": 0
+     },
+     "relations": {
+      "exact": 3
+     }
+    },
+    "literal_pct": {
+     "n": 3,
+     "latency_ms": {
+      "n": 3,
+      "p50": 0.1,
+      "p95": 352.9,
+      "max": 352.9,
+      "min": 0
+     },
+     "relations": {
+      "exact": 3
+     }
+    }
+   },
+   "zero_reported_without_full_scan": []
+  },
+  "reader": {
+   "jump": {
+    "rows": 98,
+    "reader": {
+     "x": 208,
+     "y": 94,
+     "w": 1158,
+     "h": 484
+    },
+    "timeline": {
+     "x": 208,
+     "y": 578,
+     "w": 1158,
+     "h": 190
+    },
+    "first_ordinal": "39960",
+    "first_top": 10,
+    "probe": {
+     "ordinal": "39997",
+     "top": 10
+    },
+    "scroll_top": 1120000
+   },
+   "drawer_open": {
+    "reader": {
+     "x": 208,
+     "y": 94,
+     "w": 1158,
+     "h": 484
+    },
+    "timeline": {
+     "x": 208,
+     "y": 578,
+     "w": 1158,
+     "h": 190
+    },
+    "drawer": {
+     "x": 906,
+     "y": 0,
+     "w": 460,
+     "h": 768
+    },
+    "first_ordinal": "39997",
+    "first_top": 10,
+    "scroll_top": 1120000,
+    "rows": 98
+   },
+   "reader_delta": {
+    "x": 0,
+    "w": 0,
+    "h": 0
+   },
+   "timeline_delta": {
+    "x": 0,
+    "w": 0
+   },
+   "anchor_shift_px": 0,
+   "anchor_same_record": true,
+   "anchor_ordinal": "39997"
+  },
+  "themes": {
+   "ink": {
+    "theme": "ink",
+    "ink": "rgb(22, 34, 56)",
+    "bg": "rgb(244, 246, 249)",
+    "row_color": "rgb(38, 53, 74)",
+    "reader_bg": "rgb(255, 255, 255)",
+    "row_visible": true,
+    "screenshot": "theme-ink.png"
+   },
+   "paper": {
+    "theme": "paper",
+    "ink": "rgb(22, 34, 56)",
+    "bg": "rgb(244, 246, 249)",
+    "row_color": "rgb(35, 27, 16)",
+    "reader_bg": "rgb(255, 249, 237)",
+    "row_visible": true,
+    "screenshot": "theme-paper.png"
+   },
+   "graphite": {
+    "theme": "graphite",
+    "ink": "rgb(22, 34, 56)",
+    "bg": "rgb(244, 246, 249)",
+    "row_color": "rgb(226, 232, 242)",
+    "reader_bg": "rgb(27, 34, 48)",
+    "row_visible": true,
+    "screenshot": "theme-graphite.png"
+   },
+   "nord": {
+    "theme": "nord",
+    "ink": "rgb(22, 34, 56)",
+    "bg": "rgb(244, 246, 249)",
+    "row_color": "rgb(236, 239, 244)",
+    "reader_bg": "rgb(46, 52, 64)",
+    "row_visible": true,
+    "screenshot": "theme-nord.png"
+   }
+  },
+  "reload": {
+   "files": 5,
+   "theme": null,
+   "page_size": "50000",
+   "tasks": 0
+  }
+ },
+ "targets": {
+  "select_feedback_100ms": {
+   "target": 100,
+   "actual": 0.7,
+   "met": true
+  },
+  "first_batch_3000ms": {
+   "target": 3000,
+   "actual": 2380.9,
+   "met": true
+  },
+  "search_p95_1800ms": {
+   "target": 1800,
+   "actual": 425.7,
+   "met": true
+  },
+  "dom_under_300": {
+   "target": 300,
+   "actual": 98,
+   "met": true
+  },
+  "drawer_no_layout_shift": {
+   "target": 0,
+   "actual": {
+    "x": 0,
+    "w": 0,
+    "h": 0
+   },
+   "met": true
+  },
+  "anchor_within_2px": {
+   "target": 2,
+   "actual": 0,
+   "met": true
+  },
+  "reload_reuses_index": {
+   "target": 5,
+   "actual": 5,
+   "met": true
+  },
+  "no_false_zero": {
+   "target": 0,
+   "actual": 0,
+   "met": true
+  }
+ },
+ "secure_context": false,
+ "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+ "hardware_concurrency": 12,
+ "page_errors": []
+}

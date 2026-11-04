@@ -1,0 +1,79 @@
+{
+  "runs": [
+    {
+      "lanes": 1,
+      "repeat": 0,
+      "files": 2,
+      "records": 16,
+      "seconds": 0.022,
+      "throughput_mb_s": 0.14,
+      "failed": {},
+      "query": {
+        "samples": 289,
+        "p95_ms": 0.22,
+        "p50_ms": 0.17,
+        "errors": []
+      },
+      "worker_stats": {
+        "spawned": 1,
+        "killed": 0,
+        "restarted": 0,
+        "requests": 4,
+        "payload_bytes": 4516
+      }
+    },
+    {
+      "lanes": 2,
+      "repeat": 0,
+      "files": 2,
+      "records": 16,
+      "seconds": 0.016,
+      "throughput_mb_s": 0.2,
+      "failed": {},
+      "query": {
+        "samples": 291,
+        "p95_ms": 0.2,
+        "p50_ms": 0.17,
+        "errors": []
+      },
+      "worker_stats": {
+        "spawned": 2,
+        "killed": 0,
+        "restarted": 0,
+        "requests": 4,
+        "payload_bytes": 4516
+      }
+    },
+    {
+      "lanes": 4,
+      "repeat": 0,
+      "files": 2,
+      "records": 16,
+      "seconds": 0.016,
+      "throughput_mb_s": 0.21,
+      "failed": {},
+      "query": {
+        "samples": 317,
+        "p95_ms": 0.19,
+        "p50_ms": 0.17,
+        "errors": []
+      },
+      "worker_stats": {
+        "spawned": 4,
+        "killed": 0,
+        "restarted": 0,
+        "requests": 4,
+        "payload_bytes": 4516
+      }
+    }
+  ],
+  "digests": {
+    "1/0": "e62132dabebc756f9a9e970fe47a075caf22f762936b60f9b72de954226901bb",
+    "2/0": "e62132dabebc756f9a9e970fe47a075caf22f762936b60f9b72de954226901bb",
+    "4/0": "e62132dabebc756f9a9e970fe47a075caf22f762936b60f9b72de954226901bb"
+  },
+  "digest_stable": true,
+  "throughput_mb_s": 0.18333333333333335,
+  "query_p95_ms": 0.2,
+  "records": 48
+}

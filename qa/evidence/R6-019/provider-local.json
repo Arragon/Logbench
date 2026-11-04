@@ -1,0 +1,130 @@
+{
+ "url": "http://192.168.1.3:58503",
+ "started_at": "2026-11-03T09:31:21",
+ "checks": [
+  {
+   "label": "open 返回能力表",
+   "ok": true,
+   "detail": "page=2000"
+  },
+  {
+   "label": "空数据集可列出",
+   "ok": true,
+   "detail": "files=0"
+  },
+  {
+   "label": "索引已发布",
+   "ok": true,
+   "detail": "generation=1"
+  },
+  {
+   "label": "列出 1 个文件",
+   "ok": true,
+   "detail": "[{\"file_id\":\"demo\",\"name\":\"demo.log\",\"size\":44,\"generation\":1,\"chunks\":1,\"digest\":null,\"migrated_from\":null}]"
+  },
+  {
+   "label": "首屏 200 条",
+   "ok": true,
+   "detail": "got=200"
+  },
+  {
+   "label": "下一页游标为 200",
+   "ok": true,
+   "detail": "cursor=200"
+  },
+  {
+   "label": "计数为 exact",
+   "ok": true,
+   "detail": "{\"relation\":\"exact\",\"matched\":5000}"
+  },
+  {
+   "label": "超过 2000 条被拒绝",
+   "ok": true,
+   "detail": "page_too_large"
+  },
+  {
+   "label": "过期代次被拒绝",
+   "ok": true,
+   "detail": "stale_generation"
+  },
+  {
+   "label": "原文逐字节往返",
+   "ok": true,
+   "detail": "len=44"
+  },
+  {
+   "label": "区间读取只取所需字节",
+   "ok": true,
+   "detail": "line"
+  },
+  {
+   "label": "搜索命中数正确",
+   "ok": true,
+   "detail": "matched=5000"
+  },
+  {
+   "label": "结果页不超过 limit",
+   "ok": true,
+   "detail": "items=50"
+  },
+  {
+   "label": "候选剪枝未误杀（全为命中）",
+   "ok": true,
+   "detail": "{\"complete\":true,\"scanned_blocks\":10,\"pruned_blocks\":0,\"total_blocks\":10}"
+  },
+  {
+   "label": "等级过滤与剪枝一致",
+   "ok": true,
+   "detail": "matched=218 expected=218"
+  },
+  {
+   "label": "详情按 ordinal 取回",
+   "ok": true,
+   "detail": "body=2"
+  },
+  {
+   "label": "详情带原文行号",
+   "ok": true,
+   "detail": "first=23"
+  },
+  {
+   "label": "时间线分页",
+   "ok": true,
+   "detail": "nodes=50 total=218"
+  },
+  {
+   "label": "按时间定位",
+   "ok": true,
+   "detail": "ordinal=3000"
+  },
+  {
+   "label": "全程未向服务器上传内容",
+   "ok": true,
+   "detail": "api-requests=0"
+  },
+  {
+   "label": "只创建了 1 个常驻 Worker",
+   "ok": true,
+   "detail": "workers=1"
+  },
+  {
+   "label": "没有孤儿回包",
+   "ok": true,
+   "detail": "{\"calls\":15,\"replies\":15,\"timeouts\":0,\"cancelled\":0,\"orphan_replies\":0,\"errors\":1,\"pending\":0}"
+  }
+ ],
+ "secure_context": false,
+ "ok": true,
+ "coverage": {
+  "complete": true,
+  "scanned_blocks": 10,
+  "pruned_blocks": 0,
+  "total_blocks": 10
+ },
+ "count": {
+  "relation": "exact",
+  "matched": 5000
+ },
+ "error": null,
+ "console": []
+}

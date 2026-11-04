@@ -1,0 +1,337 @@
+{
+  "generated_at": "2026-11-03T12:57:27",
+  "sections": {
+    "archive-crash": {
+      "state": "PASS",
+      "cases": [
+        {
+          "case": "first-pass",
+          "committed": 14,
+          "hash": "de6f1412e3a9b59258fc7b448c1f556d0512fc89ad1c11a9f1c3211a2071a89f",
+          "passed": true
+        },
+        {
+          "case": "before-commit",
+          "killed": true,
+          "returncode": -9,
+          "watermark_before_recover": 14,
+          "watermark_after_recover": 14,
+          "recovery": {
+            "dropped": [],
+            "contiguous": 14,
+            "trimmed": 7
+          },
+          "verify_ok": true,
+          "stderr": "",
+          "passed": true
+        },
+        {
+          "case": "after-commit",
+          "killed": true,
+          "returncode": -9,
+          "watermark_before_recover": 28,
+          "watermark_after_recover": 28,
+          "recovery": {
+            "dropped": [],
+            "contiguous": 28,
+            "trimmed": 0
+          },
+          "verify_ok": true,
+          "stderr": "",
+          "passed": true
+        },
+        {
+          "case": "after-index",
+          "killed": true,
+          "returncode": -9,
+          "watermark_before_recover": 35,
+          "watermark_after_recover": 35,
+          "recovery": {
+            "dropped": [],
+            "contiguous": 35,
+            "trimmed": 0
+          },
+          "verify_ok": true,
+          "stderr": "",
+          "passed": true,
+          "resync": {
+            "state": "current",
+            "mode": "incremental",
+            "newRecords": null,
+            "records": 5,
+            "bytesRead": null
+          },
+          "no_reparse": true
+        }
+      ],
+      "archive": {
+        "file_id": "f_e6a2e85ea4cc9098",
+        "generation": 1,
+        "intervals": 4,
+        "interval_bytes": 35,
+        "archive_bytes": 35,
+        "events": 1,
+        "final_hash": "3f30af8edd5f3500d6e6b554c5a486c20aec61296e6b92f5bc65fb61ed2b7c17"
+      },
+      "seconds": 0.56
+    },
+    "rotation": {
+      "state": "PASS",
+      "cases": [
+        {
+          "case": "append",
+          "expected": "append",
+          "observed": "append",
+          "report_bytes": 8,
+          "files": 1,
+          "passed": true
+        },
+        {
+          "case": "rename-rotation",
+          "expected": "rewritten",
+          "observed": "rewritten",
+          "report_bytes": 31,
+          "files": 2,
+          "passed": true,
+          "old_file_bytes": 24,
+          "new_generation": 2
+        },
+        {
+          "case": "truncate",
+          "expected": "truncated",
+          "observed": "truncated",
+          "report_bytes": 3,
+          "files": 2,
+          "gap_state": "unknown_length",
+          "generation": 3,
+          "passed": true
+        },
+        {
+          "case": "regrow-after-truncate",
+          "expected": "append",
+          "observed": "append",
+          "report_bytes": 11,
+          "files": 2,
+          "passed": true
+        },
+        {
+          "case": "same-size-replace",
+          "expected": "replaced",
+          "observed": "replaced",
+          "report_bytes": 14,
+          "files": 2,
+          "passed": true
+        },
+        {
+          "case": "copytruncate",
+          "expected": "truncated",
+          "observed": "truncated",
+          "report_bytes": 22,
+          "files": 3,
+          "passed": true
+        },
+        {
+          "case": "rapid-delete",
+          "expected": null,
+          "observed": "disappeared",
+          "report_bytes": 0,
+          "files": 3,
+          "passed": true,
+          "state": "disappeared",
+          "archive_retained": true
+        },
+        {
+          "case": "compressed-rotation",
+          "expected": "compressed-snapshot",
+          "observed": [
+            [
+              "/app.log",
+              "unchanged"
+            ],
+            [
+              "/app.log.1",
+              "unchanged"
+            ],
+            [
+              "/app.log.2",
+              "unchanged"
+            ],
+            [
+              "/app.log.3.gz",
+              "compressed-snapshot"
+            ]
+          ],
+          "passed": true
+        },
+        {
+          "case": "ambiguous-identity",
+          "observed": "replaced",
+          "reason": "same-size-different-prefix",
+          "confidence": "strong",
+          "passed": true
+        }
+      ],
+      "protocol": "local directory (gate adapter); SFTP/SMB/SCP blocked",
+      "seconds": 0.28
+    },
+    "faults": {
+      "state": "PASS",
+      "cases": [
+        {
+          "case": "locked-file",
+          "state": "retry",
+          "retry_at": true,
+          "passed": true
+        },
+        {
+          "case": "list-failure",
+          "codes": [
+            "transport_error"
+          ],
+          "passed": true
+        },
+        {
+          "case": "recovery-after-error",
+          "state": "archived",
+          "passed": true
+        },
+        {
+          "case": "hostkey_changed",
+          "state": "stopped",
+          "retry_at": null,
+          "needs_human": true,
+          "passed": true
+        },
+        {
+          "case": "auth_failed",
+          "state": "stopped",
+          "retry_at": null,
+          "needs_human": true,
+          "passed": true
+        },
+        {
+          "case": "permission_denied",
+          "state": "stopped",
+          "retry_at": null,
+          "needs_human": true,
+          "passed": true
+        },
+        {
+          "case": "storage-low",
+          "paused": true,
+          "policy": {
+            "allowedHosts": [
+              "127.0.0.1"
+            ],
+            "allowLoopback": true,
+            "waitingStorage": "legacy",
+            "waitingReason": "below_low_watermark",
+            "pausedBy": "storage"
+          },
+          "paused_sources": 1,
+          "reads_ok": true,
+          "passed": true
+        },
+        {
+          "case": "storage-recovered",
+          "paused": false,
+          "policy": {
+            "allowedHosts": [
+              "127.0.0.1"
+            ],
+            "allowLoopback": true
+          },
+          "passed": true
+        }
+      ],
+      "seconds": 0.09
+    },
+    "events": {
+      "state": "PASS",
+      "cases": [
+        {
+          "case": "stream-handshake",
+          "status": 200,
+          "frames": 3,
+          "ids": [
+            1,
+            2,
+            3
+          ],
+          "monotonic": true,
+          "bodies_leaked": 0,
+          "passed": true
+        },
+        {
+          "case": "expired-replay",
+          "status": 200,
+          "resync_required": true,
+          "reason": true,
+          "passed": true
+        },
+        {
+          "case": "poll-equals-stream",
+          "polled": [
+            4,
+            5
+          ],
+          "streamed": [
+            4,
+            5
+          ],
+          "passed": true
+        },
+        {
+          "case": "scope-filter",
+          "member_events": 0,
+          "passed": true
+        }
+      ],
+      "note": "真实 socket；HTTP 传输，不涉及 WSGI 代理缓冲",
+      "seconds": 0.54
+    },
+    "browser-close": {
+      "state": "PASS",
+      "cases": [
+        {
+          "case": "no-subscriber-progress",
+          "subscribers": 0,
+          "first_bytes": 4,
+          "second_bytes": 10,
+          "contiguous": 14,
+          "passed": true
+        }
+      ],
+      "note": "采集由服务端调度驱动；浏览器只是订阅者",
+      "seconds": 0.05
+    },
+    "protocols": {
+      "state": "BLOCKED",
+      "protocols": {
+        "sftp": {
+          "state": "BLOCKED",
+          "returncode": 3,
+          "stdout": ",\n  \"steps\": [],\n  \"result\": \"BLOCKED\",\n  \"blockedReason\": \"缺少运行组件：rclone\",\n  \"adapter\": {\n    \"adapter\": \"sftp\",\n    \"label\": \"SSH / SFTP\",\n    \"available\": false,\n    \"reason\": \"tool_missing\",\n    \"missingTools\": [\n      \"rclone\"\n    ],\n    \"requirements\": [\n      \"rclone\"\n    ],\n    \"notes\": [\n      \"SFTP 通常没有可靠 inode；持续追加需源端声明前缀不变，否则回退稳定快照。\"\n    ]\n  },\n  \"finishedAt\": \"2026-11-03T20:57:27Z\"\n}\n"
+        },
+        "smb": {
+          "state": "BLOCKED",
+          "returncode": 3,
+          "stdout": "7Z\",\n  \"steps\": [],\n  \"result\": \"BLOCKED\",\n  \"blockedReason\": \"缺少运行组件：rclone\",\n  \"adapter\": {\n    \"adapter\": \"smb\",\n    \"label\": \"SMB 2/3\",\n    \"available\": false,\n    \"reason\": \"tool_missing\",\n    \"missingTools\": [\n      \"rclone\"\n    ],\n    \"requirements\": [\n      \"rclone\"\n    ],\n    \"notes\": [\n      \"SMB 读取需在每次重连后复核 identity/长度/边界；共享锁可能是暂时性的。\"\n    ]\n  },\n  \"finishedAt\": \"2026-11-03T20:57:27Z\"\n}\n"
+        },
+        "scp": {
+          "state": "BLOCKED",
+          "returncode": 3,
+          "stdout": "t\": \"2026-11-03T20:57:27Z\",\n  \"steps\": [],\n  \"result\": \"BLOCKED\",\n  \"blockedReason\": \"未提供可实连端点（--endpoint）。本机没有受控 scp 服务。\",\n  \"adapter\": {\n    \"adapter\": \"scp\",\n    \"label\": \"传统 SCP（快照）\",\n    \"available\": true,\n    \"reason\": null,\n    \"missingTools\": [],\n    \"requirements\": [\n      \"scp\"\n    ],\n    \"notes\": [\n      \"传统 SCP 只能整文件快照，不提供目录发现与范围续采。\"\n    ]\n  },\n  \"finishedAt\": \"2026-11-03T20:57:27Z\"\n}\n"
+        }
+      },
+      "reason": "B-007：本机无 rclone / SFTP / SMB / legacy SCP 端点；不以 mock 抵扣",
+      "seconds": 0.16
+    }
+  },
+  "passed": true,
+  "blocked_sections": [
+    "protocols"
+  ],
+  "python": "3.9.11",
+  "node": "node"
+}

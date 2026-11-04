@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>R6-013 IndexedDB 验收</title>
+<style>
+  body{font:13px/1.6 -apple-system,"PingFang SC",system-ui,sans-serif;margin:24px;color:#1b2430;background:#f5f6f8}
+  h1{font-size:16px;margin:0 0 12px}
+  table{border-collapse:collapse;background:#fff;min-width:640px}
+  th,td{border:1px solid #e2e6ec;padding:6px 10px;text-align:left;font-size:12px}
+  th{background:#fafbfc}
+  .ok{color:#1a7f4b;font-weight:600}
+  .bad{color:#c0392b;font-weight:600}
+  code{font-family:ui-monospace,Menlo,monospace}
+</style>
+</head>
+<body>
+<h1>R6-013 · IndexedDB 分块原文与元数据（真实浏览器）</h1>
+<p>页面在 <code id="origin"></code> 打开，<code>isSecureContext=<span id="secure"></span></code>。
+本页只做验收，不写入产品数据库。</p>
+<table><thead><tr><th>检查</th><th>结果</th><th>细节</th></tr></thead><tbody id="rows"></tbody></table>
+<script src="../../src/shared/local-store.js"></script>
+<script>
+'use strict';
+const NS_A = 'ns-a';
+const NS_B = 'ns-b';
+const CHUNK = 1024;
+const checks = [];
+const counts = { metaReads: 0, chunkReads: 0, metaWrites: 0 };
+
+function record(name, ok, detail) {
+  checks.push({ name, ok: !!ok, detail: String(detail == null ? '' : detail) });
+  const row = document.createElement('tr');
+  row.innerHTML = `<td>${name}</td><td class="${ok ? 'ok' : 'bad'}">${ok ? 'PASS' : 'FAIL'}</td><td>${String(detail == null ? '' : detail)}</td>`;
+  document.getElementById('rows').append(row);
+}
+
+/* Count raw reads so "metadata only" is measured, not assumed. */
+const realGet = IDBObjectStore.prototype.get;
+IDBObjectStore.prototype.get = function (key) {
+  if (this.name === 'raw_chunks') counts.chunkReads += 1;
+  if (this.name === 'file_meta') counts.metaReads += 1;
+  return realGet.call(this, key);
+};
+const realGetAll = IDBObjectStore.prototype.getAll;
+IDBObjectStore.prototype.getAll = function (query) {
+  if (this.name === 'raw_chunks') counts.chunkReads += 1;
+  if (this.name === 'file_meta') counts.metaReads += 1;
+  return realGetAll.call(this, query);
+};
+const realPut = IDBObjectStore.prototype.put;
+IDBObjectStore.prototype.put = function (value) {
+  if (this.name === 'file_meta') counts.metaWrites += 1;
+  return realPut.call(this, value);
+};
+
+async function deleteDatabase() {
+  await new Promise((resolve) => {
+    const request = indexedDB.deleteDatabase(LBLocalStore.DB_NAME);
+    request.onsuccess = request.onerror = request.onblocked = () => resolve();
+  });
+}
+
+function bytesOf(text) { return new TextEncoder().encode(text); }
+
+(async () => {
+  document.getElementById('origin').textContent = location.origin;
+  document.getElementById('secure').textContent = String(window.isSecureContext);
+  const result = { ok: false, checks, counts, secure: window.isSecureContext, origin: location.origin };
+  try {
+    await deleteDatabase();
+    const store = await LBLocalStore.open(indexedDB, NS_A);
+    record('打开数据库并建表', true, `version=${LBLocalStore.DB_VERSION}`);
+
+    /* 1. chunk math */
+    const plans = LBLocalStore.planRange(0, 2500, CHUNK);
+    record('范围跨块规划', plans.length === 3, plans.map(p => `${p.chunk_no}:${p.from}-${p.to}`).join(' '));
+
+    /* 2. meta only */
+    await store.putFileMeta({ file_id: 'f1', name: 'a.log', size: 2500, chunk_size: CHUNK, generation: 1, chunks: 3 });
+    await store.putFileMeta({ file_id: 'f2', name: 'empty.log', size: 0, chunk_size: CHUNK, generation: 1, chunks: 0 });
+    counts.chunkReads = 0; counts.metaReads = 0;
+    const list = await store.listFileMeta();
+    record('仅读元数据列出文件', list.length === 2 && counts.chunkReads === 0,
+      `files=${list.length} chunkReads=${counts.chunkReads} metaReads=${counts.metaReads}`);
+    record('元数据不含命名空间泄露', list.every(item => item.namespace === undefined), JSON.stringify(list.map(x => Object.keys(x))));
+
+    /* 3. write raw chunks including a split multi-byte char and a short last chunk */
+    const text = '日志行ONE\n日志行TWO\n日志行THREE\n' + 'x'.repeat(2400) + '\n尾行';
+    const bytes = bytesOf(text);
+    for (let index = 0; index < LBLocalStore.chunkCount(bytes.length, CHUNK); index++) {
+      const start = index * CHUNK;
+      await store.putRawChunk('f1', 1, index, bytes.slice(start, Math.min(bytes.length, start + CHUNK)).buffer);
+    }
+    record('写入分块', true, `chunks=${LBLocalStore.chunkCount(bytes.length, CHUNK)} bytes=${bytes.length}`);
+
+    counts.chunkReads = 0;
+    const range = await store.getRawRange('f1', 1, 700, 1200, CHUNK);
+    const decoded = new TextDecoder().decode(range);
+    record('跨块范围读取', decoded === text.slice(700, 1900), `len=${range.byteLength} chunkReads=${counts.chunkReads}`);
+    record('只取覆盖到的分块', counts.chunkReads === 2, `chunkReads=${counts.chunkReads}（跨 1-2 块）`);
+
+    const whole = await store.getRawRange('f1', 1, 0, bytes.length, CHUNK);
+    record('整段往返一致', new TextDecoder().decode(whole) === text, `len=${whole.byteLength}`);
+
+    const tailStart = bytes.length - 6;
+    const tail = await store.getRawRange('f1', 1, tailStart, 6, CHUNK);
+    const tailExpected = new TextDecoder().decode(bytes.slice(tailStart));
+    record('最后短块可读', new TextDecoder().decode(tail) === tailExpected, new TextDecoder().decode(tail));
+
+    /* 4. namespace isolation */
+    const other = await LBLocalStore.open(indexedDB, NS_B);
+    const otherList = await other.listFileMeta();
+    record('命名空间隔离（元数据）', otherList.length === 0, `ns-b files=${otherList.length}`);
+    let missingCode = null;
+    try { await other.getRawRange('f1', 1, 0, 10, CHUNK); }
+    catch (error) { missingCode = error.code; }
+    record('命名空间隔离（原文）', missingCode === 'missing_chunk', `code=${missingCode}`);
+
+    /* 5. transaction abort leaves nothing behind */
+    let abortCode = null;
+    try {
+      await store.commitBatch([
+        { store: 'file_meta', value: { namespace: NS_A, file_id: 'f3', name: 'partial.log', size: 1 } },
+        { store: 'raw_chunks', value: { namespace: NS_A, file_id: 'f3', generation: 1 } }  // missing chunk_no -> DataError
+      ]);
+    } catch (error) { abortCode = error.code; }
+    const after = await store.listFileMeta();
+    record('批量事务全成或全不成', abortCode !== null && after.length === 2,
+      `code=${abortCode} files=${after.length}（部分写入必须不可见）`);
+
+    /* 6. checkpoint */
+    await store.putCheckpoint('task-1', { raw_done: 2500, pending_line: 12 });
+    const checkpoint = await store.getCheckpoint('task-1');
+    record('检查点往返', checkpoint && checkpoint.raw_done === 2500, JSON.stringify(checkpoint));
+
+    /* 7. persistence across reload */
+    store.close(); other.close();
+    const again = await LBLocalStore.open(indexedDB, NS_A);
+    counts.chunkReads = 0;
+    const reopened = await again.listFileMeta();
+    record('重开后只读元数据', reopened.length === 2 && counts.chunkReads === 0,
+      `files=${reopened.length} chunkReads=${counts.chunkReads}`);
+    const stillThere = await again.getRawRange('f1', 1, 0, 6, CHUNK);
+    const headExpected = new TextDecoder().decode(bytes.slice(0, 6));
+    record('重开后原文仍可读', new TextDecoder().decode(stillThere) === headExpected, new TextDecoder().decode(stillThere));
+
+    /* 8. delete generation */
+    await again.deleteGeneration('f1', 1);
+    let deletedCode = null;
+    try { await again.getRawRange('f1', 1, 0, 10, CHUNK); }
+    catch (error) { deletedCode = error.code; }
+    record('按代次删除后不可读', deletedCode === 'missing_chunk', `code=${deletedCode}`);
+    again.close();
+
+    /* 9. a newer schema in another tab must be reported, not silently downgraded */
+    await new Promise((resolve) => {
+      const request = indexedDB.open(LBLocalStore.DB_NAME, LBLocalStore.DB_VERSION + 1);
+      request.onupgradeneeded = () => {};
+      request.onsuccess = () => { request.result.close(); resolve(); };
+      request.onerror = () => resolve();
+    });
+    let versionCode = null;
+    try { await LBLocalStore.open(indexedDB, NS_A); }
+    catch (error) { versionCode = error.code; }
+    record('库版本更高时提示关闭旧页面', versionCode === 'schema_mismatch', `code=${versionCode}`);
+
+    result.ok = checks.every(item => item.ok);
+  } catch (error) {
+    record('未捕获异常', false, (error && (error.code || error.message)) || String(error));
+    result.ok = false;
+    result.error = String(error && (error.stack || error.message) || error);
+  }
+  window.__result = result;
+})();
+</script>
+</body>
+</html>

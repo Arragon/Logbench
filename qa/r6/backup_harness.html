@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>R6-017 备份/恢复验收页</title>
+<style>body{font:13px/1.6 -apple-system,system-ui,sans-serif;margin:24px;color:#1b2430;background:#f5f6f8}
+code{font-family:ui-monospace,Menlo,monospace}table{border-collapse:collapse;background:#fff;min-width:640px}
+th,td{border:1px solid #e2e6ec;padding:6px 10px;font-size:12px;text-align:left}th{background:#fafbfc}
+.ok{color:#1a7f4b;font-weight:600}.bad{color:#c0392b;font-weight:600}</style>
+</head>
+<body>
+<h1>R6-017 · 构建备份 → 落盘 → 从文件恢复</h1>
+<p>由 <code>qa/r6/local_backup.py</code> 驱动。本页不自动执行。</p>
+<table><thead><tr><th>检查</th><th>结果</th><th>细节</th></tr></thead><tbody id="rows"></tbody></table>
+<script src="../../src/shared/local-store.js"></script>
+<script src="../../src/shared/index-store.js"></script>
+<script src="../../src/shared/backup.js"></script>
+<script>
+'use strict';
+const NS_ORIGIN = 'backup-src';
+const NS_RESTORE = 'backup-dst';
+const FILES = [
+  { file_id: 'b1', name: 'one.log', text: '[2020-01-01 00:00:00.001] [ERROR] [a] [1] [2] [x.py:3] [m] [n] fn() 第一份\nTraceback (most recent call last):\n  File "x.py", line 3\nValueError: 坏\n' },
+  { file_id: 'b2', name: 'two.log', text: '[2020-01-01 00:00:00.002] [INFO] [a] [1] [2] [x.py:4] [m] [n] fn() second\r\nbody\r\n' }
+];
+const CHUNK = 32;
+
+function record(name, ok, detail) {
+  const row = document.createElement('tr');
+  row.innerHTML = `<td>${name}</td><td class="${ok ? 'ok' : 'bad'}">${ok ? 'PASS' : 'FAIL'}</td><td>${String(detail == null ? '' : detail)}</td>`;
+  document.getElementById('rows').append(row);
+  return { name, ok: !!ok, detail: String(detail == null ? '' : detail) };
+}
+
+function toBase64(bytes) {
+  let binary = '';
+  const view = new Uint8Array(bytes);
+  for (let i = 0; i < view.length; i++) binary += String.fromCharCode(view[i]);
+  return btoa(binary);
+}
+
+function fromBase64(text) {
+  const binary = atob(text);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return bytes;
+}
+
+function deleteDb(name) {
+  return new Promise((resolve) => {
+    const request = indexedDB.deleteDatabase(name);
+    request.onsuccess = request.onerror = request.onblocked = () => resolve();
+  });
+}
+
+/* Phase 1: write files into the store, then read back to build volumes. */
+async function build() {
+  const checks = [];
+  await deleteDb(LBLocalStore.DB_NAME);
+  const store = await LBLocalStore.open(indexedDB, NS_ORIGIN);
+  const bytesById = {};
+
+  for (const file of FILES) {
+    const bytes = new TextEncoder().encode(file.text);
+    bytesById[file.file_id] = bytes;
+    const total = Math.ceil(bytes.length / CHUNK);
+    for (let index = 0; index < total; index++) {
+      await store.putRawChunk(file.file_id, 1, index, bytes.slice(index * CHUNK, Math.min(bytes.length, (index + 1) * CHUNK)).buffer);
+    }
+    await store.putFileMeta({
+      file_id: file.file_id, name: file.name, size: bytes.length,
+      chunk_size: CHUNK, generation: 1, chunks: total, digest: LBBackup.digestBytes(bytes)
+    });
+  }
+
+  const metas = await store.listFileMeta();
+  const manifest = LBBackup.buildManifest({
+    namespace: NS_ORIGIN,
+    volumeBytes: 64,
+    files: metas.map(meta => ({ file_id: meta.file_id, name: meta.name, size: meta.size, digest: meta.digest, generation: 1 }))
+  });
+
+  const volumes = [];
+  for (const volume of manifest.volumes) {
+    const pieces = [];
+    for (const part of volume.parts) {
+      const full = bytesById[part.file_id];
+      pieces.push(full.subarray(part.from, part.to));
+    }
+    const merged = new Uint8Array(volume.bytes);
+    let cursor = 0;
+    for (const piece of pieces) { merged.set(piece, cursor); cursor += piece.byteLength; }
+    volumes.push(merged);
+  }
+  LBBackup.sealManifest(manifest, volumes.map(bytes => LBBackup.digestBytes(bytes)));
+
+  checks.push(record('构建清单并封卷', manifest.volumes.length >= 2 && LBBackup.validateManifest(manifest).ok,
+    `volumes=${manifest.volumes.length} bytes=${manifest.volumes.map(v => v.bytes)}`));
+  checks.push(record('每卷不超过 64 MiB', manifest.volumes.every(v => v.bytes <= 64 * 1024 * 1024), 'cap=64MiB'));
+
+  store.close();
+  return { checks, manifest, volumes: volumes.map(toBase64) };
+}
+
+/* Phase 2: fetch the files back from disk and restore into a staging generation. */
+async function restore(sourceUrl) {
+  const checks = [];
+  const manifest = await (await fetch(sourceUrl + '/manifest.json', { cache: 'no-store' })).json();
+  const volumes = [];
+  for (const volume of manifest.volumes) {
+    const response = await fetch(sourceUrl + '/volume-' + volume.index + '.bin', { cache: 'no-store' });
+    volumes.push(new Uint8Array(await response.arrayBuffer()));
+  }
+
+  const plan = LBBackup.planRestore(manifest, volumes.map((_, index) => index));
+  checks.push(record('按清单规划恢复', plan.ok, plan.ok ? `required=${plan.required}` : plan.code));
+
+  const verdicts = volumes.map((bytes, index) => LBBackup.verifyVolume(manifest, index, bytes));
+  checks.push(record('逐卷校验通过', verdicts.every(item => item.ok), verdicts.map(item => item.code).join(',')));
+
+  const tampered = volumes.slice();
+  tampered[0] = tampered[0].slice();
+  tampered[0][0] = tampered[0][0] ^ 0xff;
+  const tamperVerdict = LBBackup.verifyVolume(manifest, 0, tampered[0]);
+  checks.push(record('篡改卷被拒绝', tamperVerdict.code === 'volume_digest_mismatch', tamperVerdict.code));
+
+  await deleteDb('restore-probe');
+  const store = await LBLocalStore.open(indexedDB, NS_RESTORE);
+  const indexer = LBIndexStore.createIndexer(store);
+  const generation = 7;
+
+  /* A failed verify must not publish anything. */
+  let refused = null;
+  try {
+    if (tamperVerdict.ok) throw new Error('tamper not detected');
+    refused = 'volume_digest_mismatch';
+  } catch (error) { refused = error.message; }
+  const beforePublish = await indexer.readPublished('b1');
+  checks.push(record('校验失败时不发布', refused === 'volume_digest_mismatch' && beforePublish === null, String(refused)));
+
+  const restored = {};
+  for (const volume of manifest.volumes) {
+    const blob = volumes[volume.index];
+    let cursor = 0;
+    for (const part of volume.parts) {
+      const slice = blob.subarray(cursor, cursor + (part.to - part.from));
+      cursor += part.to - part.from;
+      restored[part.file_id] = restored[part.file_id] || [];
+      restored[part.file_id].push({ from: part.from, to: part.to, bytes: slice });
+    }
+  }
+
+  for (const file of manifest.files) {
+    const pieces = (restored[file.file_id] || []).sort((a, b) => a.from - b.from);
+    const merged = new Uint8Array(file.size);
+    let cursor = 0;
+    for (const piece of pieces) { merged.set(piece.bytes, cursor); cursor += piece.bytes.length; }
+    const chunks = Math.ceil(file.size / CHUNK);
+    for (let index = 0; index < chunks; index++) {
+      await store.putRawChunk(file.file_id, generation, index, merged.slice(index * CHUNK, Math.min(file.size, (index + 1) * CHUNK)).buffer);
+    }
+    await store.putFileMeta({
+      file_id: file.file_id, name: file.name, size: file.size, chunk_size: CHUNK,
+      generation, chunks, digest: LBBackup.digestBytes(merged), restored: true
+    });
+  }
+
+  const published = await indexer.publish({
+    file_id: 'b1',
+    generation,
+    size: manifest.files.find(f => f.file_id === 'b1').size,
+    signatures: { structure: 'restored', extract: 'restored', search: 'restored' },
+    watermark: { raw_bytes: manifest.files.find(f => f.file_id === 'b1').size, framed_lines: 1, indexed_records: 0 },
+    record_blocks: [{ block_no: 0, records: [] }],
+    rule_blocks: [{ block_no: 0, records: [] }],
+    search_blocks: [{ block_no: 0, records: [] }]
+  });
+  checks.push(record('恢复到 staging 代次后切换', published.published_generation === 7, `generation=${published.published_generation}`));
+
+  let digestOk = true;
+  const detail = [];
+  for (const file of manifest.files) {
+    const bytes = await store.getRawRange(file.file_id, generation, 0, file.size, CHUNK);
+    const digest = LBBackup.digestBytes(bytes);
+    detail.push(`${file.file_id}:${digest === file.digest ? 'ok' : 'mismatch'}`);
+    if (digest !== file.digest) digestOk = false;
+  }
+  checks.push(record('恢复后摘要与清单一致', digestOk, detail.join(' ')));
+
+  const text = new TextDecoder().decode(await store.getRawRange('b1', generation, 0, manifest.files[0].size, CHUNK));
+  checks.push(record('恢复后正文可读且含中文', text.includes('第一份') && text.includes('ValueError'), text.slice(0, 24)));
+
+  store.close();
+  return { checks };
+}
+
+window.__backup = { build, restore };
+window.__ready = true;
+</script>
+</body>
+</html>

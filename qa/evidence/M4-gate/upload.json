@@ -1,0 +1,33 @@
+{
+  "ok": true,
+  "session": {
+    "parts": 2,
+    "bytes_done": 6291739,
+    "parts_expected": 2
+  },
+  "seal": {
+    "state": "sealed",
+    "bytes": 6291739,
+    "content_sig": "9ef8628c22727a60"
+  },
+  "file_id": "f_854b7bb1f4429d2b",
+  "job": {
+    "id": "j_b4bd83193a09f9b1f40c6eb7bf63f558",
+    "states": [
+      "indexing",
+      "indexing",
+      "indexing",
+      "indexed"
+    ],
+    "seconds": 37.2
+  },
+  "upload_seconds": 0.05,
+  "mb_per_s": 120.01,
+  "input": {
+    "bytes": 6291739,
+    "lines": 48470,
+    "sha256": "9ef8628c22727a6053d9634e6276fd2d78fca7e9544fa2f1d92ae43be0db2e63",
+    "file": "generated (deterministic templates)"
+  },
+  "seconds": 37.25
+}
