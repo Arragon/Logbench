@@ -1,6 +1,6 @@
 {
-  "url": "http://127.0.0.1:53066",
-  "started_at": "2026-11-03T19:33:53",
+  "url": "http://127.0.0.1:56874",
+  "started_at": "2026-11-03T19:43:48",
   "checks": {
     "cache_seeded": {
       "ok": true,
@@ -45,6 +45,13 @@
     "trash_emptied": {
       "ok": true,
       "detail": "回收站是空的删除的文件按存储位置分别存放，恢复时不会覆盖同名文件。"
+    },
+    "purge_reported_inline_not_in_header": {
+      "ok": true,
+      "detail": [
+        "已永久删除 2 项，释放索引缓存 6.0 MiB",
+        "文件库"
+      ]
     },
     "purge_released_the_cache": {
       "ok": true,
@@ -439,7 +446,7 @@
         "publishedBytes": 2097152
       }
     },
-    "observedAt": "2026-11-04T03:33:53Z"
+    "observedAt": "2026-11-04T03:43:48Z"
   },
   "trash_after_delete": 2,
   "cache_after": {
@@ -469,13 +476,13 @@
         "publishedBytes": 0
       }
     },
-    "observedAt": "2026-11-04T03:34:00Z"
+    "observedAt": "2026-11-04T03:43:55Z"
   },
   "cache_quota_after_save": 524288000,
   "errors": [],
-  "finished_at": "2026-11-03T19:34:03",
+  "finished_at": "2026-11-03T19:43:57",
   "summary": {
-    "checks": 26,
+    "checks": 27,
     "failed": 0,
     "failed_names": [],
     "result": "PASS"

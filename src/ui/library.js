@@ -1006,7 +1006,9 @@
           setNotice('已' + (detach ? '解除绑定并' : '') + '移入回收站 ' + trashed + ' 个文件' +
             (failed.length ? '；' + failed.length + ' 个未处理' : ''),
             others.length ? 'warn' : 'ok');
-          onStatus('已移入回收站 ' + trashed + ' 个文件');
+          // No echo into the header status: the note above the table is a sibling of
+          // the scroll container, so it is on screen no matter how far the list is
+          // scrolled, and the header's right end belongs to the cache meter.
         }
         refresh(true);
         if (bound.length && !detach) {
@@ -1097,7 +1099,9 @@
           (summary.failed ? '；' + summary.failed + ' 项未删除' : ''),
           summary.failed ? 'warn' : 'ok');
         if (summary.purged) {
-          onStatus('已永久删除 ' + summary.purged + ' 项');
+          // The header status is the reader's context line (就绪 / 文件库 / 搜索中…).
+          // A destructive result is reported once, inline, and the cache meter is
+          // what shows the second half of the outcome: it drops by the freed bytes.
           onCacheChanged();
         }
         return loadTrash();

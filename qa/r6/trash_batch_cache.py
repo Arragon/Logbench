@@ -250,6 +250,16 @@ def run(args) -> int:
             remaining = page.text_content('#library-view .lib-table tbody')
             check('trash_emptied', '回收站是空的' in remaining, remaining[:80])
 
+            # Where the outcome is reported, not just that it was reported. The
+            # library note is a sibling of the scroll container, so it is always on
+            # screen; the header's right end belongs to the cache meter, and at
+            # 375 px the status is capped at 80 px and would truncate the sentence.
+            note_text = (page.text_content('#library-view .lib-note') or '').strip()
+            header_text = (page.text_content('#status') or '').strip()
+            check('purge_reported_inline_not_in_header',
+                  '已永久删除' in note_text and '已永久删除' not in header_text,
+                  [note_text[:60], header_text])
+
             after = app.cache.usage(actor)
             report['cache_after'] = after
             check('purge_released_the_cache', after['usedBytes'] == 0, after['usedBytes'])
