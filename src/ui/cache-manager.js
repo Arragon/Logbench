@@ -47,7 +47,6 @@
   function create(options) {
     options = options || {};
     var api = options.api;
-    var onStatus = options.onStatus || function () {};
     var host = null;
     var parts = {};
     var state = {
@@ -62,7 +61,8 @@
       filter: '',
       selected: {},
       expanded: {},
-      dialog: null
+      dialog: null,
+      pendingNotice: null
     };
 
     function mount(container) {
@@ -189,11 +189,16 @@
         state.nextCursor = value.nextCursor || null;
         state.summary = value.summary || null;
         state.error = null;
-        setNotice(null);
+        // load() clears the notice area, so a batch result written before the
+        // refresh would vanish. The refresh itself publishes it instead.
+        state.pendingNotice ? setNotice(state.pendingNotice.text, state.pendingNotice.tone)
+                             : setNotice(null);
+        state.pendingNotice = null;
         render();
       }, function (error) {
         state.loading = false;
         state.error = error.message || String(error);
+        state.pendingNotice = null;
         render();
         setNotice(error.status === 403
           ? '解析缓存管理需要管理员权限；日志仍然可以只读浏览。'
@@ -436,10 +441,14 @@
         });
       });
       return sequence.then(function () {
-        setNotice(dialog.action === 'rebuild'
-          ? '已排队 ' + done.length + ' 个重建任务，进度见日志页任务面板。'
-          : '已清理 ' + done.length + ' 个文件的派生缓存；原文保留。', 'ok');
-        onStatus(dialog.action === 'rebuild' ? '缓存重建已排队' : '已清理派生缓存');
+        // Stay in the notice area even though the caller reloads the list:
+        // the header status is for reading context, not for a job result.
+        state.pendingNotice = {
+          tone: 'ok',
+          text: dialog.action === 'rebuild'
+            ? '已排队 ' + done.length + ' 个重建任务，进度见日志页任务面板。'
+            : '已清理 ' + done.length + ' 个文件的派生缓存；原文保留。'
+        };
         return done;
       }, function (failure) {
         if (errorBox) errorBox.hidden = false;

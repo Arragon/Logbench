@@ -1028,6 +1028,24 @@
 }
 .gt-note { font-size: var(--ud-xs); color: var(--ud-amber); }
 .gt-note[data-tone="warn"] { color: var(--ud-amber); }
+/* Save/load results live in the dialog footer. They shrink instead of pushing
+ * the action buttons out of the strip on a phone. */
+.gt-status {
+  font-size: var(--ud-xs); color: var(--ud-positive);
+  flex: 0 1 auto; min-width: 0; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap;
+}
+.gt-status[hidden] { display: none; }
+@media (max-width: 640px) {
+  /* The footer has a selection summary, a result and three actions. Without
+   * wrapping, 375 px squeezed "已选 6 个文件" into a vertical column of glyphs
+   * and truncated the result to "已载入视角…". Text gets its own lines. */
+  .gt-foot { flex-wrap: wrap; }
+  .gt-foot > .r6-meta { flex: 0 0 auto; white-space: nowrap; }
+  .gt-note, .gt-status {
+    flex: 1 1 100%; white-space: normal; overflow: visible; text-overflow: clip;
+  }
+}
 .gt-foot .r6-button:first-of-type { margin-left: auto; }
 
 /* --------------------------------------------------------------- compare */
@@ -1193,6 +1211,8 @@
 .cache-quota-inline { display: inline-flex; align-items: center; gap: 4px; font-size: var(--ud-sm); }
 .cache-quota-form .r6-button { margin-left: auto; }
 .cache-quota-form .r6-hint { flex: 1 1 100%; }
+.cache-quota-saved { flex: 1 1 100%; }
+.cache-quota-saved[hidden] { display: none; }
 
 /* ------------------------------------------------- library batch selection */
 .lib-batch {

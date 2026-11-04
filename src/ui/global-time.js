@@ -307,7 +307,6 @@
    *   loadScope()  -> Promise<{local, shared, private, unauthorized}>
    *   store        {load(), save(patch)} for recent ranges and saved views
    *   onApply(snapshot)
-   *   onStatus(text)
    */
   function createGlobalTime(options) {
     options = options || {};
@@ -358,6 +357,12 @@
       parts.summary = el('span', 'r6-meta', '尚未选择范围');
       parts.note = el('span', 'gt-note');
       parts.note.hidden = true;
+      // Save/load results belong to this dialog, not to the header: the header
+      // reports what the reader is currently looking at. Keep them separate
+      // from .gt-note, which renderFoot() owns for missing-file warnings.
+      parts.status = el('span', 'gt-status');
+      parts.status.setAttribute('role', 'status');
+      parts.status.hidden = true;
       parts.cancel = el('button', 'r6-button', '取消');
       parts.cancel.type = 'button';
       parts.cancel.addEventListener('click', function () { close(); });
@@ -367,7 +372,8 @@
       parts.apply = el('button', 'r6-button is-primary', '应用范围');
       parts.apply.type = 'button';
       parts.apply.addEventListener('click', function () { apply(); });
-      parts.foot.append(parts.summary, parts.note, parts.cancel, parts.save, parts.apply);
+      parts.foot.append(parts.summary, parts.note, parts.status,
+        parts.cancel, parts.save, parts.apply);
 
       host.append(parts.head, parts.body, parts.foot);
       host.addEventListener('keydown', function (event) {
@@ -495,6 +501,11 @@
     function showError(message) {
       parts.rangeError.hidden = !message;
       parts.rangeError.textContent = message || '';
+    }
+
+    function showResult(message) {
+      parts.status.hidden = !message;
+      parts.status.textContent = message || '';
     }
 
     /* ----------------------------------------------------------------- right */
@@ -714,7 +725,7 @@
       state.views = [view].concat(state.views).slice(0, 20);
       if (options.store) options.store.save({ views: state.views }).catch(function () {});
       renderLists();
-      if (options.onStatus) options.onStatus('已保存视角：' + view.name);
+      showResult('已保存视角：' + view.name);
     }
 
     function removeView(view) {
@@ -736,9 +747,8 @@
       renderTree();
       renderLists();
       renderFoot();
-      if (options.onStatus) {
-        options.onStatus('已载入视角：' + view.name + '（重新解析为 ' + result.files.length + ' 个文件）');
-      }
+      showResult('已载入视角：' + view.name +
+        '（重新解析为 ' + result.files.length + ' 个文件）');
       return result;
     }
 
@@ -750,6 +760,7 @@
       state.busy = false;
       state.touched = false;
       showError(null);
+      showResult(null);
       return Promise.resolve()
         .then(function () { return options.loadScope ? options.loadScope() : { local: [], shared: [], private: [] }; })
         .then(function (scope) {
@@ -795,6 +806,7 @@
           exclude: state.applied.selection.exclude.slice() };
       }
       parts.note.hidden = true;
+      showResult(null);
     }
 
     return {

@@ -38,7 +38,6 @@
   function create(options) {
     options = options || {};
     var api = options.api;
-    var onStatus = options.onStatus || function () {};
     var host = null;
     var parts = {};
     var state = { items: [], admin: false, loading: false, error: null, editing: null };

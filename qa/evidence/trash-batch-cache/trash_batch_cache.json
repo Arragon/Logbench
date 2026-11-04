@@ -1,6 +1,6 @@
 {
-  "url": "http://127.0.0.1:56874",
-  "started_at": "2026-11-03T19:43:48",
+  "url": "http://127.0.0.1:57560",
+  "started_at": "2026-11-03T23:31:04",
   "checks": {
     "cache_seeded": {
       "ok": true,
@@ -72,6 +72,13 @@
     "meter_shows_new_quota": {
       "ok": true,
       "detail": null
+    },
+    "quota_reported_inline_not_in_header": {
+      "ok": true,
+      "detail": {
+        "inline": "缓存限额已保存：500.0 MB",
+        "header": "文件库"
+      }
     },
     "no_overflow_375x812": {
       "ok": true,
@@ -446,7 +453,7 @@
         "publishedBytes": 2097152
       }
     },
-    "observedAt": "2026-11-04T03:43:48Z"
+    "observedAt": "2026-11-04T07:31:04Z"
   },
   "trash_after_delete": 2,
   "cache_after": {
@@ -476,13 +483,13 @@
         "publishedBytes": 0
       }
     },
-    "observedAt": "2026-11-04T03:43:55Z"
+    "observedAt": "2026-11-04T07:31:11Z"
   },
   "cache_quota_after_save": 524288000,
   "errors": [],
-  "finished_at": "2026-11-03T19:43:57",
+  "finished_at": "2026-11-03T23:31:13",
   "summary": {
-    "checks": 27,
+    "checks": 28,
     "failed": 0,
     "failed_names": [],
     "result": "PASS"

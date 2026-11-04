@@ -298,6 +298,15 @@ def run(args) -> int:
                 "() => document.getElementById('cache-meter-value').textContent.indexOf('/ 500.0 MB') > 0",
                 timeout=10000)
             check('meter_shows_new_quota', True)
+            # Saving a quota is an operation result. It belongs in the dialog's
+            # own inline notice, not in the header status next to the meter.
+            saved = page.evaluate("""() => ({
+              inline: (document.querySelector('.cache-quota-dialog .cache-quota-saved') || {}).textContent || '',
+              header: document.getElementById('status').textContent.trim()
+            })""")
+            check('quota_reported_inline_not_in_header',
+                  '缓存限额已保存' in saved['inline'] and '缓存限额' not in saved['header'],
+                  saved)
             page.keyboard.press('Escape')
             page.wait_for_timeout(300)
 

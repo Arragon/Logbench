@@ -73,7 +73,6 @@
   function create(options) {
     options = options || {};
     var api = options.api;
-    var onStatus = options.onStatus || function () {};
     var host = null;
     var parts = {};
     var state = {
@@ -469,8 +468,9 @@
           state.appliedResult = { applied: value.applied, changes: changes,
             revision: value.revision };
           seedDraft();
+          // The applied-result panel carries the confirmation inline; the header
+          // status is reserved for the reader's current context.
           render();
-          onStatus('预算已保存（修订 ' + value.revision + '）');
           return load(true);
         }, function (error) {
           state.saving = false;
@@ -496,7 +496,7 @@
       parts.result.hidden = false;
       parts.result.innerHTML = '';
       parts.result.appendChild(el('strong', null,
-        '服务端确认的生效结果（修订 ' + state.appliedResult.revision + '）'));
+        '预算已保存（修订 ' + state.appliedResult.revision + '）· 服务端确认的生效结果'));
       var list = el('ul', 'rt-diff-list');
       if (applied.parse) {
         var parse = applied.parse;

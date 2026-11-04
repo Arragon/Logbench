@@ -76,6 +76,11 @@
 
   function $(id) { return document.getElementById(id); }
 
+  // The header status is a reading-context channel: which file or page is
+  // open, and what a search or ingest is doing. Operation results belong to
+  // each surface's own inline notice. Besides duplicating the message, writing
+  // them here competes with the cache meter for the right-hand slot and gets
+  // truncated on narrow screens.
   function setStatus(text) { els.status.textContent = text; }
 
   function createWorkerClient() {
@@ -567,7 +572,6 @@
     var widget = LBGlobalTime.createGlobalTime({
       loadScope: scopeSources,
       store: store,
-      onStatus: setStatus,
       onApply: function (snapshot) {
         return applyTimeScope(snapshot).then(function () { viewSwitch('logs'); });
       }
@@ -609,7 +613,6 @@
       files: files.map(function (file) {
         return { file_id: file.file_id, source: file.source, label: file.path || file.file_id };
       }),
-      onStatus: setStatus,
       fetchWindow: function (request) {
         var file = request.file;
         var spec = request.window;
@@ -1244,7 +1247,7 @@
 
     function ensureStorage() {
       if (storageRoots || !window.LBStorageRoots) return storageRoots;
-      storageRoots = window.LBStorageRoots.create({ api: http, onStatus: setStatus });
+      storageRoots = window.LBStorageRoots.create({ api: http });
       storageRoots.mount(storageHost);
       return storageRoots;
     }
@@ -1259,20 +1262,20 @@
     function ensureAdminView(which) {
       if (which === 'rules') {
         if (!rulesView && window.LBRuleImpact) {
-          rulesView = window.LBRuleImpact.create({ api: http, onStatus: setStatus });
+          rulesView = window.LBRuleImpact.create({ api: http });
           rulesView.mount(ruleHost);
         }
         return rulesView;
       }
       if (which === 'cache') {
         if (!cacheView && window.LBCacheManager) {
-          cacheView = window.LBCacheManager.create({ api: http, onStatus: setStatus });
+          cacheView = window.LBCacheManager.create({ api: http });
           cacheView.mount(cacheHost);
         }
         return cacheView;
       }
       if (!runtimeView && window.LBRuntime) {
-        runtimeView = window.LBRuntime.create({ api: http, onStatus: setStatus });
+        runtimeView = window.LBRuntime.create({ api: http });
         runtimeView.mount(runtimeHost);
       }
       return runtimeView;
@@ -1424,7 +1427,6 @@
     if (window.LBCacheMeter) {
       cacheMeter = window.LBCacheMeter.create({
         api: http,
-        onStatus: setStatus,
         onOpenCachePage: function () { viewSwitch('cache'); }
       });
       cacheMeter.mount($('cache-meter'));

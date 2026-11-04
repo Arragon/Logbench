@@ -83,7 +83,6 @@
   function create(options) {
     options = options || {};
     var api = options.api;
-    var onStatus = options.onStatus || function () {};
     var host = null;
     var parts = {};
     var state = {
@@ -103,7 +102,8 @@
       trialSample: '',
       applyResult: null,
       busy: false,
-      notice: null
+      notice: null,
+      pendingNotice: null
     };
 
     function mount(container) {
@@ -179,6 +179,7 @@
         state.loading = false;
         if (!state.rules.length) {
           state.error = 'no_rules';
+          state.pendingNotice = null;
           render();
           setNotice('没有可用规则。管理员可在 R5 工作台创建，或等待服务端种子规则。', 'warn');
           return null;
@@ -189,11 +190,16 @@
         var target = (force || !keep) ? state.rules[0] : keep;
         if (force || !state.draft || !keep) selectRule(target);
         render();
-        setNotice(null);
+        // load() owns the notice area. A save result is published here rather
+        // than before the reload, which would otherwise erase it.
+        state.pendingNotice ? setNotice(state.pendingNotice.text, state.pendingNotice.tone)
+                             : setNotice(null);
+        state.pendingNotice = null;
         return value;
       }, function (error) {
         state.loading = false;
         state.error = error.message || String(error);
+        state.pendingNotice = null;
         render();
         setNotice(error.status === 403
           ? '规则编辑需要管理员权限。'
@@ -676,9 +682,13 @@
         state.applyResult = value;
         state.revision = value.rule.revision;
         state.saved = clone(state.draft);
-        setNotice('已保存修订 ' + value.rule.revision + '，排队重建 ' + value.queued +
-          ' 个文件。旧版本在新版本完成前继续可读。', 'ok');
-        onStatus('规则已应用（修订 ' + value.rule.revision + '）');
+        // Inline only: the notice is a sibling of the scrolling shell, and the
+        // header status belongs to the reading context, not to a save result.
+        state.pendingNotice = {
+          tone: 'ok',
+          text: '已保存修订 ' + value.rule.revision + '，排队重建 ' + value.queued +
+            ' 个文件。旧版本在新版本完成前继续可读。'
+        };
         return load(true);
       }, function (error) {
         state.busy = false;

@@ -173,7 +173,6 @@
    * @param {object} options
    *   files       [{file_id, label, source, generation}]
    *   fetchWindow ({file, window}) -> Promise<{rows, coverage, relation, error}>
-   *   onStatus(text)
    *   onChange(view)  called when layout/sync/anchor changes (for saving)
    */
   function createCompare(options) {

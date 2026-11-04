@@ -1,0 +1,167 @@
+{
+  "checks": [
+    {
+      "name": "cache_cleanup_reported_inline",
+      "ok": true,
+      "detail": [
+        "已清理 2 个文件的派生缓存；原文保留。"
+      ]
+    },
+    {
+      "name": "cache_cleanup_not_in_header",
+      "ok": true,
+      "detail": "解析缓存"
+    },
+    {
+      "name": "budget_save_reported_inline",
+      "ok": true,
+      "detail": "预算已保存（修订 1）· 服务端确认的生效结果解析池：0 个进程（目标 5，启动 0，停止 0）查询并发：2 个槽位，当前运行 0上传上限：全局 4，每身份 2"
+    },
+    {
+      "name": "budget_save_not_in_header",
+      "ok": true,
+      "detail": "运行记录"
+    },
+    {
+      "name": "view_save_reported_inline",
+      "ok": true,
+      "detail": [
+        "已清理 2 个文件的派生缓存；原文保留。",
+        "已保存视角：门禁视角"
+      ]
+    },
+    {
+      "name": "view_save_not_in_header",
+      "ok": true,
+      "detail": [
+        "运行记录",
+        "运行记录"
+      ]
+    },
+    {
+      "name": "view_load_reported_inline",
+      "ok": true,
+      "detail": [
+        "已清理 2 个文件的派生缓存；原文保留。",
+        "已载入视角：门禁视角（重新解析为 6 个文件）"
+      ]
+    },
+    {
+      "name": "view_load_not_in_header",
+      "ok": true,
+      "detail": "运行记录"
+    },
+    {
+      "name": "time_footer_buttons_fit_375",
+      "ok": true,
+      "detail": {
+        "foot_w": 354,
+        "docScrollW": 375,
+        "innerW": 375,
+        "status_w": 330,
+        "status_truncated": false,
+        "summary_h": 17,
+        "buttons_inside": true
+      }
+    },
+    {
+      "name": "time_result_not_truncated_375",
+      "ok": true,
+      "detail": {
+        "foot_w": 354,
+        "docScrollW": 375,
+        "innerW": 375,
+        "status_w": 330,
+        "status_truncated": false,
+        "summary_h": 17,
+        "buttons_inside": true
+      }
+    },
+    {
+      "name": "time_summary_single_line_375",
+      "ok": true,
+      "detail": {
+        "foot_w": 354,
+        "docScrollW": 375,
+        "innerW": 375,
+        "status_w": 330,
+        "status_truncated": false,
+        "summary_h": 17,
+        "buttons_inside": true
+      }
+    },
+    {
+      "name": "no_overflow_375",
+      "ok": true,
+      "detail": {
+        "foot_w": 354,
+        "docScrollW": 375,
+        "innerW": 375,
+        "status_w": 330,
+        "status_truncated": false,
+        "summary_h": 17,
+        "buttons_inside": true
+      }
+    },
+    {
+      "name": "no_page_errors",
+      "ok": true,
+      "detail": []
+    }
+  ],
+  "screenshots": [
+    "cache-cleanup-inline.png",
+    "budget-save-inline.png",
+    "time-view-inline-1366x768.png",
+    "time-view-inline-375x812.png"
+  ],
+  "states": {
+    "cache_cleanup": {
+      "header": "解析缓存",
+      "notes": [
+        "已清理 2 个文件的派生缓存；原文保留。"
+      ],
+      "result": ""
+    },
+    "budget_save": {
+      "header": "运行记录",
+      "notes": [
+        "已清理 2 个文件的派生缓存；原文保留。"
+      ],
+      "result": "预算已保存（修订 1）· 服务端确认的生效结果解析池：0 个进程（目标 5，启动 0，停止 0）查询并发：2 个槽位，当前运行 0上传上限：全局 4，每身份 2mem_soft_bytes 需重启后生效hot_cache_bytes 需重启后生效"
+    },
+    "time_before_save": {
+      "saveDisabled": false,
+      "fromDate": "2026-11-03",
+      "toDate": "2026-11-04",
+      "rangeError": "",
+      "save_forced": false
+    },
+    "view_saved": {
+      "header": "运行记录",
+      "notes": [
+        "已清理 2 个文件的派生缓存；原文保留。",
+        "已保存视角：门禁视角"
+      ],
+      "result": "预算已保存（修订 1）· 服务端确认的生效结果解析池：0 个进程（目标 5，启动 0，停止 0）查询并发：2 个槽位，当前运行 0上传上限：全局 4，每身份 2mem_soft_bytes 需重启后生效hot_cache_bytes 需重启后生效"
+    },
+    "view_loaded": {
+      "header": "运行记录",
+      "notes": [
+        "已清理 2 个文件的派生缓存；原文保留。",
+        "已载入视角：门禁视角（重新解析为 6 个文件）"
+      ],
+      "result": "预算已保存（修订 1）· 服务端确认的生效结果解析池：0 个进程（目标 5，启动 0，停止 0）查询并发：2 个槽位，当前运行 0上传上限：全局 4，每身份 2mem_soft_bytes 需重启后生效hot_cache_bytes 需重启后生效"
+    },
+    "time_footer_375": {
+      "foot_w": 354,
+      "docScrollW": 375,
+      "innerW": 375,
+      "status_w": 330,
+      "status_truncated": false,
+      "summary_h": 17,
+      "buttons_inside": true
+    }
+  },
+  "failed": []
+}

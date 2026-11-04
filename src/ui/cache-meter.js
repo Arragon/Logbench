@@ -44,7 +44,6 @@
   function create(options) {
     options = options || {};
     var api = options.api;
-    var onStatus = options.onStatus || function () {};
     var onOpenCachePage = options.onOpenCachePage || function () {};
 
     var state = {
@@ -54,7 +53,8 @@
       error: null,
       dialogOpen: false,
       timer: null,
-      saving: false
+      saving: false,
+      savedMessage: null
     };
     var parts = {};
     var lastFocus = null;
@@ -157,6 +157,7 @@
     function openDialog() {
       if (!parts.button) return;
       state.dialogOpen = true;
+      state.savedMessage = null;
       lastFocus = document.activeElement;
       if (!parts.dialog) {
         parts.dialog = el('div', 'r6-dialog cm-dialog cache-quota-dialog');
@@ -173,6 +174,7 @@
 
     function closeDialog() {
       state.dialogOpen = false;
+      state.savedMessage = null;
       if (parts.dialog) {
         parts.dialog.hidden = true;
         parts.dialog.innerHTML = '';
@@ -286,6 +288,9 @@
       input.step = '16';
       input.id = 'cache-quota-input';
       input.setAttribute('aria-describedby', 'cache-quota-unit');
+      // Editing the value invalidates both the previous success text and any
+      // stale validation error.
+      input.addEventListener('input', function () { showSaved(null); });
       var unlimitedBox = el('input');
       unlimitedBox.type = 'checkbox';
       unlimitedBox.id = 'cache-quota-unlimited';
@@ -309,6 +314,7 @@
         button.type = 'button';
         button.disabled = !state.admin;
         button.addEventListener('click', function () {
+          showSaved(null);
           unlimitedBox.checked = false;
           input.disabled = !state.admin;
           input.value = String(mib);
@@ -320,6 +326,7 @@
       form.appendChild(presets);
 
       unlimitedBox.addEventListener('change', function () {
+        showSaved(null);
         input.disabled = !state.admin || unlimitedBox.checked;
         if (unlimitedBox.checked) input.value = '';
       });
@@ -334,12 +341,14 @@
           showError('限额至少 16 MiB；如需不限，请勾选「不限制」。');
           return;
         }
+        showSaved(null);
         save.disabled = true;
         state.saving = true;
         api.put('/api/v2/cache/quota', { quotaBytes: value }).then(function () {
           state.saving = false;
           save.disabled = false;
-          onStatus(value == null ? '缓存限额已设为不限' : '缓存限额已保存：' + bytes(value));
+          showSaved(value == null ? '缓存限额已设为不限'
+            : '缓存限额已保存：' + bytes(value));
           return refresh();
         }, function (error) {
           state.saving = false;
@@ -348,6 +357,16 @@
         });
       });
       form.appendChild(save);
+      // refresh() redraws the dialog, so a result written straight into the
+      // DOM would be wiped by the reload. Keep the text in state and let each
+      // render pick it up. The header status is not a results channel.
+      var saved = el('div', 'lib-note cache-quota-saved');
+      saved.setAttribute('role', 'status');
+      saved.dataset.tone = 'ok';
+      saved.hidden = !state.savedMessage;
+      saved.textContent = state.savedMessage || '';
+      parts.savedNote = saved;
+      form.appendChild(saved);
       if (!state.admin) {
         form.appendChild(el('p', 'r6-hint', '只有管理员可以修改限额；当前身份为只读。'));
       }
@@ -356,7 +375,18 @@
       return form;
     }
 
+    function showSaved(message) {
+      state.savedMessage = message || null;
+      if (parts.savedNote) {
+        parts.savedNote.hidden = !message;
+        parts.savedNote.textContent = message || '';
+      }
+      if (parts.errorBox) parts.errorBox.hidden = true;
+    }
+
     function showError(message) {
+      state.savedMessage = null;
+      if (parts.savedNote) parts.savedNote.hidden = true;
       if (!parts.errorBox) return;
       parts.errorBox.hidden = false;
       parts.errorBox.textContent = message;
