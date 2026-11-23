@@ -19,12 +19,17 @@ import argparse
 import hashlib
 import json
 import os
-import resource
 import shutil
 import sys
 import tempfile
 import time
 from pathlib import Path
+from typing import Optional
+
+try:  # Unix-only: report "n/a" rather than failing to import on Windows.
+    import resource
+except ImportError:  # pragma: no cover - exercised on Windows only
+    resource = None
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
@@ -37,7 +42,9 @@ from server.indexing.shards import ShardReader            # noqa: E402
 import server_index_gate as gate                          # noqa: E402
 
 
-def rss_mb() -> float:
+def rss_mb() -> Optional[float]:
+    if resource is None:
+        return None
     value = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
     return round(value / (1e6 if sys.platform == 'darwin' else 1e3), 1)
 

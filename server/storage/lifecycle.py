@@ -17,13 +17,12 @@ with a reason and a resume condition, while queries, exports and reads keep work
 """
 from __future__ import annotations
 
-import os
-import shutil
 import time
 from pathlib import Path
 from typing import Optional
 
 from ..collectors.base import CollectorError
+from .fsutil import disk_usage
 
 GIB = 1024 ** 3
 MIN_FREE = 50 * GIB
@@ -43,13 +42,17 @@ class LifecycleError(RuntimeError):
 
 
 def default_sampler(path: Path) -> dict:
-    try:
-        stats = os.statvfs(str(path))
-    except (OSError, AttributeError):
-        return {'free': 0, 'total': 0, 'error': 'statvfs_unavailable'}
-    total = stats.f_frsize * stats.f_blocks
-    free = stats.f_frsize * stats.f_bavail
-    return {'free': int(free), 'total': int(total), 'error': None}
+    """Free/total bytes for the volume holding `path`.
+
+    Uses the cross-platform probe: `os.statvfs` is POSIX-only, so a direct call
+    raises `AttributeError` on Windows. The failure reason is reported as a code
+    (`disk_usage_unavailable`, formerly `statvfs_unavailable`) and the caller maps
+    it to the `unknown` state — never to a guessed number.
+    """
+    usage = disk_usage(path)
+    if usage is None:
+        return {'free': 0, 'total': 0, 'error': 'disk_usage_unavailable'}
+    return {'free': int(usage.available), 'total': int(usage.total), 'error': None}
 
 
 class Lifecycle:

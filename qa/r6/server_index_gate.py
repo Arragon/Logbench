@@ -29,7 +29,6 @@ import hashlib
 import json
 import os
 import platform
-import resource
 import shutil
 import sqlite3
 import subprocess
@@ -38,6 +37,11 @@ import tempfile
 import threading
 import time
 from pathlib import Path
+
+try:  # Unix-only: the gate reports "n/a" rather than failing to import on Windows.
+    import resource
+except ImportError:  # pragma: no cover - exercised on Windows only
+    resource = None
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
@@ -80,6 +84,8 @@ def environment() -> dict:
 
 
 def rss_mb() -> dict:
+    if resource is None:  # Windows: no rusage, report "n/a" instead of a number
+        return {'self_peak_mb': None, 'children_peak_mb': None}
     self_kb = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
     child_kb = resource.getrusage(resource.RUSAGE_CHILDREN).ru_maxrss
     # macOS reports bytes, Linux kilobytes.

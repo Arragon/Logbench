@@ -23,6 +23,9 @@ import sys
 import tempfile
 from pathlib import Path
 
+from .runtime.procmetrics import (cgroup_cpu_quota, cgroup_memory_limit,
+                                 cpu_affinity_count, physical_memory_bytes)
+
 SCHEMA = 'logbench.capabilities/1'
 TARGET_PYTHON = (3, 9, 11)
 SAFE_WAL_SINCE = (3, 44, 0)
@@ -230,33 +233,22 @@ def probe_ssh() -> dict:
 
 
 def probe_cpu() -> dict:
+    """CPU and memory as the kernel reports them; `None` where it does not.
+
+    `sched_getaffinity` is a Linux cgroup hint and `sysconf`/`/proc/meminfo` are
+    POSIX, so the numbers come from the cross-platform probe and the source is
+    named instead of assumed.
+    """
     info = {'state': 'enabled', 'reason': None, 'affinity_count': None, 'cpu_count': os.cpu_count(),
-            'affinity_source': 'cgroup', 'memory_bytes': None}
-    try:
-        affinity = os.sched_getaffinity(0)
-        info['affinity_count'] = len(affinity)
-    except (AttributeError, OSError):
+            'affinity_source': 'cgroup', 'memory_bytes': None,
+            'cgroup_memory_max': cgroup_memory_limit(), 'cgroup_cpu_quota': cgroup_cpu_quota()}
+    affinity = cpu_affinity_count()
+    if affinity is None:
         info['affinity_count'] = info['cpu_count']
         info['affinity_source'] = 'logical_cores'
-    try:
-        pages = os.sysconf('SC_PHYS_PAGES')
-        size = os.sysconf('SC_PAGE_SIZE')
-        if pages > 0 and size > 0:
-            info['memory_bytes'] = pages * size
-    except (AttributeError, ValueError, OSError):
-        meminfo = Path('/proc/meminfo')
-        if meminfo.is_file():
-            for line in meminfo.read_text('utf-8', 'replace').splitlines():
-                if line.startswith('MemTotal:'):
-                    info['memory_bytes'] = int(line.split()[1]) * 1024
-                    break
-    quota = Path('/sys/fs/cgroup/memory.max')
-    if quota.is_file():
-        try:
-            raw = quota.read_text('utf-8', 'replace').strip()
-            info['cgroup_memory_max'] = None if raw == 'max' else int(raw)
-        except (OSError, ValueError):
-            info['cgroup_memory_max'] = None
+    else:
+        info['affinity_count'] = affinity
+    info['memory_bytes'] = physical_memory_bytes()
     return info
 
 

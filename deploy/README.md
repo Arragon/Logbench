@@ -36,3 +36,19 @@ docker build -f deploy/Dockerfile -t logbench:3.0.2 .
 按环境将 `data/`、`var/` 和 `config.json` 挂载为持久卷，设置正确的 host/allowed_hosts/trusted_proxies，并先用 `--admin-ip <实际客户端IP> --init-only` 初始化。不要把数据库留在容器可写层。若希望在宿主机覆盖源码触发更新，还需 bind mount `src/`、`server/`、`rules/` 与 `worker.py`；只更新镜像本身需要重新创建容器，不属于“宿主文件覆盖热更新”。Docker 网络与代理会影响客户端 IP，需要实际检查，不能默认容器看到的就是用户真实 IP。
 
 Python 3.9.11 现有环境直接使用主机解释器即可。可选 Docker 示例仍采用 Python 3.12 基础镜像，不要求为兼容旧主机而降级容器解释器；该 Docker 示例本轮未构建验证。
+
+## Linux 平台检查
+
+存储位置判定依赖两件只有在真实 Linux 主机上才能确认的事：挂载表可读且能给出文件系统名，以及 cgroup 限制（v2 的 `cpu.max`/`memory.max`，或 v1 的 `cpu.cfs_quota_us`/`memory.limit_in_bytes`）对服务进程可见。部署后在目标机执行：
+
+```bash
+python3 qa/linux_probe_check.py
+```
+
+全部 `ok` 退出码为 0；任一项 `FAIL` 退出码为 1。它只读不写，不安装任何东西。容器场景可直接在镜像里跑：
+
+```bash
+docker run --rm -v "$PWD":/app -w /app python:3.12-slim python qa/linux_probe_check.py
+```
+
+索引分片所在的卷必须是本地文件系统（NFS/CIFS/SMB/`fuse.rclone` 等会被拒绝，见设计 §9）。若根目录是符号链接，判定按链接目标所在的挂载点进行；`/Volumes` 前缀只在 macOS 上作为网络卷线索，Linux 上按实际文件系统类型判断。

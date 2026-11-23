@@ -20,7 +20,6 @@ from __future__ import annotations
 
 import json
 import os
-import resource
 import shutil
 import tempfile
 import time
@@ -28,6 +27,7 @@ from pathlib import Path
 from typing import Optional
 
 from ..jobs.budget import Budget, Pressure, derive, slot_for
+from . import procmetrics
 
 SCHEMA = 'logbench.runtime/1'
 SETTING_KEY = 'runtime_budget'
@@ -447,33 +447,29 @@ def _budget_from(values: dict) -> Budget:
 
 
 def _cpu_limit() -> int:
-    try:
-        return max(1, len(os.sched_getaffinity(0)))
-    except (AttributeError, OSError):
-        return os.cpu_count() or 1
+    """Effective CPU limit: affinity and the cgroup quota, whichever is smaller.
+
+    On Linux `sched_getaffinity` reports a cpuset but not a CPU quota, so a
+    quota-only container (`--cpus=2` on a 32-core host) would otherwise be told it
+    owns 32 cores and schedule far too many jobs. Where neither probe answers,
+    the logical core count is the last resort — the same behaviour as before.
+    """
+    limits = [value for value in (procmetrics.cpu_affinity_count(),
+                                  procmetrics.cgroup_cpu_quota()) if value]
+    return min(limits) if limits else (os.cpu_count() or 1)
 
 
 def _rss_bytes() -> Optional[int]:
-    try:
-        usage = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
-    except (AttributeError, ValueError):
-        return None
-    # Linux reports KiB, macOS reports bytes. Normalising here keeps the page from
-    # showing "412 MB" on one platform and "412 GiB" on another.
-    return int(usage) if os.uname().sysname == 'Darwin' else int(usage) * 1024
+    """Peak RSS in bytes, or `None` when the platform cannot measure it."""
+    return procmetrics.peak_rss_bytes()
 
 
 def _rss_source() -> str:
-    return 'ru_maxrss'
+    return procmetrics.rss_source()
 
 
 def _memory_bytes() -> Optional[int]:
-    try:
-        pages = os.sysconf('SC_PHYS_PAGES')
-        size = os.sysconf('SC_PAGE_SIZE')
-        return int(pages) * int(size) if pages > 0 and size > 0 else None
-    except (AttributeError, ValueError, OSError):
-        return None
+    return procmetrics.physical_memory_bytes()
 
 
 def _disk(directory) -> dict:

@@ -23,10 +23,13 @@ from __future__ import annotations
 import json
 import os
 import sqlite3
+import sys
 import time
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterable, Iterator, Optional
+
+from ..storage.fsutil import fs_type, is_remote_path
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS meta (key TEXT PRIMARY KEY, value TEXT NOT NULL);
@@ -115,8 +118,6 @@ CREATE TABLE IF NOT EXISTS search_postings (
 CREATE INDEX IF NOT EXISTS search_postings_gram ON search_postings(version, gram);
 """
 
-NETWORK_FS = ('cifs', 'smbfs', 'nfs', 'nfs4', 'afpfs', 'webdav', 'fuse.sshfs')
-
 
 class ShardError(RuntimeError):
     def __init__(self, code: str, message: str, **details):
@@ -130,25 +131,23 @@ def assert_local_fs(path: Path) -> None:
     """Index shards must not live on a network filesystem.
 
     SQLite locking over SMB/NFS is unreliable in exactly the way that corrupts an
-    index, and the ticket calls it out. The check is best-effort: on platforms
-    where the mount table is unavailable it does not block.
+    index, and the ticket calls it out. The probe is platform-aware: POSIX reads
+    the mount table, Windows asks the drive type and treats `\\\\server\\share`
+    as remote — the old `/proc/mounts`-only check silently passed everything on
+    Windows, which is the one platform where SMB roots are common.
+
+    `/Volumes` is a macOS convention: that directory exists only there, so the
+    prefix is treated as evidence of a network volume *when the file system name
+    is unavailable*. On Linux `/Volumes` is an ordinary directory name and a
+    local `ext4` volume mounted there must not be refused.
     """
     resolved = str(Path(path).resolve())
-    if resolved.startswith('/Volumes/'):
+    kind = fs_type(resolved)
+    if sys.platform == 'darwin' and kind == 'unknown' and resolved.startswith('/Volumes/'):
         raise ShardError('network_filesystem', '索引分片不能放在网络挂载卷上。', path=resolved)
-    mounts = Path('/proc/mounts')
-    if mounts.is_file():
-        try:
-            for line in mounts.read_text('utf-8', errors='replace').splitlines():
-                parts = line.split()
-                if len(parts) < 3:
-                    continue
-                mount_point, fstype = parts[1], parts[2]
-                if fstype in NETWORK_FS and (resolved == mount_point or resolved.startswith(mount_point.rstrip('/') + '/')):
-                    raise ShardError('network_filesystem', '索引分片不能放在网络挂载点 %s（%s）。'
-                                     % (mount_point, fstype), path=resolved)
-        except OSError:
-            return
+    if is_remote_path(resolved):
+        raise ShardError('network_filesystem', '索引分片不能放在网络挂载卷上（%s）。'
+                         % (kind,), path=resolved)
 
 
 def shard_path(root: Path, file_id: str, generation: int, signature: str = 'default') -> Path:

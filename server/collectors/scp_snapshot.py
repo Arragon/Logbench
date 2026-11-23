@@ -25,6 +25,7 @@ import os
 import re
 import secrets
 import shutil
+import tempfile
 import time
 from pathlib import Path
 from typing import Optional
@@ -74,7 +75,10 @@ class ScpSnapshotAdapter(Adapter):
             self.secret = None
 
     def _materialise_key(self, pem: str) -> str:
-        directory = Path(self.policy.get('sessionDir') or '/tmp') / 'logbench-keys'
+        # `/tmp` is POSIX-only; on Windows it silently becomes `C:\tmp`, which may
+        # not be writable for the service account. Ask the runtime instead.
+        base = self.policy.get('sessionDir') or tempfile.gettempdir()
+        directory = Path(base) / 'logbench-keys'
         directory.mkdir(mode=0o700, parents=True, exist_ok=True)
         descriptor, path = _mkstemp(directory)
         with os.fdopen(descriptor, 'w', encoding='utf-8') as handle:

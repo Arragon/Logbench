@@ -27,10 +27,11 @@ import hashlib
 import json
 import os
 import secrets
-import shutil
 import stat
 from pathlib import Path
 from typing import BinaryIO, Optional
+
+from .fsutil import NETWORK_FS_NAMES, disk_usage, fs_type, is_remote_path  # `os.statvfs` is POSIX-only; see fsutil.
 
 ROOT_ID = r'^[a-z0-9][a-z0-9_-]{0,63}$'
 KINDS = ('shared_raw', 'private_raw', 'index')
@@ -39,9 +40,9 @@ TRASH_NAME = '.logbench-trash'
 PROBE_PREFIX = '.logbench-probe-'
 MAX_COMPONENT_BYTES = 200
 #: File systems where a SQLite index must not live (design §9: WAL is single-writer
-#: and does not survive a shared network file system).
-NETWORK_FS = frozenset({'nfs', 'nfs4', 'smbfs', 'cifs', 'afpfs', 'webdav', 'davfs',
-                        'fuse.sshfs', 'sshfs', 'gpfs', 'lustre', 'ceph'})
+#: and does not survive a shared network file system). Names are the POSIX
+#: spellings; Windows answers through the drive type instead — see `is_network_fs`.
+NETWORK_FS = NETWORK_FS_NAMES
 _UNSAFE = set('\x7f<>:"\\|?*')
 
 
@@ -107,35 +108,9 @@ def decode_component(physical: str) -> str:
 
 
 # --------------------------------------------------------------------- probing
-def fs_type(path: Path) -> str:
-    """Best-effort file-system name. `unknown` is reported, never guessed."""
-    try:
-        info = os.statvfs(str(path))
-    except OSError:
-        return 'unknown'
-    # macOS/BSD expose the name directly.
-    name = getattr(info, 'f_fstypename', None)
-    if name:
-        return str(name).lower()
-    # Linux: longest matching mount point in /proc/mounts.
-    best, best_len = 'unknown', -1
-    try:
-        with open('/proc/mounts', 'r', encoding='utf-8', errors='replace') as handle:
-            for line in handle:
-                parts = line.split()
-                if len(parts) < 3:
-                    continue
-                mount = parts[1].replace('\\040', ' ')
-                if (str(path) == mount or str(path).startswith(mount.rstrip('/') + '/')) \
-                        and len(mount) > best_len:
-                    best, best_len = parts[2].lower(), len(mount)
-    except OSError:
-        return 'unknown'
-    return best
-
-
 def is_network_fs(path: Path) -> bool:
-    return fs_type(path) in NETWORK_FS
+    """Network file system by name (POSIX) or by drive type (Windows)."""
+    return is_remote_path(path)
 
 
 class StorageGuard:
@@ -246,10 +221,8 @@ class StorageGuard:
         return state
 
     def free_bytes(self, root: dict) -> Optional[int]:
-        try:
-            return shutil.disk_usage(str(root['path'])).free
-        except OSError:
-            return None
+        usage = disk_usage(root['path'])
+        return None if usage is None else usage.available
 
     # ---------------------------------------------------------------- resolve
     def resolve(self, root: dict, rel: str, *, must_exist: bool = True,
@@ -405,19 +378,13 @@ class StorageGuard:
                     temporary.unlink()
                 except OSError:
                     pass
-        usage = None
-        try:
-            raw = os.statvfs(str(base))
-            usage = {'free_bytes': raw.f_bavail * raw.f_frsize,
-                     'total_bytes': raw.f_blocks * raw.f_frsize}
-        except OSError:
-            pass
+        usage = disk_usage(base)
         kind_fs = fs_type(base)
         return {
             'state': 'online' if writable else 'unauthorized',
             'reason': reason, 'writable': writable, 'volume_id': volume_id,
             'sentinel_id': sentinel_id, 'fs_type': kind_fs,
-            'network_fs': kind_fs in NETWORK_FS,
-            'free_bytes': (usage or {}).get('free_bytes'),
-            'total_bytes': (usage or {}).get('total_bytes'),
+            'network_fs': is_network_fs(base),
+            'free_bytes': usage.available if usage else None,
+            'total_bytes': usage.total if usage else None,
         }
