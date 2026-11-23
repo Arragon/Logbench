@@ -1,7 +1,7 @@
 {
   "schema": "logbench.r6.golden-expected/1",
   "recorded_from": "src/app.js::parseLocal (shipped R5 parser, extracted by tests/r6/parser-harness.cjs)",
-  "app_sha256": "a9a7187c94f0b31bc1f56f0c8bdd58e48ab9e00f1cc8f55f6233f0fb75815a08",
+  "app_sha256": "e5eb969c38b8611ea2af24b59abe5ae90bfb04278fc44fe528b20c34612b5fba",
   "fixtures": {
     "edge_cases.log": {
       "sha256": "1d231d2334e5acbcd07cb663d944f699fb5d20bdcb6b6922719f60bab5f43f05",
