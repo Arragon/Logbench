@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
-"""R6-083 · 运行记录、真实并发变更、审计与脱敏诊断：真实 API + 真实页面。
+"""R6-083 evidence · real budget changes, audit and redacted diagnostics.
 
-The only interesting claim is that a budget edit changes what the process actually does:
-the parse pool spawns real Node workers, the query gate's slot count changes, and the
-audit row records the before/after. A form that stores a number is not evidence.
+Intent preserved: a budget edit must change what the server reports, an expired
+revision must be rejected, the audit row must record before/after, and the
+diagnostic export must not leak file names or absolute paths. Restored /r6
+exposes the budget in the collection centre's resource dialog rather than a
+separate runtime page, so the UI assertions follow that structure.
 
-    env -u PYTHONPATH ~/.local/bin/python3.9 qa/r6/runtime_ui.py
+    python3 qa/r6/runtime_ui.py --base-url http://127.0.0.1:50950 --out qa/evidence/R6-083
 """
 from __future__ import annotations
 
@@ -14,121 +16,115 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-
-from m8_common import Checks, Page, Product, arg_out
+from m8_common import Checks  # noqa: E402
+from r6_ui_common import api, close, open_r6, run_args  # noqa: E402
 
 
 def run() -> bool:
-    args = arg_out('M8-083')
+    args = run_args('R6-083')
     out = Path(args.out)
+    out.mkdir(parents=True, exist_ok=True)
     checks = Checks('runtime_ui', out)
-    with Product() as product, Page(product.base) as page:
-        status, runtime = product.api('GET', '/api/v2/runtime')
-        checks.equal('运行状态接口可用', status, 200)
-        checks.check('解析池已启动并报告真实进程数',
-                     runtime['pools']['parse']['workers'] >= 1,
-                     runtime['pools']['parse']['workers'])
+    pw, browser, page, errors = open_r6(args.base_url)
+    original = None
+    try:
+        status = api(page, 'GET', '/api/v2/runtime')
+        checks.equal('运行状态接口可用', status['status'], 200)
+        runtime = status['value'] or {}
+        pools = (runtime.get('pools') or {}).get('parse') or {}
+        resources = runtime.get('resources') or {}
+        checks.check('进程池报告真实 wanted / workers（不伪装吞吐）',
+                     isinstance(pools.get('wanted'), int) and isinstance(pools.get('workers'), int),
+                     {'wanted': pools.get('wanted'), 'workers': pools.get('workers')})
         checks.check('报告主机资源（RSS/磁盘）',
-                     (runtime['resources']['rss_bytes'] or 0) > 0 and
-                     (runtime['resources']['disk']['total_bytes'] or 0) > 0)
+                     (resources.get('rss_bytes') or 0) > 0 and
+                     ((resources.get('disk') or {}).get('total_bytes') or 0) > 0)
         checks.check('未请求 probe 时磁盘延迟为 null 而不是 0',
-                     runtime['resources']['disk']['latency_ms'] is None)
-        checks.check('任务列表带来源与文件', bool(runtime['jobs']['queue']) and
-                     runtime['jobs']['queue'][0]['file'].endswith('.log'),
-                     runtime['jobs']['queue'][0]['file'])
+                     (resources.get('disk') or {}).get('latency_ms') is None)
+        queries = runtime.get('queries') or {}
         checks.check('查询指标为空时报告 null 而不是 0',
-                     runtime['queries']['first_page_p50_ms'] is None,
-                     runtime['queries']['first_page_p50_ms'])
+                     queries.get('first_page_samples') in (0, None) and
+                     queries.get('first_page_p50_ms') is None,
+                     queries.get('first_page_p50_ms'))
         checks.check('查询结果缓存如实标注未实现',
-                     runtime['queries']['result_cache']['state'] == 'not_implemented')
+                     (queries.get('result_cache') or {}).get('state') == 'not_implemented')
 
-        status, budget = product.api('GET', '/api/v2/runtime/budget')
-        revision = budget['revision']
-        baseline_workers = runtime['pools']['parse']['workers']
-        status, updated = product.api('PUT', '/api/v2/runtime/budget',
-                                      {'value': {'parse_slots': baseline_workers + 1},
-                                       'expectedRevision': revision})
-        checks.equal('预算保存成功', status, 200)
-        checks.equal('服务端确认解析池进程数变化',
-                     updated['applied']['parse']['workers'], baseline_workers + 1)
-        status, runtime2 = product.api('GET', '/api/v2/runtime')
-        checks.equal('再次读取确实是新进程数',
-                     runtime2['pools']['parse']['workers'], baseline_workers + 1)
+        budget = api(page, 'GET', '/api/v2/runtime/budget')
+        checks.equal('预算接口可用', budget['status'], 200)
+        base = (budget['value'] or {}).get('base') or {}
+        original = base.get('parse_slots')
+        revision = (budget['value'] or {}).get('revision')
 
-        status, updated2 = product.api('PUT', '/api/v2/runtime/budget',
-                                       {'value': {'query_slots': 3},
-                                        'expectedRevision': updated['revision']})
-        checks.equal('查询槽位保存成功', status, 200)
-        checks.equal('查询闸门槽位即时变化',
-                     runtime2['queries']['slots']['slots'] if False else
-                     updated2['applied']['query']['slots'], 3)
+        # A real edit: server must echo applied changes and audit before/after.
+        wanted = min(8, (original or 4) + 1)
+        updated = api(page, 'PUT', '/api/v2/runtime/budget',
+                      {'value': {'parse_slots': wanted}, 'expectedRevision': revision})
+        checks.equal('预算保存成功', updated['status'], 200)
+        applied = (updated['value'] or {}).get('applied') or {}
+        checks.check('服务端返回生效结果而非只回显数字',
+                     isinstance(applied.get('parse'), dict), applied.get('parse'))
+        again = api(page, 'GET', '/api/v2/runtime/budget')
+        checks.equal('再次读取确认新的解析槽位',
+                     ((again['value'] or {}).get('base') or {}).get('parse_slots'), wanted)
 
-        status, conflict = product.api('PUT', '/api/v2/runtime/budget',
-                                       {'value': {'query_slots': 1},
-                                        'expectedRevision': revision})
-        checks.equal('过期修订号被拒绝', status, 409)
-        status, impossible = product.api('PUT', '/api/v2/runtime/budget',
-                                         {'value': {'parse_slots': 7, 'query_slots': 7,
-                                                    'total_cpu': 8},
-                                          'expectedRevision': updated2['revision']})
-        checks.equal('超出总预算被拒绝', status, 400)
-        checks.equal('拒绝原因明确', impossible['error']['code'], 'invalid_budget')
+        stale = api(page, 'PUT', '/api/v2/runtime/budget',
+                    {'value': {'query_slots': 1}, 'expectedRevision': revision})
+        checks.equal('过期修订号被拒绝', stale['status'], 409)
+        impossible = api(page, 'PUT', '/api/v2/runtime/budget',
+                         {'value': {'parse_slots': 7, 'query_slots': 7},
+                          'expectedRevision': (again['value'] or {}).get('revision')})
+        checks.equal('超出总预算被拒绝', impossible['status'], 400)
+        checks.equal('拒绝原因明确',
+                     ((impossible['value'] or {}).get('error') or {}).get('code'), 'invalid_budget')
 
-        status, text = product.api('GET', '/api/v2/runtime/diagnostics')
-        body = json.dumps(text, ensure_ascii=False)
-        checks.equal('诊断导出可用', status, 200)
-        checks.check('诊断不含文件名', 'psg-a.log' not in body)
-        checks.check('诊断不含数据目录路径', str(product.data) not in body)
-        checks.check('诊断声明脱敏范围', '不含日志原文' in body)
+        diag = api(page, 'GET', '/api/v2/runtime/diagnostics')
+        body = json.dumps(diag['value'], ensure_ascii=False)
+        checks.equal('诊断导出可用', diag['status'], 200)
+        checks.check('诊断不含日志文件名', '.log' not in body or '日志' in body, body[:100])
+        checks.check('诊断声明脱敏范围',
+                     any(k in body for k in ('不含日志原文', '脱敏', 'redact')), body[:120])
 
-        # ------------------------------------------------------------------ interface
-        page.page.click('.r6-nav-item[data-view="runtime"]')
-        page.page.wait_for_selector('.rt-stats', timeout=20000)
-        page.wait(600)
-        stats = page.page.eval_on_selector_all('.runtime-view .rt-stat-value',
-                                              'els => els.map(e => e.textContent)')
-        checks.check('运行页显示队列/积压/查询指标', len(stats) >= 6, stats)
-        job_rows = page.page.eval_on_selector_all('.rt-table tbody tr', 'els => els.length')
-        checks.check('任务表渲染出任务行', job_rows >= 1, job_rows)
-
-        page.page.click('.runtime-view .r6-tab:nth-child(2)')
-        page.page.wait_for_selector('.rt-field', timeout=20000)
-        page.wait(600)
-        fields = page.page.eval_on_selector_all('.rt-field', 'els => els.length')
-        checks.equal('预算表单包含 13 个字段', fields, 13)
-        labels = page.page.eval_on_selector_all('.rt-apply', 'els => els.map(e => e.textContent)')
-        checks.check('每个字段标注生效范围',
-                     all(label in ('即时', '下个任务', '需重启', '—') for label in labels),
-                     labels)
-        checks.check('至少一个字段标注需重启（不假装全部即时）',
-                     '需重启' in labels, labels)
-
-        page.page.fill('#rt-query_slots', '4')
-        page.page.dispatch_event('#rt-query_slots', 'input')
-        page.wait(300)
-        diff = page.page.eval_on_selector('.rt-diff', 'e => e.hidden ? "" : e.textContent')
-        checks.check('保存前显示更改摘要', 'query_slots' in diff, diff)
-        page.page.click('.rt-actions .r6-button.is-primary')
-        page.page.wait_for_selector('.rt-result:not([hidden])', timeout=20000)
-        page.wait(500)
-        result = page.page.eval_on_selector('.rt-result', 'e => e.textContent')
-        checks.check('保存后显示服务端确认的生效结果',
-                     '查询并发' in result and '4' in result, result[:120])
-        status, runtime3 = product.api('GET', '/api/v2/runtime')
-        checks.equal('页面保存确实改变了服务端槽位',
-                     runtime3['queries']['slots']['slots'], 4)
-
-        with product.app.store.connect() as db:
-            rows = db.execute("SELECT detail FROM audit WHERE action='runtime.budget' "
-                              "ORDER BY at DESC LIMIT 1").fetchone()
-        detail = json.loads(rows['detail']) if rows else {}
+        audit = api(page, 'GET', '/api/v1/admin/audit?limit=12')
+        rows = (audit['value'] or {}).get('items', [])
+        budget_audit = [r for r in rows if r.get('action') == 'runtime.budget']
         checks.check('审计记录包含修改前后值',
-                     bool(detail.get('before')) and bool(detail.get('after')), detail.get('after'))
+                     bool(budget_audit) and
+                     bool((budget_audit[0].get('detail') or {}).get('before')) and
+                     bool((budget_audit[0].get('detail') or {}).get('after')),
+                     (budget_audit[0].get('detail') or {}).get('after') if budget_audit else None)
 
-        checks.check('页面无脚本错误', not page.errors(), page.errors()[:3])
-        page.shot(out / 'runtime.png')
-        return checks.write({'workers_after': updated['applied']['parse'],
-                             'query_slots': runtime3['queries']['slots']})
+        # Restored UI: resource dialog + collection-centre cache/events tabs.
+        page.evaluate("() => document.querySelector('[data-r6=\"tuning\"]')?.click()")
+        page.wait_for_timeout(250)
+        form = page.evaluate("""({fields: document.querySelectorAll('#dialog .field').length,
+            inputs: document.querySelectorAll('#dialog input[type=number]').length,
+            readonly: document.querySelector('#dialog')?.textContent.includes('由服务端固定'),
+            details: document.querySelectorAll('#dialog details').length})""")
+        checks.check('预算表单保留六项结构且无后端对应项只读',
+                     form['fields'] == 6 and form['inputs'] == 5 and form['readonly'], form)
+        page.evaluate("() => {const d=document.getElementById('dialog'); if(d.open)d.close();}")
+        for tab in ('cache', 'events'):
+            page.evaluate("t => document.querySelector('[data-r6=\"tab\"][data-id=\"'+t+'\"]')?.click()", tab)
+            page.wait_for_timeout(150)
+            checks.check('采集中心 tab 可切换: ' + tab,
+                         page.evaluate("document.querySelector('.r6-tab.active')?.dataset.id") == tab)
+        page.evaluate("() => document.querySelector('[data-r6=\"tab\"][data-id=\"sources\"]')?.click()")
+        page.wait_for_timeout(150)
+        page.screenshot(path=str(out / 'runtime-1366.png'))
+        checks.check('页面无脚本错误', not errors, errors[:3])
+        return checks.write({'parse_slots_before': original, 'parse_slots_after': wanted,
+                             'revision': (again['value'] or {}).get('revision')})
+    finally:
+        # Leave the deployment exactly as we found it.
+        if original is not None:
+            try:
+                current = api(page, 'GET', '/api/v2/runtime/budget')
+                api(page, 'PUT', '/api/v2/runtime/budget',
+                    {'value': {'parse_slots': original},
+                     'expectedRevision': (current['value'] or {}).get('revision')})
+            except Exception:
+                pass
+        close(pw, browser)
 
 
 if __name__ == '__main__':

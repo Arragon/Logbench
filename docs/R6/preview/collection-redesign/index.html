@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>LogBench · 采集中心设计预览</title>
+  <link rel="stylesheet" href="shell.css">
+  <link rel="stylesheet" href="collection.css">
+  <script src="icons.js" defer></script>
+  <script src="collection.js" defer></script>
+</head>
+<body class="ud-app cc-preview">
+  <div class="lb-app" id="preview-app">
+    <header class="lb-header">
+      <button class="btn icon ghost" data-cc="nav" aria-label="展开或收起导航"><span data-icon="menu"></span></button>
+      <div class="brand"><span class="brandmark" data-icon="logo"></span><span class="brandname">LogBench</span></div>
+      <div class="header-path"><span>分析工作区</span><span data-icon="chevron"></span><span class="current">采集中心</span></div>
+      <div class="header-right"><span class="cc-preview-label">设计预览 · 示例数据</span><span class="avatar" aria-label="当前身份：管理员">研</span></div>
+    </header>
+    <aside class="sidebar" aria-label="应用导航">
+      <nav class="feature-card" aria-label="主功能">
+        <a class="feature-button" href="http://127.0.0.1:50004/r6"><span data-icon="logs"></span><span>日志浏览</span></a>
+        <a class="feature-button" href="http://127.0.0.1:50004/r6"><span data-icon="folder"></span><span>文件库</span></a>
+        <a class="feature-button" href="http://127.0.0.1:50004/r6"><span data-icon="sliders"></span><span>规则管理</span></a>
+        <a class="feature-button" href="http://127.0.0.1:50004/r6"><span data-icon="calendar"></span><span>全局时间筛选</span></a>
+        <a class="feature-button" href="http://127.0.0.1:50004/r6"><span data-icon="table"></span><span>时间对比</span></a>
+        <button class="feature-button active" aria-current="page"><span data-icon="refresh"></span><span>采集中心</span></button>
+      </nav>
+      <div class="section-head">已打开 <span class="number">0</span></div>
+      <div class="spacer"></div>
+      <div class="cc-sidefoot"><span data-icon="settings"></span>管理后台</div>
+      <div class="cc-sidefoot"><span data-icon="book"></span>操作帮助</div>
+    </aside>
+    <main class="cc-main" id="main">
+      <h1 class="cc-sr">采集中心</h1>
+      <header class="cc-head">
+        <div class="cc-tabs" role="tablist" aria-label="采集中心视图"></div>
+        <div class="cc-head-actions"><button class="btn ghost" data-cc="budget"><span data-icon="sliders"></span><span>资源设置</span></button><button class="btn primary" id="create" data-cc="create"></button></div>
+      </header>
+      <div class="cc-toolbar">
+        <label class="cc-search"><span data-icon="search"></span><input id="search" placeholder="搜索名称、主机、目录…" aria-label="搜索当前列表" autocomplete="off"><button class="btn icon ghost" id="clear-search" data-cc="clear" aria-label="清除搜索" hidden><span data-icon="close"></span></button></label>
+        <select class="select" id="filter" aria-label="筛选状态"></select>
+        <span class="spacer"></span>
+        <span class="cc-total" id="count" aria-live="polite"></span>
+        <button class="btn icon ghost" data-cc="refresh" aria-label="刷新列表"><span data-icon="refresh"></span></button>
+      </div>
+      <div id="banner" aria-live="polite"></div>
+      <section class="cc-stage" id="panel" role="tabpanel" tabindex="0" aria-label="远程日志源"><div class="cc-scroll" id="data"></div></section>
+      <footer class="cc-foot"><span id="foot-count"></span><span class="spacer"></span><span>50 条 / 页</span><span class="cc-page">1 / 1</span></footer>
+      <div class="cc-status"><span>示例数据 · 不连接采集服务</span><span class="spacer"></span><label for="scenario">预览状态</label><select id="scenario" aria-label="预览状态"><option value="normal">正常</option><option value="empty">空列表</option><option value="error">连接失败</option><option value="loading">加载中</option><option value="readonly">只读</option></select></div>
+    </main>
+  </div>
+  <dialog class="cc-detail" id="detail" aria-labelledby="detail-title"></dialog>
+  <dialog class="cc-modal" id="editor" aria-labelledby="editor-title"></dialog>
+  <div class="cc-live cc-sr" role="status" aria-live="polite"></div>
+</body>
+</html>
