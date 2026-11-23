@@ -1,0 +1,6 @@
+.library-directory{min-width:0}
+.library-root-warning{padding:10px 12px;color:#905617;background:#fff6e9;border-bottom:1px solid #ecd8ba;font-size:12px}
+.folder-pane>.folder-item>.ellipsis{min-width:0;flex:1}
+.folder-pane>.folder-item>.folder-count{flex-shrink:0}
+@media(max-width:650px){.folder-pane>.folder-item{min-height:40px}.file-table{min-width:740px}.file-table-wrap{overflow:auto}.library-top{flex-wrap:wrap}.library-top>.search-box{margin-left:0!important;max-width:none!important;flex-basis:100%!important}}
+@media(max-width:650px){.directory-rulebar{flex-wrap:nowrap;overflow-x:auto;flex-shrink:0;min-height:40px}.directory-rulebar>span:first-child,.directory-rulebar .binding{white-space:nowrap;flex-shrink:0}.directory-rulebar .hint,.directory-rulebar .spacer{display:none}.library-breadcrumb{min-width:0}.library-breadcrumb>.link{min-width:0;max-width:calc(100% - 85px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.library-breadcrumb>span:last-child{white-space:nowrap;flex-shrink:0}}

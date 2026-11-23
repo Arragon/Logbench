@@ -1,0 +1,146 @@
+{
+ "name": "runtime_ui",
+ "started_at": "2026-11-06T01:08:39",
+ "ok": true,
+ "total": 21,
+ "failed": 0,
+ "checks": [
+  {
+   "label": "运行状态接口可用",
+   "ok": true,
+   "detail": "actual=200 expected=200"
+  },
+  {
+   "label": "进程池报告真实 wanted / workers（不伪装吞吐）",
+   "ok": true,
+   "detail": {
+    "wanted": 4,
+    "workers": 0
+   }
+  },
+  {
+   "label": "报告主机资源（RSS/磁盘）",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "label": "未请求 probe 时磁盘延迟为 null 而不是 0",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "label": "查询指标为空时报告 null 而不是 0",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "label": "查询结果缓存如实标注未实现",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "label": "预算接口可用",
+   "ok": true,
+   "detail": "actual=200 expected=200"
+  },
+  {
+   "label": "预算保存成功",
+   "ok": true,
+   "detail": "actual=200 expected=200"
+  },
+  {
+   "label": "服务端返回生效结果而非只回显数字",
+   "ok": true,
+   "detail": {
+    "workers": 0,
+    "wanted": 5,
+    "spawned": 0,
+    "stopped": 0,
+    "busy": [],
+    "note": "解析池尚未启动，新槽位在首个索引任务启动时生效。"
+   }
+  },
+  {
+   "label": "再次读取确认新的解析槽位",
+   "ok": true,
+   "detail": "actual=5 expected=5"
+  },
+  {
+   "label": "过期修订号被拒绝",
+   "ok": true,
+   "detail": "actual=409 expected=409"
+  },
+  {
+   "label": "超出总预算被拒绝",
+   "ok": true,
+   "detail": "actual=400 expected=400"
+  },
+  {
+   "label": "拒绝原因明确",
+   "ok": true,
+   "detail": "actual='invalid_budget' expected='invalid_budget'"
+  },
+  {
+   "label": "诊断导出可用",
+   "ok": true,
+   "detail": "actual=200 expected=200"
+  },
+  {
+   "label": "诊断不含日志文件名",
+   "ok": true,
+   "detail": "{\"schema\": \"logbench.runtime/1\", \"generatedAt\": \"2026-11-06T09:08:38+00:00\", \"version\": \"3.0.3\", \"up"
+  },
+  {
+   "label": "诊断声明脱敏范围",
+   "ok": true,
+   "detail": "{\"schema\": \"logbench.runtime/1\", \"generatedAt\": \"2026-11-06T09:08:38+00:00\", \"version\": \"3.0.3\", \"uptimeSeconds\": 20909,"
+  },
+  {
+   "label": "审计记录包含修改前后值",
+   "ok": true,
+   "detail": {
+    "parse_slots": 5,
+    "query_slots": 2,
+    "upload_slots": 4,
+    "total_cpu": 8,
+    "transfer_connections": 4,
+    "per_host_connections": 2,
+    "per_principal_uploads": 2,
+    "per_principal_queries": 1,
+    "history_slots": 2,
+    "mem_soft_bytes": 17179869184,
+    "hot_cache_bytes": 4294967296,
+    "interactive_reserve": 1,
+    "writer_slots": 4
+   }
+  },
+  {
+   "label": "预算表单保留六项结构且无后端对应项只读",
+   "ok": true,
+   "detail": {
+    "fields": 6,
+    "inputs": 5,
+    "readonly": true,
+    "details": 1
+   }
+  },
+  {
+   "label": "采集中心 tab 可切换: cache",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "label": "采集中心 tab 可切换: events",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "label": "页面无脚本错误",
+   "ok": true,
+   "detail": []
+  }
+ ],
+ "parse_slots_before": 4,
+ "parse_slots_after": 5,
+ "revision": 12
+}

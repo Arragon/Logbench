@@ -1,0 +1,115 @@
+{
+ "name": "library_storage_ui",
+ "started_at": "2026-11-06T01:08:36",
+ "ok": true,
+ "total": 14,
+ "failed": 0,
+ "checks": [
+  {
+   "label": "存储位置接口可用",
+   "ok": true,
+   "detail": "actual=200 expected=200"
+  },
+  {
+   "label": "服务端返回存储位置",
+   "ok": true,
+   "detail": 1
+  },
+  {
+   "label": "登记含 id 与绝对路径: legacy",
+   "ok": true,
+   "detail": {
+    "id": "legacy",
+    "label": "部署数据目录",
+    "path": "<repo>/data",
+    "state": "online"
+   }
+  },
+  {
+   "label": "存储位置表格行数与服务端一致",
+   "ok": true,
+   "detail": "actual=1 expected=1"
+  },
+  {
+   "label": "表格显示真实位置 ID",
+   "ok": true,
+   "detail": "部署数据目录\nshared_raw · legacy\n\t\n<repo>/data\n索引：<repo>/data/.ind"
+  },
+  {
+   "label": "离线位置不被当成空库清除",
+   "ok": true,
+   "detail": "部署数据目录\nshared_raw · legacy\n\t\n<repo>/data\n索引：<repo>/data/.ind"
+  },
+  {
+   "label": "统一文件库外壳完整",
+   "ok": true,
+   "detail": {
+    "shell": true,
+    "folders": true,
+    "main": true,
+    "heading": "文件库"
+   }
+  },
+  {
+   "label": "文件语料来自真实目录而非内置 fixture",
+   "ok": true,
+   "detail": "actual=0 expected=0"
+  },
+  {
+   "label": "视口 1366x768 无横向溢出且数据区可见",
+   "ok": true,
+   "detail": {
+    "scroll": 1366,
+    "client": 1366,
+    "pane": 595,
+    "reachable": true
+   }
+  },
+  {
+   "label": "视口 1024x768 无横向溢出且数据区可见",
+   "ok": true,
+   "detail": {
+    "scroll": 1024,
+    "client": 1024,
+    "pane": 595,
+    "reachable": true
+   }
+  },
+  {
+   "label": "视口 768x1024 无横向溢出且数据区可见",
+   "ok": true,
+   "detail": {
+    "scroll": 768,
+    "client": 768,
+    "pane": 851,
+    "reachable": true
+   }
+  },
+  {
+   "label": "视口 375x812 无横向溢出且数据区可见",
+   "ok": true,
+   "detail": {
+    "scroll": 375,
+    "client": 375,
+    "pane": 641,
+    "reachable": true
+   }
+  },
+  {
+   "label": "页面无脚本错误",
+   "ok": true,
+   "detail": []
+  },
+  {
+   "label": "非管理员降级为只读且状态可读",
+   "ok": true,
+   "detail": {
+    "admin": false,
+    "addDisabled": false,
+    "status": "服务已连接 · 只读 · 1 个日志源 · member · 已同步"
+   }
+  }
+ ],
+ "roots": 1,
+ "library_files": 0
+}

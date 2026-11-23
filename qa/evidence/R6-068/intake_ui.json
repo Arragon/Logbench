@@ -1,0 +1,109 @@
+{
+ "name": "intake_ui",
+ "started_at": "2026-11-06T01:08:33",
+ "ok": true,
+ "total": 14,
+ "failed": 0,
+ "checks": [
+  {
+   "label": "采集状态接口可用",
+   "ok": true,
+   "detail": "actual=200 expected=200"
+  },
+  {
+   "label": "服务端返回源列表",
+   "ok": true,
+   "detail": 1
+  },
+  {
+   "label": "未采集源如实报告 0 字节",
+   "ok": true,
+   "detail": {
+    "bytes": 0,
+    "files": 0
+   }
+  },
+  {
+   "label": "日志源表格渲染出真实行",
+   "ok": true,
+   "detail": {
+    "ui": 1,
+    "api": 1
+   }
+  },
+  {
+   "label": "详情抽屉悬浮且不挤压表格",
+   "ok": true,
+   "detail": {
+    "before": {
+     "x": 208,
+     "y": 190,
+     "width": 1158,
+     "height": 556
+    },
+    "after": {
+     "x": 208,
+     "y": 190,
+     "width": 1158,
+     "height": 556
+    }
+   }
+  },
+  {
+   "label": "抽屉显示真实采集链路",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "label": "四个采集 tab 均存在",
+   "ok": true,
+   "detail": [
+    "远程日志源1",
+    "存储位置1",
+    "解析缓存1",
+    "运行记录0"
+   ]
+  },
+  {
+   "label": "tab 可切换: storage",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "label": "tab 可切换: cache",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "label": "tab 可切换: events",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "label": "tab 可切换: sources",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "label": "1366×768 数据区可用",
+   "ok": true,
+   "detail": 556
+  },
+  {
+   "label": "页面无脚本错误",
+   "ok": true,
+   "detail": []
+  },
+  {
+   "label": "375×812 无横向溢出且主内容可见",
+   "ok": true,
+   "detail": {
+    "scroll": 375,
+    "client": 375,
+    "main": 760
+   }
+  }
+ ],
+ "sources": 1,
+ "data_area": 556
+}

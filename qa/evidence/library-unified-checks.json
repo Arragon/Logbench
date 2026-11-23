@@ -1,0 +1,33 @@
+{
+  "scope": "R6 unified file library",
+  "node_regressions": 12,
+  "engine_regressions": 26,
+  "binding_api_tests": 14,
+  "self_test": "passed",
+  "browser": {
+    "root_filter_rows": 9,
+    "golden_directory_rows": 5,
+    "parsed_edge_records": 10,
+    "parsed_empty_records": 0,
+    "favourite_and_restore": "passed on synthetic empty.log",
+    "file_binding_and_inheritance": "passed; restored inheritance",
+    "batch_open": "merged view with loaded files",
+    "download_sha256": "matches original 1676-byte synthetic file",
+    "375": {
+      "body_width": 375,
+      "data_height": 461
+    },
+    "768": {
+      "body_width": 768,
+      "data_height": 715
+    }
+  },
+  "limits": [
+    "No new shared-directory creation or shared-file deletion semantics were introduced.",
+    "No Safari/Firefox or screen-reader acceptance performed."
+  ],
+  "cleanup": {
+    "agent_gc": "no candidates",
+    "removed_bytes": 0
+  }
+}

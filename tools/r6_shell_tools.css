@@ -1,0 +1,13 @@
+/* Application utility actions live in the header; the sidebar owns files. */
+.app-tools{position:relative}
+.app-tools>summary{list-style:none;cursor:pointer;user-select:none}
+.app-tools>summary::-webkit-details-marker{display:none}
+.app-tools>summary>.i:last-child{width:12px;height:12px}
+.app-tools[open]>summary{background:var(--ud-primary-tint);color:var(--ud-primary-ink)}
+.app-tools-menu{position:absolute;right:0;top:calc(100% + 8px);width:204px;padding:6px;background:var(--ud-surface);border:1px solid var(--ud-line-strong);border-radius:8px;box-shadow:var(--ud-shadow-pop);z-index:60}
+.app-tools-menu>button{display:flex;align-items:center;gap:10px;width:100%;min-height:36px;padding:8px 10px;border:0;border-radius:4px;background:transparent;color:var(--ud-ink-soft);font-size:13px;text-align:left;white-space:nowrap}
+.app-tools-menu>button:hover{background:var(--ud-surface-strong);color:var(--ud-ink)}
+.app-tools-divider{height:1px;background:var(--ud-line);margin:5px 4px}
+@media(max-width:650px){.app-tools-menu>button{min-height:44px}.app-tools>summary{padding:0 6px}.app-tools>summary>.i{display:none}}
+
+@media(max-width:650px){.app-tools-menu{position:fixed;top:52px;left:12px;right:auto;max-width:calc(100vw - 24px)}}

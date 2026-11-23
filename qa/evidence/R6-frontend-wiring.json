@@ -1,0 +1,302 @@
+{
+  "at": "2026-11-06T09:08:16.477777+00:00",
+  "base_url": "http://127.0.0.1:50950",
+  "checks": {
+    "adapter_loaded": {
+      "ok": true,
+      "detail": null
+    },
+    "identity_and_csrf": {
+      "ok": true,
+      "detail": null
+    },
+    "real_endpoints": {
+      "ok": true,
+      "detail": 55
+    },
+    "boot_from_api": {
+      "ok": true,
+      "detail": [
+        "GET /api/v2/cache",
+        "GET /api/v2/library",
+        "GET /api/v2/runtime/budget"
+      ]
+    },
+    "rev2_entries": {
+      "ok": true,
+      "detail": null
+    },
+    "no_demo_copy": {
+      "ok": true,
+      "detail": null
+    },
+    "no_fixture_sources": {
+      "ok": true,
+      "detail": {
+        "ids": [
+          "src_137586551d89"
+        ],
+        "fixture": []
+      }
+    },
+    "design_baseline": {
+      "ok": true,
+      "detail": {
+        "rows": "52px 716px",
+        "cols": "208px 1158px",
+        "header": 52,
+        "head": 50,
+        "tabs": 39,
+        "toolbar": 49,
+        "status": 22,
+        "pane": 556,
+        "foot": false
+      }
+    },
+    "data_area": {
+      "ok": true,
+      "detail": 556
+    },
+    "backend_error_code_mapped": {
+      "ok": true,
+      "detail": {
+        "scenario": "precondition",
+        "code": "source_disabled",
+        "msg": "请先启用远程源。",
+        "actionSent": true
+      }
+    },
+    "fault_403": {
+      "ok": true,
+      "detail": null
+    },
+    "fault_409": {
+      "ok": true,
+      "detail": null
+    },
+    "fault_offline": {
+      "ok": true,
+      "detail": null
+    },
+    "recovery": {
+      "ok": true,
+      "detail": null
+    },
+    "preferences_write": {
+      "ok": true,
+      "detail": {
+        "rev": 8,
+        "saved": "已保存"
+      }
+    },
+    "budget_write": {
+      "ok": true,
+      "detail": {
+        "saved": "已保存",
+        "scenario": "saved",
+        "err": ""
+      }
+    },
+    "six_views": {
+      "ok": true,
+      "detail": {
+        "sync": {
+          "view": "sync",
+          "len": 323
+        },
+        "logs": {
+          "view": "logs",
+          "len": 282
+        },
+        "files": {
+          "view": "files",
+          "len": 205
+        },
+        "rules": {
+          "view": "rules",
+          "len": 816
+        },
+        "admin": {
+          "view": "admin",
+          "len": 742
+        },
+        "compare": {
+          "view": "compare",
+          "len": 125
+        }
+      }
+    },
+    "four_tabs": {
+      "ok": true,
+      "detail": {
+        "sources": true,
+        "storage": true,
+        "cache": true,
+        "events": true
+      }
+    },
+    "rules_from_api": {
+      "ok": true,
+      "detail": {
+        "serverId": "cpqpsgx-default",
+        "profiles": 4,
+        "firstId": "cpqpsgx-default",
+        "users": 1,
+        "audit": 12
+      }
+    },
+    "rules_editor_renders": {
+      "ok": true,
+      "detail": null
+    },
+    "admin_from_api": {
+      "ok": true,
+      "detail": null
+    },
+    "sse_or_poll_active": {
+      "ok": true,
+      "detail": {
+        "mode": "live",
+        "polls": 0,
+        "eventMode": "live"
+      }
+    },
+    "narrow_no_overflow": {
+      "ok": true,
+      "detail": {
+        "scrollW": 375,
+        "clientW": 375,
+        "main": 760
+      }
+    },
+    "no_page_errors": {
+      "ok": true,
+      "detail": []
+    }
+  },
+  "failures": [],
+  "page_errors": [],
+  "notes": [],
+  "boot": {
+    "lb": "object",
+    "r6": "object",
+    "scenario": "ready",
+    "admin": true,
+    "csrf": true,
+    "endpoints": 55,
+    "sources": 1,
+    "roots": 1,
+    "rev2": true,
+    "calls": [
+      "GET /api/v2/cache",
+      "GET /api/v2/library",
+      "GET /api/v2/runtime/budget",
+      "GET /api/v2/jobs",
+      "GET /api/v2/storage-roots",
+      "GET /api/v2/sources",
+      "GET /api/v2/intake",
+      "GET /api/v1/admin/audit?limit=12",
+      "GET /api/v1/admin/stats",
+      "GET /api/v1/admin/config"
+    ]
+  },
+  "seed_check": {
+    "ids": [
+      "src_137586551d89"
+    ],
+    "fixture": []
+  },
+  "geometry": {
+    "rows": "52px 716px",
+    "cols": "208px 1158px",
+    "header": 52,
+    "head": 50,
+    "tabs": 39,
+    "toolbar": 49,
+    "status": 22,
+    "pane": 556,
+    "foot": false
+  },
+  "state_machine": {
+    "scenario": "precondition",
+    "code": "source_disabled",
+    "msg": "请先启用远程源。",
+    "actionSent": true
+  },
+  "faults": {
+    "403": {
+      "scenario": "forbidden",
+      "banner": true,
+      "status": "权限不足（403） · 服务端拒绝本次请求"
+    },
+    "409_revision": {
+      "scenario": "conflict",
+      "banner": true,
+      "status": "版本冲突（409） · 输入已保留为草稿"
+    },
+    "offline": {
+      "scenario": "offline",
+      "banner": true,
+      "status": "服务未连接 · 写操作已停用"
+    }
+  },
+  "preferences_write": {
+    "rev": 8,
+    "saved": "已保存"
+  },
+  "budget_write": {
+    "saved": "已保存",
+    "scenario": "saved",
+    "err": ""
+  },
+  "views": {
+    "sync": {
+      "view": "sync",
+      "len": 323
+    },
+    "logs": {
+      "view": "logs",
+      "len": 282
+    },
+    "files": {
+      "view": "files",
+      "len": 205
+    },
+    "rules": {
+      "view": "rules",
+      "len": 816
+    },
+    "admin": {
+      "view": "admin",
+      "len": 742
+    },
+    "compare": {
+      "view": "compare",
+      "len": 125
+    }
+  },
+  "tabs": {
+    "sources": true,
+    "storage": true,
+    "cache": true,
+    "events": true
+  },
+  "rules_admin_data": {
+    "serverId": "cpqpsgx-default",
+    "profiles": 4,
+    "firstId": "cpqpsgx-default",
+    "users": 1,
+    "audit": 12
+  },
+  "events_channel": {
+    "mode": "live",
+    "polls": 0,
+    "eventMode": "live"
+  },
+  "narrow": {
+    "scrollW": 375,
+    "clientW": 375,
+    "main": 760
+  },
+  "passed": true
+}
