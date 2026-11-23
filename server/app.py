@@ -520,6 +520,13 @@ class Application:
             return Response(status=500, value={'error': {'code': 'STORAGE_ERROR', 'message': '存储操作失败，请检查目录权限与磁盘空间。', 'details': {}}})
         except (ValueError, TypeError, KeyError):
             return Response(status=400, value={'error': {'code': 'INVALID_INPUT', 'message': '请求字段格式不正确。', 'details': {}}})
+        except Exception:  # noqa: BLE001 - an unhandled error must not silently drop the connection
+            import traceback
+            traceback.print_exc()
+            return Response(status=500, value={'error': {
+                'code': 'INTERNAL_ERROR',
+                'message': '服务端处理失败，请查看服务日志。',
+                'details': {}}})
 
     def route(self, method, path, q, payload, actor, headers):
         ip = actor['ip']

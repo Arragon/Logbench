@@ -150,7 +150,10 @@ def probe_sqlite(directory=None) -> dict:
             for suffix in ('', '-journal', '-wal', '-shm'):
                 try:
                     Path(str(probe_path) + suffix).unlink()
-                except OSError:
+                except Exception:
+                    # Some sandboxes/hooks deny unlink with a non-OSError.
+                    # A leftover probe file is harmless; failing the whole
+                    # capability report (and dropping the HTTP connection) is not.
                     pass
     return result
 
