@@ -111,16 +111,30 @@ def parse_exit(path: Path) -> dict:
     return {'status': 'pass' if not text else 'fail', 'stdout_bytes': len(text)}
 
 
+def display_path(exe: str) -> str:
+    """Record toolchain paths without the operator's home directory.
+
+    The manifest is committed to a public repository; `sys.executable` and
+    `~/.local/bin/...` resolve to absolute paths containing the account name.
+    """
+    home = str(Path.home())
+    if exe.startswith(home + os.sep):
+        return '~' + exe[len(home):]
+    if exe == home:
+        return '~'
+    return exe
+
+
 def python_probe(exe: str) -> dict:
     try:
         out = subprocess.run([exe, '-c', 'import sys,sqlite3;print(sys.version.split()[0]);print(sqlite3.sqlite_version)'],
                              stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, timeout=20, text=True)
         if out.returncode != 0:
-            return {'executable': exe, 'available': False}
+            return {'executable': display_path(exe), 'available': False}
         version, sqlite = (out.stdout.strip().splitlines() + ['', ''])[:2]
-        return {'executable': exe, 'available': True, 'version': version, 'sqlite': sqlite}
+        return {'executable': display_path(exe), 'available': True, 'version': version, 'sqlite': sqlite}
     except (OSError, subprocess.SubprocessError):
-        return {'executable': exe, 'available': False}
+        return {'executable': display_path(exe), 'available': False}
 
 
 def main(argv=None) -> int:
@@ -193,9 +207,9 @@ def git_free_version(exe: str, flag: str) -> dict:
     try:
         out = subprocess.run([exe, flag], stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
                              timeout=20, text=True)
-        return {'executable': exe, 'available': out.returncode == 0, 'version': out.stdout.strip()}
+        return {'executable': display_path(exe), 'available': out.returncode == 0, 'version': out.stdout.strip()}
     except (OSError, subprocess.SubprocessError):
-        return {'executable': exe, 'available': False}
+        return {'executable': display_path(exe), 'available': False}
 
 
 def parse_sums_check(path: Path) -> dict:

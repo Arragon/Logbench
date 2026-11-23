@@ -333,5 +333,5 @@
     "protocols"
   ],
   "python": "3.9.11",
-  "node": "node"
+  "node": "v22.22.2"
 }

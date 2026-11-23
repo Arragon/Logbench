@@ -8,7 +8,7 @@ env -u PYTHONPATH ~/.local/bin/python3.9 qa/r6/remote_vertical_gate.py --out qa/
 ```
 
 原始数据：`qa/evidence/M7-gate/*.json`。本页每个数字都来自这些文件，没有手工填写。
-Python 3.9.11；Node `node`。
+Python 3.9.11；Node v22.22.2。
 
 ## 1 · 崩溃点（`archive-crash.json`）
 

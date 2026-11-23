@@ -11,7 +11,7 @@ env -u PYTHONPATH ~/.local/bin/python3.9 qa/r6/product_workflows.py --out qa/evi
 
 原始数据：`qa/evidence/M8-gate/product_workflows.json` 与 `qa/evidence/M8-*/*.json`。
 本页每个数字都来自这些文件，没有手工填写。
-Python 3.9.11；Node `node`；
+Python 3.9.11；Node v22.22.2；
 浏览器为系统 Chrome（Playwright `channel='chrome'`），不是 headless Chromium。
 
 ## 0 · 子脚本汇总
